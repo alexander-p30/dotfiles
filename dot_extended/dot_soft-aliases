@@ -1,0 +1,16 @@
+# Neovim
+alias nv="nvim"
+alias cfgnv="cedit ~/.config/nvim"
+alias cdnv="cd ~/.config/nvim"
+
+# Kitty
+alias cfgkt="cedit ~/.config/kitty"
+alias cdkt="cd ~/.config/kitty"
+alias kdiff="kitty +kitten diff"
+alias ktsh="kittysh && exit"
+
+# Lazygit
+alias lg="lazygit"
+
+# Chezmoi
+alias c="chezmoi"

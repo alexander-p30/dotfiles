@@ -1,0 +1,4 @@
+# command_timeout = 1000
+[custom.chezmoi_status]
+command = "chezmoi_status"
+when = true

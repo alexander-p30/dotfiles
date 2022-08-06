@@ -1,0 +1,2 @@
+alias ll="exa -l"
+alias omz_update="git submodule update && cd ~/.oh-my-zsh && gcm && omz update && git submodule update && cd -"
