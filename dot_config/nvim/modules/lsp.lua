@@ -1,11 +1,11 @@
 local nvim_lsp = require('lspconfig')
+local language_servers_dir = vim.fn.stdpath("data") .. "/lsp_servers"
 
-local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+local function on_attach()
+  local function buf_set_keymap(...) vim.keymap.set(...) end
 
   --     -- Mappings.
-  local opts = { noremap=true, silent=true }
+  local opts = { noremap = true, silent = true, buffer = true }
   --         -- See `:help vim.lsp.*` for documentation on any of the below functions
   buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
@@ -25,55 +25,59 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<leader>li', '<cmd>lua vim.lsp.buf.format { async = true } <CR>', opts)
 end
 
-local lsp_dirs = vim.fn.stdpath("data") .. "/lsp_servers"
+local function config(cmd_path, ...)
+  return {
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+    on_attach = on_attach,
+    cmd = { language_servers_dir .. cmd_path, ... },
+  }
+end
 
-nvim_lsp.elixirls.setup{
-  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+nvim_lsp.elixirls.setup(config("/elixir/elixir-ls/language_server.sh"))
+nvim_lsp.gopls.setup(config("/go/gopls"))
+nvim_lsp.tsserver.setup(config("/tsserver/node_modules/typescript-language-server/lib/cli.js", "--stdio"))
+nvim_lsp.clangd.setup(config("/clangd/clangd/bin/clangd"))
+nvim_lsp.hls.setup(config("/haskell/haskell-language-server-wrapper", "--lsp"))
+nvim_lsp.rust_analyzer.setup(config("/rust/rust-analyzer"))
+
+nvim_lsp.sumneko_lua.setup({
+  cmd = { language_servers_dir .. "/sumneko_lua/extension/server/bin/lua-language-server" },
   on_attach = on_attach,
-  cmd = { lsp_dirs .. "/elixir/elixir-ls/language_server.sh" },
-}
-
-nvim_lsp.efm.setup({
-  capabilities = capabilities,
-  filetypes = { "elixir" },
-  cmd = { lsp_dirs .. "/efm/efm-langserver" }
+  settings = {
+    Lua = {
+      runtime = {
+        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+        version = 'LuaJIT',
+      },
+      diagnostics = {
+        -- Get the language server to recognize the `vim` global
+        globals = { 'vim' },
+      },
+      workspace = {
+        -- Make the server aware of Neovim runtime files
+        library = {
+          vim.api.nvim_get_runtime_file("", true),
+          vim.api.nvim_get_runtime_file("/lua/vim/lsp", true),
+        },
+      },
+      -- Do not send telemetry data containing a randomized but unique identifier
+      telemetry = {
+        enable = false,
+      },
+    },
+  },
 })
-
-nvim_lsp.gopls.setup{
-  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-  on_attach = on_attach,
-  cmd = { lsp_dirs .. "/go/gopls" },
-}
-
-nvim_lsp.tsserver.setup{
-  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-  on_attach = on_attach,
-  cmd = { lsp_dirs .. "/tsserver/node_modules/typescript-language-server/lib/cli.js", "--stdio" },
-}
-
-nvim_lsp.clangd.setup{
-  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-  on_attach = on_attach,
-  cmd = { lsp_dirs .. "/clangd/clangd/bin/clangd" },
-}
-
-nvim_lsp.hls.setup{
-  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-  on_attach = on_attach,
-  cmd = { lsp_dirs .. "/haskell/haskell-language-server-wrapper", "--lsp" },
-}
-
-nvim_lsp.rust_analyzer.setup{
-  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-  on_attach = on_attach,
-  cmd = { lsp_dirs .. "/rust/rust-analyzer" },
-}
 
 require "lsp_signature".setup({
   bind = true,
   handler_opts = {
     border = "single"
-  }
+  },
+})
+
+nvim_lsp.efm.setup({
+  filetypes = { "elixir" },
+  cmd = { language_servers_dir .. "/efm/efm-langserver" }
 })
 
 -- Auto-format on save
@@ -81,3 +85,4 @@ vim.api.nvim_command('autocmd BufWritePre *.ex lua vim.lsp.buf.format { timeout_
 vim.api.nvim_command('autocmd BufWritePre *.exs lua vim.lsp.buf.format { timeout_ms = 500 }')
 vim.api.nvim_command('autocmd BufWritePre *.go lua vim.lsp.buf.format { timeout_ms = 500 }')
 vim.api.nvim_command('autocmd BufWritePre *.rs lua vim.lsp.buf.format { timeout_ms = 500 }')
+vim.api.nvim_command('autocmd BufWritePre *.lua lua vim.lsp.buf.format { timeout_ms = 500 }')
