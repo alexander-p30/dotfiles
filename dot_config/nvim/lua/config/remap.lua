@@ -2,7 +2,12 @@
 local M = {}
 
 local function bind(op, outer_opts)
-  outer_opts = outer_opts or { noremap = true }
+  local default_opts = { noremap = true }
+  outer_opts = outer_opts or default_opts
+  for k, v in pairs(default_opts) do
+    if outer_opts[k] == nil then outer_opts[k] = v end
+  end
+
   return function(lhs, rhs, opts)
     opts = vim.tbl_extend("force",
       outer_opts,

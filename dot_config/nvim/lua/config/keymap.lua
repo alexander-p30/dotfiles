@@ -119,9 +119,9 @@ vnoremap('<Down>', ':m \'>+1<CR>gv=gv')
 -- Quickfix list navigation
 nnoremap('<leader>cn', ':cnext <CR>')
 nnoremap('<leader>cp', ':cprev <CR>')
-nnoremap('<leader>co', ':copen <CR>', { noremap = true, silent = true })
-nnoremap('<leader>cc', ':cc <CR>', { noremap = true, silent = true })
-nnoremap('<leader>cC', ':cclose <CR>', { noremap = true, silent = true })
+nnoremap('<leader>co', ':copen <CR>', { silent = true })
+nnoremap('<leader>cc', ':cc <CR>', { silent = true })
+nnoremap('<leader>cC', ':cclose <CR>', { silent = true })
 
 -- Location list navigation
 nnoremap('<leader>ln', ':lnext <CR>')

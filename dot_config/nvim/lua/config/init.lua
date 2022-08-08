@@ -5,7 +5,7 @@ require('config.keymap')
 require('config.opts')
 
 -- vim-test
-vim['test#strategy'] = 'neoterm'
+vim.g['test#strategy'] = 'neoterm'
 
 -- neoterm
 vim.g.neoterm_default_mod = 'botright'
