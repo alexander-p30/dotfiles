@@ -1,4 +1,4 @@
-require('doom-one').setup({
+local config = {
   cursor_coloring = true,
   terminal_colors = true,
   italic_comments = false,
@@ -15,4 +15,6 @@ require('doom-one').setup({
     indent_blankline = true,
     vim_illuminate = true,
   },
-})
+}
+
+if vim.g.colors_name == 'doom-one' then require('doom-one').setup(config) end

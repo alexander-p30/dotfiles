@@ -269,8 +269,8 @@ ins_right_inactive {
 
 -- Add components to tab's left sections
 
-ins_tab_left { 
-  'tabs', 
+ins_tab_left {
+  'tabs',
   mode = 2,
   tabs_color = {
     active = { fg = colors.red, bg = colors.bg, gui = 'bold' },
