@@ -1,5 +1,5 @@
 local function apply_function_for_buffer_with_ft(buffer, ft, func)
-  local buffer_ft = vim.api.nvim_buf_get_option(buffer, "filetype")
+  local buffer_ft = vim.api.nvim_buf_get_option(buffer, 'filetype')
   if buffer_ft == ft then func(buffer) end
 
   return buffer_ft == ft
@@ -10,11 +10,12 @@ local function delete_filetree_buffer()
   local delete_buffer = function(b) vim.api.nvim_buf_delete(b, {}) end
 
   for _, buffer in pairs(buffers) do
-    apply_function_for_buffer_with_ft(buffer, "neo-tree", delete_buffer)
+    apply_function_for_buffer_with_ft(buffer, 'neo-tree', delete_buffer)
+    apply_function_for_buffer_with_ft(buffer, 'packer', delete_buffer)
   end
 end
 
-require("persisted").setup({
+require('persisted').setup({
   use_git_branch = true,
   autosave = true,
   autoload = true,
@@ -25,13 +26,13 @@ require("persisted").setup({
       local force_delete_buffer = function(b) vim.api.nvim_buf_delete(b, { force = true }) end
 
       for _, buffer in pairs(buffers) do
-        if not apply_function_for_buffer_with_ft(buffer, "neoterm", force_delete_buffer) then
+        if not apply_function_for_buffer_with_ft(buffer, 'neoterm', force_delete_buffer) then
           vim.api.nvim_buf_delete(buffer, {})
         end
       end
     end,
     after_source = function(session)
-      print("Loaded session " .. session.name)
+      print('Loaded session ' .. session.name)
     end,
   },
 })

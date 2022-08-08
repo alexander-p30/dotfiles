@@ -1,5 +1,5 @@
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = {"elixir", "ruby", "html", "javascript", "c", "cpp", "go", "haskell", "java"},
+require 'nvim-treesitter.configs'.setup {
+  ensure_installed = { 'elixir', 'ruby', 'html', 'javascript', 'c', 'cpp', 'go', 'haskell', 'java' },
   highlight = {
     enable = true,
     additional_vim_regex_highlighting = true,
@@ -19,5 +19,5 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
-local ft_to_parser = require"nvim-treesitter.parsers".filetype_to_parsername
-ft_to_parser.routeros = "java"
+local ft_to_parser = require 'nvim-treesitter.parsers'.filetype_to_parsername
+ft_to_parser.routeros = 'java'

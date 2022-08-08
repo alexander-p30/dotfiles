@@ -1,5 +1,5 @@
 local nvim_lsp = require('lspconfig')
-local language_servers_dir = vim.fn.stdpath("data") .. "/lsp_servers"
+local language_servers_dir = vim.fn.stdpath('data') .. '/lsp_servers'
 
 local function on_attach()
   local function buf_set_keymap(...) vim.keymap.set(...) end
@@ -33,15 +33,15 @@ local function config(cmd_path, ...)
   }
 end
 
-nvim_lsp.elixirls.setup(config("/elixir/elixir-ls/language_server.sh"))
-nvim_lsp.gopls.setup(config("/go/gopls"))
-nvim_lsp.tsserver.setup(config("/tsserver/node_modules/typescript-language-server/lib/cli.js", "--stdio"))
-nvim_lsp.clangd.setup(config("/clangd/clangd/bin/clangd"))
-nvim_lsp.hls.setup(config("/haskell/haskell-language-server-wrapper", "--lsp"))
-nvim_lsp.rust_analyzer.setup(config("/rust/rust-analyzer"))
+nvim_lsp.elixirls.setup(config('/elixir/elixir-ls/language_server.sh'))
+nvim_lsp.gopls.setup(config('/go/gopls'))
+nvim_lsp.tsserver.setup(config('/tsserver/node_modules/typescript-language-server/lib/cli.js', '--stdio'))
+nvim_lsp.clangd.setup(config('/clangd/clangd/bin/clangd'))
+nvim_lsp.hls.setup(config('/haskell/haskell-language-server-wrapper', '--lsp'))
+nvim_lsp.rust_analyzer.setup(config('/rust/rust-analyzer'))
 
 nvim_lsp.sumneko_lua.setup({
-  cmd = { language_servers_dir .. "/sumneko_lua/extension/server/bin/lua-language-server" },
+  cmd = { language_servers_dir .. '/sumneko_lua/extension/server/bin/lua-language-server' },
   on_attach = on_attach,
   settings = {
     Lua = {
@@ -56,8 +56,8 @@ nvim_lsp.sumneko_lua.setup({
       workspace = {
         -- Make the server aware of Neovim runtime files
         library = {
-          vim.api.nvim_get_runtime_file("", true),
-          vim.api.nvim_get_runtime_file("/lua/vim/lsp", true),
+          vim.api.nvim_get_runtime_file('', true),
+          vim.api.nvim_get_runtime_file('/lua/vim/lsp', true),
         },
       },
       -- Do not send telemetry data containing a randomized but unique identifier
@@ -68,16 +68,16 @@ nvim_lsp.sumneko_lua.setup({
   },
 })
 
-require "lsp_signature".setup({
+require 'lsp_signature'.setup({
   bind = true,
   handler_opts = {
-    border = "single"
+    border = 'single'
   },
 })
 
 nvim_lsp.efm.setup({
-  filetypes = { "elixir" },
-  cmd = { language_servers_dir .. "/efm/efm-langserver" }
+  filetypes = { 'elixir' },
+  cmd = { language_servers_dir .. '/efm/efm-langserver' }
 })
 
 -- Auto-format on save

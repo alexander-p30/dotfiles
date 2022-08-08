@@ -14,7 +14,7 @@ vim.g.neoterm_autoscroll = 1
 vim.g.neoterm_automap_keys = ''
 
 -- gitgutter
-local gitgutter_character = "▋"
+local gitgutter_character = '▋'
 vim.g.gitgutter_sign_added = gitgutter_character
 vim.g.gitgutter_sign_modified = gitgutter_character
 vim.g.gitgutter_sign_removed = gitgutter_character
@@ -29,6 +29,6 @@ vim.g.blamer_delay = 500
 vim.g.blamer_prefix = ' 🤡 '
 
 -- theme
-vim.g.catppuccin_flavour = "mocha" -- latte, frappe, macchiato, mocha
+vim.g.catppuccin_flavour = 'mocha' -- latte, frappe, macchiato, mocha
 vim.cmd.colorscheme('catppuccin')
 vim.cmd('highlight LineNr guifg=#9ca0a4')

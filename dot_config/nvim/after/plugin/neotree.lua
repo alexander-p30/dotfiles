@@ -1,27 +1,26 @@
 vim.g.neo_tree_remove_legacy_commands = 1
 
-require("neo-tree").setup({
-  popup_border_style = "rounded",
+require('neo-tree').setup({
+  popup_border_style = 'rounded',
   filesystem = {
-    hijack_netrw_behavior = "open_current"
+    hijack_netrw_behavior = 'open_current'
   },
   window = {
     mappings = {
-      ["l"] = "open",
-      ["h"] = "close_node",
-      ["c"] = {
-        "copy",
+      ['l'] = 'open',
+      ['h'] = 'close_node',
+      ['c'] = {
+        'copy',
         config = {
-          show_path = "relative"
+          show_path = 'relative'
         }
       },
-      ["m"] = {
-        "move",
+      ['m'] = {
+        'move',
         config = {
-          show_path = "relative"
+          show_path = 'relative'
         }
       },
     }
   },
 })
-

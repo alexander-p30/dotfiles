@@ -8,6 +8,7 @@ end
 
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
+
   -- File-related
   use {
     'nvim-telescope/telescope.nvim',
@@ -39,7 +40,7 @@ return require('packer').startup(function(use)
     {
       'saadparwaiz1/cmp_luasnip',
       config = function()
-        require("luasnip.loaders.from_snipmate").lazy_load()
+        require('luasnip.loaders.from_snipmate').lazy_load()
       end,
     },
     'L3MON4D3/LuaSnip'
@@ -47,13 +48,13 @@ return require('packer').startup(function(use)
   use 'ray-x/lsp_signature.nvim'
   use 'onsails/lspkind-nvim'
   use 'vim-test/vim-test'
-  use { 'elixir-editors/vim-elixir', ft = { 'ex', 'exs', 'eex' } }
+  use 'elixir-editors/vim-elixir'
   use 'rstacruz/vim-closer'
   use 'tpope/vim-surround'
   use 'tpope/vim-commentary'
   use {
     'tpope/vim-endwise',
-    ft = { 'rb', 'ex', 'exs', 'eex' },
+    ft = { 'ruby', 'elixir', 'eelixir' },
     commit = '9471eeb'
   }
   use 'mg979/vim-visual-multi'
@@ -66,7 +67,7 @@ return require('packer').startup(function(use)
       cmd = { 'TSPlaygroundToggle', 'TSHighlightCapturesUnderCursor' },
     },
   }
-  use { 'neovimhaskell/haskell-vim', ft = 'hs' }
+  use { 'neovimhaskell/haskell-vim', ft = 'haskell' }
   use { 'mboughaba/i3config.vim', ft = 'i3config' }
   use 'fladson/vim-kitty'
   use 'RRethy/vim-illuminate'
@@ -75,6 +76,19 @@ return require('packer').startup(function(use)
   use { 'Olical/conjure', ft = 'clojure' }
   use { 'fatih/vim-go', run = ':GoUpdateBinaries' }
   use 'rust-lang/rust.vim'
+  use {
+    'gelguy/wilder.nvim',
+    config = function()
+      local wilder = require('wilder')
+      wilder.setup({ modes = { ':', '/', '?' } })
+      wilder.set_option('renderer', wilder.popupmenu_renderer(
+        wilder.popupmenu_border_theme({
+          highlights = { border = 'Normal', },
+          border = 'rounded',
+        })
+      ))
+    end,
+  }
 
   -- Projectionist
   use 'tpope/vim-projectionist'
@@ -89,7 +103,7 @@ return require('packer').startup(function(use)
   use {
     'ustrajunior/ex_maps',
     config = function()
-      require("ex_maps").setup { create_mappings = true, mapping = "mtt" }
+      require('ex_maps').setup { create_mappings = true, mapping = 'mtt' }
     end
   }
 
@@ -99,7 +113,7 @@ return require('packer').startup(function(use)
     'catppuccin/nvim',
     as = 'catppuccin',
     config = function()
-      require("catppuccin").setup({
+      require('catppuccin').setup({
         transparent_background = true,
         term_colors = true,
         integrations = { telescope = true }
