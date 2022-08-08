@@ -102,6 +102,17 @@ nnoremap('<leader>gcb', ':Git checkout -b ')
 nnoremap('<leader>gc-', ':Git checkout -')
 nnoremap('<leader>gbD', ':Git branch -D')
 
+-- Git flow mappings
+-- Feature
+nnoremap('<leader>gffs', ':Git flow feature start')
+-- Bugfix
+nnoremap('<leader>gfbs', ':Git flow bugfix start')
+-- Support
+nnoremap('<leader>gfss', ':Git flow support start')
+-- Hotfix
+nnoremap('<leader>gfhs', ':Git flow hotfix start')
+
+
 -- Delete all buffers
 nnoremap('<leader>db', ':%bd <bar> e#')
 nnoremap('<leader>dab', ':%bd')
