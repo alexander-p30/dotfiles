@@ -72,7 +72,7 @@ nnoremap('<C-b>', ':Neotree toggle=true reveal<CR>', { silent = true })
 nnoremap('Y', 'y$')
 
 -- Copy current filepath
-nmap('<leader>yfp', ':let @" = expand("%")<CR>')
+nmap('<leader>yfp', ':let @+ = expand("%")<CR>')
 
 -- Clear search highlighting
 nnoremap('<C-h>', ':noh<CR>', { silent = true })
@@ -95,22 +95,29 @@ nnoremap('<backspace>', ':GitGutterPrevHunk<CR>', { silent = true })
 
 -- Git
 nnoremap('<leader>gg', ':Git<CR>', { silent = true })
+nnoremap('<leader>gq', '', {
+  silent = true,
+  callback = function()
+    util.visit_buffers(function(b)
+      util.apply_function_for_buffer_with_ft(b, 'fugitive', util.delete_buffer_func(b, {}))
+    end)
+  end
+})
 nnoremap('<leader>gP', ':Git push<CR>')
-nnoremap('<leader>gsP', ':Git push -u origin HEAD')
+nnoremap('<leader>gsP', ':Git push -u origin HEAD<CR>')
 nnoremap('<leader>gp', ':Git pull<CR>')
 nnoremap('<leader>gcb', ':Git checkout -b ')
 nnoremap('<leader>gc-', ':Git checkout -')
-nnoremap('<leader>gbD', ':Git branch -D')
 
 -- Git flow mappings
 -- Feature
-nnoremap('<leader>gffs', ':Git flow feature start')
+nnoremap('<leader>gffs', ':Git flow feature start ')
 -- Bugfix
-nnoremap('<leader>gfbs', ':Git flow bugfix start')
+nnoremap('<leader>gfbs', ':Git flow bugfix start ')
 -- Support
-nnoremap('<leader>gfss', ':Git flow support start')
+nnoremap('<leader>gfss', ':Git flow support start ')
 -- Hotfix
-nnoremap('<leader>gfhs', ':Git flow hotfix start')
+nnoremap('<leader>gfhs', ':Git flow hotfix start ')
 
 
 -- Delete all buffers
