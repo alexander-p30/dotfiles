@@ -18,11 +18,10 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration {{{
 # File sourcing {{{
-source ~/.alias/.git-aliases 
-source ~/.alias/.rails-aliases 
-source ~/.alias/.soft-aliases 
-source ~/.alias/.system-aliases 
-source ~/.alias/.system-envs 
+source ~/.alias/git-aliases
+source ~/.alias/rails-aliases
+source ~/.alias/soft-aliases
+source ~/.alias/system-aliases
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # }}}
