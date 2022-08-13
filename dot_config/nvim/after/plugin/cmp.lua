@@ -1,6 +1,15 @@
 local cmp = require('cmp')
 local lspkind = require('lspkind')
 
+vim.cmd([[
+  imap <silent><expr> <C-;> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>' 
+  " -1 for jumping backwards.
+  inoremap <silent> <C-S-;> <cmd>lua require'luasnip'.jump(-1)<Cr>
+
+  snoremap <silent> <C-;> <cmd>lua require('luasnip').jump(1)<Cr>
+  snoremap <silent> <C-S-;> <cmd>lua require('luasnip').jump(-1)<Cr>
+]])
+
 cmp.setup({
   formatting = {
     format = lspkind.cmp_format({

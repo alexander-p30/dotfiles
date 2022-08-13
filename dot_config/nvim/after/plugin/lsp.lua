@@ -1,28 +1,37 @@
 local nvim_lsp = require('lspconfig')
 local language_servers_dir = vim.fn.stdpath('data') .. '/lsp_servers'
 
-local function on_attach()
+vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = 'rounded' })
+
+local function on_attach(_, bufnr)
   local function buf_set_keymap(...) vim.keymap.set(...) end
 
-  --     -- Mappings.
+  require('lsp_signature').on_attach({
+    bind = true,
+    handler_opts = {
+      border = "rounded"
+    }
+  }, bufnr)
+
+  -- Mappings.
   local opts = { noremap = true, silent = true, buffer = true }
-  --         -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  buf_set_keymap('n', 'gD', vim.lsp.buf.declaration, opts)
+  buf_set_keymap('n', 'gd', vim.lsp.buf.definition, opts)
   buf_set_keymap('n', '<C-w>gv', ':vs<CR><cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('n', '<C-w>gs', ':sp<CR><cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('i', '<C-q>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-  buf_set_keymap('n', '[e', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']e', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<leader>li', '<cmd>lua vim.lsp.buf.format { async = true } <CR>', opts)
+  buf_set_keymap('n', 'K', vim.lsp.buf.hover, opts)
+  buf_set_keymap('n', 'gi', vim.lsp.buf.implementation, opts)
+  buf_set_keymap('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+  buf_set_keymap('i', '<C-q>', vim.lsp.buf.signature_help, opts)
+  buf_set_keymap('n', '<leader>D', vim.lsp.buf.type_definition, opts)
+  buf_set_keymap('n', '<leader>rn', vim.lsp.buf.rename, opts)
+  buf_set_keymap('n', '<leader>ca', vim.lsp.buf.code_action, opts)
+  buf_set_keymap('n', 'gr', vim.lsp.buf.references, opts)
+  buf_set_keymap('n', '<leader>e', vim.diagnostic.open_float, opts)
+  buf_set_keymap('n', '[e', vim.diagnostic.goto_prev, opts)
+  buf_set_keymap('n', ']e', vim.diagnostic.goto_next, opts)
+  buf_set_keymap('n', '<leader>li', function() vim.lsp.buf.format({ async = true }) end, opts)
 end
 
 local function config(cmd_path, ...)
@@ -45,33 +54,16 @@ nvim_lsp.sumneko_lua.setup({
   on_attach = on_attach,
   settings = {
     Lua = {
-      runtime = {
-        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-        version = 'LuaJIT',
-      },
-      diagnostics = {
-        -- Get the language server to recognize the `vim` global
-        globals = { 'vim' },
-      },
+      runtime = { version = 'LuaJIT', },
+      diagnostics = { globals = { 'vim' }, },
       workspace = {
-        -- Make the server aware of Neovim runtime files
         library = {
           vim.api.nvim_get_runtime_file('', true),
           vim.api.nvim_get_runtime_file('/lua/vim/lsp', true),
         },
       },
-      -- Do not send telemetry data containing a randomized but unique identifier
-      telemetry = {
-        enable = false,
-      },
+      telemetry = { enable = false, },
     },
-  },
-})
-
-require 'lsp_signature'.setup({
-  bind = true,
-  handler_opts = {
-    border = 'single'
   },
 })
 
@@ -80,9 +72,8 @@ nvim_lsp.efm.setup({
   cmd = { language_servers_dir .. '/efm/efm-langserver' }
 })
 
+local autoformat_fts = { 'ex', 'exs', 'go', 'rs', 'rb', 'erb', 'lua' }
 -- Auto-format on save
-vim.api.nvim_command('autocmd BufWritePre *.ex lua vim.lsp.buf.format { timeout_ms = 500 }')
-vim.api.nvim_command('autocmd BufWritePre *.exs lua vim.lsp.buf.format { timeout_ms = 500 }')
-vim.api.nvim_command('autocmd BufWritePre *.go lua vim.lsp.buf.format { timeout_ms = 500 }')
-vim.api.nvim_command('autocmd BufWritePre *.rs lua vim.lsp.buf.format { timeout_ms = 500 }')
-vim.api.nvim_command('autocmd BufWritePre *.lua lua vim.lsp.buf.format { timeout_ms = 500 }')
+for _, ft in pairs(autoformat_fts) do
+  vim.api.nvim_command('autocmd BufWritePre *.' .. ft .. ' lua vim.lsp.buf.format { timeout_ms = 500 }')
+end

@@ -120,7 +120,12 @@ return require('packer').startup(function(use)
       })
     end
   }
-  use 'norcalli/nvim-colorizer.lua'
+  use {
+    'norcalli/nvim-colorizer.lua',
+    config = function()
+      require('colorizer').setup()
+    end
+  }
   use 'folke/tokyonight.nvim'
   use {
     'kyazdani42/nvim-web-devicons',
