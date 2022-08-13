@@ -1,5 +1,4 @@
 local nvim_lsp = require('lspconfig')
-local language_servers_dir = vim.fn.stdpath('data') .. '/lsp_servers'
 
 vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = 'rounded' })
 
@@ -34,23 +33,29 @@ local function on_attach(_, bufnr)
   buf_set_keymap('n', '<leader>li', function() vim.lsp.buf.format({ async = true }) end, opts)
 end
 
-local function config(cmd_path, ...)
-  return {
-    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-    on_attach = on_attach,
-    cmd = { language_servers_dir .. cmd_path, ... },
-  }
+local function get_ls_cmd(ls)
+  local language_servers_dir = vim.fn.stdpath('data') .. '/mason/bin/'
+  return language_servers_dir .. ls
 end
 
-nvim_lsp.elixirls.setup(config('/elixir/elixir-ls/language_server.sh'))
-nvim_lsp.gopls.setup(config('/go/gopls'))
-nvim_lsp.tsserver.setup(config('/tsserver/node_modules/typescript-language-server/lib/cli.js', '--stdio'))
-nvim_lsp.clangd.setup(config('/clangd/clangd/bin/clangd'))
-nvim_lsp.hls.setup(config('/haskell/haskell-language-server-wrapper', '--lsp'))
-nvim_lsp.rust_analyzer.setup(config('/rust/rust-analyzer'))
+local function config(ls, ...)
+  local capabilities = require('cmp_nvim_lsp').update_capabilities(
+    vim.lsp.protocol.make_client_capabilities()
+  )
+
+  return { capabilities = capabilities, on_attach = on_attach, cmd = { get_ls_cmd(ls), ... } }
+end
+
+nvim_lsp.elixirls.setup(config('elixir-ls'))
+nvim_lsp.gopls.setup(config('gopls'))
+nvim_lsp.tsserver.setup(config('typescript-language-server', '--stdio'))
+nvim_lsp.clangd.setup(config('clangd'))
+nvim_lsp.hls.setup(config('haskell-language-server-wrapper', '--lsp'))
+nvim_lsp.rust_analyzer.setup(config('rust-analyzer'))
+nvim_lsp.solargraph.setup(config('solargraph', 'stdio'))
 
 nvim_lsp.sumneko_lua.setup({
-  cmd = { language_servers_dir .. '/sumneko_lua/extension/server/bin/lua-language-server' },
+  cmd = { get_ls_cmd('lua-language-server') },
   on_attach = on_attach,
   settings = {
     Lua = {
@@ -67,10 +72,7 @@ nvim_lsp.sumneko_lua.setup({
   },
 })
 
-nvim_lsp.efm.setup({
-  filetypes = { 'elixir' },
-  cmd = { language_servers_dir .. '/efm/efm-langserver' }
-})
+nvim_lsp.efm.setup({ filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } })
 
 local autoformat_fts = { 'ex', 'exs', 'go', 'rs', 'rb', 'erb', 'lua' }
 -- Auto-format on save

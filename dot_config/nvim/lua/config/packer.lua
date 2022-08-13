@@ -30,8 +30,15 @@ return require('packer').startup(function(use)
 
   -- LS, syntax highlighting and programming utils
   use {
-    'neovim/nvim-lspconfig',
-    'williamboman/nvim-lsp-installer'
+    {
+      'williamboman/mason.nvim',
+      config = function() require('mason').setup({ ui = { border = 'rounded' } }) end
+    },
+    {
+      'williamboman/mason-lspconfig.nvim',
+      config = function() require("mason-lspconfig").setup({ automatic_installation = true }) end
+    },
+    "neovim/nvim-lspconfig"
   }
   use {
     'hrsh7th/cmp-nvim-lsp',
@@ -39,9 +46,7 @@ return require('packer').startup(function(use)
     'hrsh7th/nvim-cmp',
     {
       'saadparwaiz1/cmp_luasnip',
-      config = function()
-        require('luasnip.loaders.from_snipmate').lazy_load()
-      end,
+      config = function() require('luasnip.loaders.from_snipmate').lazy_load() end,
     },
     'L3MON4D3/LuaSnip'
   }
