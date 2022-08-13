@@ -79,7 +79,6 @@ return require('packer').startup(function(use)
   use 'kmonad/kmonad-vim'
   use { 'tversteeg/registers.nvim', branch = 'main' }
   use { 'Olical/conjure', ft = 'clojure' }
-  use { 'fatih/vim-go', run = ':GoUpdateBinaries' }
   use 'rust-lang/rust.vim'
   use {
     'gelguy/wilder.nvim',
