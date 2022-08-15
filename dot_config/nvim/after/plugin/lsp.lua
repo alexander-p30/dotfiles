@@ -53,6 +53,7 @@ nvim_lsp.clangd.setup(config('clangd'))
 nvim_lsp.hls.setup(config('haskell-language-server-wrapper', '--lsp'))
 nvim_lsp.rust_analyzer.setup(config('rust-analyzer'))
 nvim_lsp.solargraph.setup(config('solargraph', 'stdio'))
+nvim_lsp.pyright.setup(config('pyright-langserver', '--stdio'))
 
 nvim_lsp.sumneko_lua.setup({
   cmd = { get_ls_cmd('lua-language-server') },
