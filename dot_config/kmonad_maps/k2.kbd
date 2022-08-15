@@ -21,11 +21,11 @@
 )
 
 (defalias
-  altgr-or-number-hmrw (tap-next ralt (layer-toggle hmrw-numbers))
+  altgr-or-number-hmrw (tap-next tab (layer-toggle hmrw-numbers))
 )
 
 (defalias
-  lalt-or-symbol-hmrw (tap-next lalt (layer-toggle hmrw-symbols))
+  lalt-or-symbol-hmrw (tap-next bspc (layer-toggle hmrw-symbols))
 )
 
 (defalias
