@@ -14,5 +14,9 @@ vim.api.nvim_create_autocmd('BufEnter', {
 })
 
 vim.cmd([[
-autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * if mode() != 'c' | checktime | endif
+  autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * if mode() != 'c' | checktime | endif
+]])
+
+vim.cmd([[
+  autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 ]])
