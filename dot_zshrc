@@ -36,6 +36,17 @@ eval "$(starship init zsh)"
 # }}}
 # }}}
 
+function bq() {
+  local source_dir=`realpath ${2:-.}`
+  cd $source_dir
+  local depth=${1:-3}
+  local directories=`find . -maxdepth $depth -type d`
+  if [ "$(wc -l <<< $directories)" -eq "1" ]; then return 0; fi
+  local dest=`echo $directories | fzf --layout=reverse --height=15`
+  if [ -z "$dest" ]; then return 0; fi
+  tp $depth $dest
+}
+
 [ -f "/home/alexander/.ghcup/env" ] && source "/home/alexander/.ghcup/env" # ghcup-env
 TEMP_RUN=$RUN
 export RUN=
