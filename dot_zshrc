@@ -44,7 +44,7 @@ function bq() {
   if [ "$(wc -l <<< $directories)" -eq "1" ]; then return 0; fi
   local dest=`echo $directories | fzf --layout=reverse --height=15`
   if [ -z "$dest" ]; then return 0; fi
-  tp $depth $dest
+  bq $depth $dest
 }
 
 [ -f "/home/alexander/.ghcup/env" ] && source "/home/alexander/.ghcup/env" # ghcup-env
