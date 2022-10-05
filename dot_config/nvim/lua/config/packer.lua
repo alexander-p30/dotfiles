@@ -54,7 +54,10 @@ return require('packer').startup(function(use)
   use 'onsails/lspkind-nvim'
   use 'vim-test/vim-test'
   use 'elixir-editors/vim-elixir'
-  use 'rstacruz/vim-closer'
+  use {
+    "windwp/nvim-autopairs",
+    config = function() require("nvim-autopairs").setup {} end
+  }
   use 'tpope/vim-surround'
   use 'tpope/vim-commentary'
   use {
