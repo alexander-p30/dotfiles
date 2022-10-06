@@ -223,6 +223,7 @@ assign [class="Google-chrome"] $ws3
 for_window [class="Spotify"] move to workspace $ws4
 
 # Open specific applications in floating mode
+for_window [class="^.*"] border pixel 2
 for_window [class="floating"] floating enabled
 for_window [class="flameshot"] floating enabled
 for_window [class="Steam" title="Friends List"] floating enable
