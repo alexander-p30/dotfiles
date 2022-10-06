@@ -6,7 +6,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
   vim.cmd [[packadd packer.nvim]]
 end
 
-return require('packer').startup(function(use)
+return require('packer').startup({ function(use)
   use 'wbthomason/packer.nvim'
 
   -- File-related
@@ -80,7 +80,6 @@ return require('packer').startup(function(use)
   use 'fladson/vim-kitty'
   use 'RRethy/vim-illuminate'
   use 'kmonad/kmonad-vim'
-  use { 'tversteeg/registers.nvim', branch = 'main' }
   use { 'Olical/conjure', ft = 'clojure' }
   use 'rust-lang/rust.vim'
   use {
@@ -149,4 +148,7 @@ return require('packer').startup(function(use)
   if Packer_bootstrap then
     require('packer').sync()
   end
-end)
+end,
+  config = {
+    -- snapshot = '12082022.json'
+  } })
