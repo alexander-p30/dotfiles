@@ -124,7 +124,7 @@ return require('packer').startup({ function(use)
         transparent_background = false,
         term_colors = true,
         integrations = {
-          neotree = true,
+          neotree = false,
           cmp = true,
           illuminate = true,
           telescope = true
