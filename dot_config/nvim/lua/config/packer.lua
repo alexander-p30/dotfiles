@@ -112,6 +112,7 @@ return require('packer').startup({ function(use)
       require('ex_maps').setup { create_mappings = true, mapping = 'mtt' }
     end
   }
+  use { 'rcarriga/nvim-notify', config = function() vim.notify = require('notify') end }
 
   -- Themes / Visual
   use 'navarasu/onedark.nvim'
@@ -120,18 +121,18 @@ return require('packer').startup({ function(use)
     as = 'catppuccin',
     config = function()
       require('catppuccin').setup({
-        transparent_background = true,
+        transparent_background = false,
         term_colors = true,
-        integrations = { telescope = true }
+        integrations = {
+          neotree = true,
+          cmp = true,
+          illuminate = true,
+          telescope = true
+        }
       })
     end
   }
-  use {
-    'norcalli/nvim-colorizer.lua',
-    config = function()
-      require('colorizer').setup()
-    end
-  }
+  use { 'norcalli/nvim-colorizer.lua', config = function() require('colorizer').setup() end }
   use 'folke/tokyonight.nvim'
   use {
     'kyazdani42/nvim-web-devicons',
