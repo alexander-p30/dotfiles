@@ -108,6 +108,7 @@ nnoremap('<leader>gsP', ':Git push -u origin HEAD<CR>')
 nnoremap('<leader>gp', ':Git pull<CR>')
 nnoremap('<leader>gcb', ':Git checkout -b ')
 nnoremap('<leader>gc-', ':Git checkout -')
+nnoremap('<leader>gh', ':Git log -p -- <C-r>%<CR>')
 
 -- Git flow mappings
 -- Feature
