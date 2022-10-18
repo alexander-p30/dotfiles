@@ -2,9 +2,9 @@
 
 echo "============================"
 if [ "$(hostnamectl hostname)" == alexander-c340 ]; then
-  echo "Successfully verified hostname, starting setup..."
+  echo "🟢 Successfully verified hostname, starting setup..."
 else
-  echo "Not running script on c340, aborting..."
+  echo "⚠️  Not running script on c340, aborting..."
 fi
 
 # Setup intel videocard
@@ -30,7 +30,7 @@ echo
 echo ':: Setting up tear-free driver configs'
 FILE=/etc/X11/xorg.conf.d/20-intel.conf
 if ! test -f "$FILE"; then
-  echo -e "\t$(FILE) does not exist, creating it..."
+  echo -e "\t🟢 $(FILE) does not exist, creating it..."
   sudo touch $(FILE)
   sudo tee $(FILE) <<EOL
 Section "Device"
@@ -40,7 +40,7 @@ Section "Device"
 EndSection
 EOL
 else
-  echo -e "File already exists, aborting..."
+  echo -e "⚠️  File already exists, aborting..."
 fi
 
 echo
@@ -48,7 +48,7 @@ echo ':: Setting up touchpad'
 # Setup touchpad
 FILE=/etc/X11/xorg.conf.d/90-touchpad.conf
 if ! test -f "$FILE"; then
-  echo -e "\t$(FILE) does not exist, creating it..."
+  echo -e "\t🟢 $(FILE) does not exist, creating it..."
   sudo touch $(FILE)
   sudo tee $(FILE) <<EOL
 Section "InputClass"
@@ -60,7 +60,7 @@ Section "InputClass"
 EndSection
 EOL
 else
-  echo -e "File already exists, aborting..."
+  echo -e "⚠️  File already exists, aborting..."
 fi
 
 echo
@@ -68,7 +68,7 @@ echo ':: Setting up touchscreen'
 # Setup touchscreen
 FILE=/etc/X11/xorg.conf.d/99-no-touchscreen.conf
 if ! test -f "$FILE"; then
-  echo -e "\t$(FILE) does not exist, creating it..."
+  echo -e "\t🟢 $(FILE) does not exist, creating it..."
   sudo touch "$(FILE)"
   sudo tee "$(FILE)" <<EOL
 Section "InputClass"
@@ -78,5 +78,5 @@ Section "InputClass"
 EndSection
 EOL
 else
-  echo -e "File already exists, aborting..."
+  echo -e "⚠️  File already exists, aborting..."
 fi
