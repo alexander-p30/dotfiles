@@ -1,16 +1,18 @@
 #! /bin/bash
 
 echo "============================"
+echo ":: Starting C340 device setup"
 if [ "$(hostnamectl hostname)" == alexander-c340 ]; then
   echo "🟢 Successfully verified hostname, starting setup..."
 else
   echo "⚠️  Not running script on c340, aborting..."
+  exit 0
 fi
 
 # Setup intel videocard
 echo ':: Installing intel videocard drivers'
 ## Install drivers
-yay -S lib32-mesa \
+yay --needed -S lib32-mesa \
   lib32-mesa-demos \
   lib32-mesa-vdpau \
   libva-mesa-driver \
@@ -20,7 +22,7 @@ yay -S lib32-mesa \
 
 ## HW acceleration stuff
 echo ':: Setting up HW acceleration'
-yay -S lib32-vulkan-intel \
+yay --needed -S lib32-vulkan-intel \
     libva-intel-driver \
     vulkan-intel \
     xf86-video-intel
@@ -80,3 +82,5 @@ EOL
 else
   echo -e "⚠️  File already exists, aborting..."
 fi
+
+echo "🟢 Finished setting up C340 devices"

@@ -2,6 +2,7 @@
 echo "============================"
 echo ":: Setting up profile variables"
 
+
 File=$HOME/.profile
 
 if grep -q "export EDITOR=/usr/bin/nvim"  "$File"; then
@@ -18,3 +19,4 @@ else
   echo "export TERM=kitty" >> $File
 fi
 
+echo "🟢 Finished setting up profile variables"
