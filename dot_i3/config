@@ -306,7 +306,8 @@ exec --no-startup-id xfce4-power-manager
 exec --no-startup-id xautolock -time 15 -locker "betterlockscreen -l blur" -notify 30 -notifier "notify-send 'Screen will lock in 30s'" -corners --++
 exec --no-startup-id $HOME/.scripts/keebs.sh
 exec --no-startup-id dropbox
-exec --no-startup-id compton -b -f
+exec --no-startup-id picom --animations --animation-window-mass 0.5 --animation-for-open-window zoom --animation-stiffness 500 --config  ~/.config/picom.conf --experimental-backends
+
 exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
 exec_always --no-startup-id sleep 0.2; $HOME/.config/autorandr/startup.sh
