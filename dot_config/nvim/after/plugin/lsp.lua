@@ -39,7 +39,7 @@ local function get_ls_cmd(ls)
 end
 
 local function config(ls, ...)
-  local capabilities = require('cmp_nvim_lsp').update_capabilities(
+  local capabilities = require('cmp_nvim_lsp').default_capabilities(
     vim.lsp.protocol.make_client_capabilities()
   )
 
