@@ -32,9 +32,9 @@ echo
 echo ':: Setting up tear-free driver configs'
 FILE=/etc/X11/xorg.conf.d/20-intel.conf
 if ! test -f "$FILE"; then
-  echo -e "\t🟢 $(FILE) does not exist, creating it..."
-  sudo touch $(FILE)
-  sudo tee $(FILE) <<EOL
+  echo -e "\t🟢 $FILE does not exist, creating it..."
+  sudo touch $FILE
+  sudo tee $FILE <<EOL
 Section "Device"
   Identifier "Intel Graphics"
   Driver "intel"
@@ -50,9 +50,9 @@ echo ':: Setting up touchpad'
 # Setup touchpad
 FILE=/etc/X11/xorg.conf.d/90-touchpad.conf
 if ! test -f "$FILE"; then
-  echo -e "\t🟢 $(FILE) does not exist, creating it..."
-  sudo touch $(FILE)
-  sudo tee $(FILE) <<EOL
+  echo -e "\t🟢 $FILE does not exist, creating it..."
+  sudo touch $FILE
+  sudo tee $FILE <<EOL
 Section "InputClass"
   Identifier "touchpad"
   MatchIsTouchpad "on"
@@ -70,9 +70,9 @@ echo ':: Setting up touchscreen'
 # Setup touchscreen
 FILE=/etc/X11/xorg.conf.d/99-no-touchscreen.conf
 if ! test -f "$FILE"; then
-  echo -e "\t🟢 $(FILE) does not exist, creating it..."
-  sudo touch "$(FILE)"
-  sudo tee "$(FILE)" <<EOL
+  echo -e "\t🟢 $FILE does not exist, creating it..."
+  sudo touch $FILE
+  sudo tee $FILE <<EOL
 Section "InputClass"
     Identifier         "Touchscreen catchall"
     MatchIsTouchscreen "on"
@@ -83,4 +83,5 @@ else
   echo -e "⚠️  File already exists, aborting..."
 fi
 
+echo
 echo "🟢 Finished setting up C340 devices"

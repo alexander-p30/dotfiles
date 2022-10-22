@@ -7,8 +7,7 @@ pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git
 echo "🟢 Finished installing yay"
 
 echo ":: Installing base packages"
-yay --needed -S adwaita-maia \
-    age \
+yay --needed -S age \
     alacritty \
     alsa-firmware \
     alsa-plugins \
@@ -71,9 +70,7 @@ yay --needed -S adwaita-maia \
     nnn \
     noto-fonts \
     noto-fonts-cjk \
-    noto-fonts-compat \
     noto-fonts-emoji \
-    papirus-maia-icon-theme \
     pavucontrol \
     picom-animations-git \
     playerctl \
@@ -102,12 +99,9 @@ yay --needed -S adwaita-maia \
     ttf-liberation \
     ttf-mac-fonts \
     ttf-monofur \
-    vibrancy-icons-teal \
     xautolock \
     xcursor-breeze \
     xcursor-breeze-serie-obsidian \
-    xcursor-chameleon-pearl \
-    xcursor-maia \
     xmonad \
     xmonad-contrib \
     xsel \
