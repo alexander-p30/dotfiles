@@ -123,6 +123,7 @@ return require('packer').startup({ function(use)
       require('catppuccin').setup({
         transparent_background = false,
         term_colors = true,
+        flavour = 'mocha',
         integrations = {
           neotree = false,
           cmp = true,
@@ -130,6 +131,7 @@ return require('packer').startup({ function(use)
           telescope = true
         }
       })
+      vim.api.nvim_command('colorscheme catppuccin')
     end
   }
   use { 'norcalli/nvim-colorizer.lua', config = function() require('colorizer').setup() end }

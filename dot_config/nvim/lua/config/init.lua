@@ -29,6 +29,4 @@ vim.g.blamer_delay = 500
 vim.g.blamer_prefix = ' 🤡 '
 
 -- theme
-vim.g.catppuccin_flavour = 'mocha' -- latte, frappe, macchiato, mocha
-vim.cmd.colorscheme('catppuccin')
 vim.cmd('highlight LineNr guifg=#9ca0a4')
