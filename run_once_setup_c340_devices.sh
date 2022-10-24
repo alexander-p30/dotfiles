@@ -97,4 +97,26 @@ else
 fi
 
 echo
+echo ':: Setting up backlight control for video group'
+FILE=/etc/udev/rules.d/backlight.rules
+if ! test -f "$FILE"; then
+  echo -e "\t🟢 $FILE does not exist, creating it..."
+  sudo touch $FILE
+  sudo tee $FILE <<EOL
+ACTION=="add", SUBSYSTEM=="backlight", RUN+="/bin/chgrp video $sys$devpath/brightness", RUN+="/bin/chmod g+w $sys$devpath/brightness"
+EOL
+else
+  echo -e "⚠️  File $FILE already exists, aborting..."
+fi
+
+echo
+echo ':: Adding user to video group'
+if echo $(id -nG $USER) | grep -w "video"; then
+  echo "⚠️  $USER already in video group"
+else
+  sudo usermod -aG video $USER
+  echo "🟢 Added $USER to video group"
+fi
+
+echo
 echo "🟢 Finished setting up C340 devices"
