@@ -3,7 +3,11 @@
 echo "============================"
 
 echo ":: Installing yay"
-pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
+if command -v yay; then
+  echo "⚠️  yay already installed, skipping it..."
+else
+  pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
+fi
 echo "🟢 Finished installing yay"
 
 echo ":: Installing base packages"
@@ -58,7 +62,7 @@ yay --needed -S age \
     insomnia-bin \
     jq \
     kitty \
-    kmonad-git \
+    kmonad-bin \
     lazygit \
     leafpad \
     lxappearance \

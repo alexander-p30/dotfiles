@@ -1,0 +1,51 @@
+#! /bin/bash
+
+echo "============================"
+echo ":: Setting up kmonad"
+
+# Create input group
+if getent group input; then
+  echo "⚠️  input group exists"
+else
+  sudo groupadd input
+  echo "🟢 Created input group"
+fi
+
+# Add user to input group
+if echo $(id -nG $USER) | grep -w "input"; then
+  echo "⚠️  $USER already in input group"
+else
+  sudo usermod -aG input $USER
+  echo "🟢 Added $USER to input group"
+fi
+
+# Create uinput group
+if getent group uinput; then
+  echo "⚠️  uinput group exists"
+else
+  sudo groupadd uinput
+  echo "🟢 Created uinput group"
+fi
+
+# Add user to uinput group
+if echo $(id -nG $USER) | grep -w "uinput"; then
+  echo "⚠️  $USER already in uinput group"
+else
+  sudo usermod -aG uinput $USER
+  echo "🟢 Added $USER to uinput group"
+fi
+
+FILE=/etc/udev/rules.d/50-kmonad.rules
+if ! test -f "$FILE"; then
+  echo -e "\t🟢 $FILE does not exist, creating it..."
+  sudo touch $FILE
+  sudo tee $FILE <<EOL
+KERNEL=="uinput", MODE="0660", GROUP="uinput", OPTIONS+="static_node=uinput"
+EOL
+else
+  echo -e "⚠️  File already exists, aborting..."
+fi
+
+echo ":: Starting kmonad..."
+bash "$(chezmoi source-path)/dot_scripts/executable_keebs.sh"
+echo "🟢 Finished setting up kmonad"

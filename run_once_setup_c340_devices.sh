@@ -42,7 +42,7 @@ Section "Device"
 EndSection
 EOL
 else
-  echo -e "⚠️  File already exists, aborting..."
+  echo -e "⚠️  File $FILE already exists, aborting..."
 fi
 
 echo
@@ -62,7 +62,7 @@ Section "InputClass"
 EndSection
 EOL
 else
-  echo -e "⚠️  File already exists, aborting..."
+  echo -e "⚠️  File $FILE already exists, aborting..."
 fi
 
 echo
@@ -80,7 +80,20 @@ Section "InputClass"
 EndSection
 EOL
 else
-  echo -e "⚠️  File already exists, aborting..."
+  echo -e "⚠️  File $FILE already exists, aborting..."
+fi
+
+echo
+echo ':: Setting up i3 restart on HDMI connect'
+FILE=/etc/udev/rules.d/51-update-xrandr.rules
+if ! test -f "$FILE"; then
+  echo -e "\t🟢 $FILE does not exist, creating it..."
+  sudo touch $FILE
+  sudo tee $FILE <<EOL
+SUBSYSTEM=="drm", ACTION=="change", RUN+="i3 restart"
+EOL
+else
+  echo -e "⚠️  File $FILE already exists, aborting..."
 fi
 
 echo
