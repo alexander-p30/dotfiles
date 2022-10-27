@@ -71,6 +71,9 @@ nnoremap('<C-b>', ':Neotree toggle=true reveal<CR>', { silent = true })
 -- Copy until end of line
 nnoremap('Y', 'y$')
 
+-- Paste but keep register
+vnoremap('<leader>p', '"_dP')
+
 -- Copy current filepath
 nmap('<leader>yfp', ':let @+ = expand("%")<CR>')
 
