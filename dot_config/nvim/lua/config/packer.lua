@@ -129,6 +129,16 @@ return require('packer').startup({ function(use)
           cmp = true,
           illuminate = true,
           telescope = true
+        },
+        highlight_overrides = {
+          all = function(colors)
+            return {
+              DiagnosticFloatingError = { fg = colors.red, bg = colors.none },
+              DiagnosticFloatingWarn = { fg = colors.yellow, bg = colors.none },
+              DiagnosticFloatingInfo = { fg = colors.sky, bg = colors.none },
+              DiagnosticFloatingHint = { fg = colors.teal, bg = colors.none },
+            }
+          end
         }
       })
       vim.api.nvim_command('colorscheme catppuccin')
