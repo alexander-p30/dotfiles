@@ -76,7 +76,7 @@ yay --needed -S age \
     noto-fonts-cjk \
     noto-fonts-emoji \
     pavucontrol \
-    picom-animations-git \
+    picom \
     playerctl \
     polybar \
     postman-bin \
