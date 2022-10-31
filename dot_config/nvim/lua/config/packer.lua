@@ -155,7 +155,6 @@ return require('packer').startup({ function(use)
   use 'nvim-lualine/lualine.nvim'
   use 'NTBBloodbath/doom-one.nvim'
   use 'lukas-reineke/indent-blankline.nvim'
-  use 'folke/which-key.nvim'
   use 'MunifTanjim/nui.nvim'
   --
   if Packer_bootstrap then
