@@ -58,3 +58,10 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+(setq org-roam-directory "~/Dropbox/org/zk")
+
+(map! :leader
+      (:prefix-map ("n" . "Org roam nodes")
+        :desc "Find node" "f" #'org-roam-node-find
+        :desc "Insert node" "i" #'org-roam-node-find
+        :desc "Org roam buffer toggle" "l" #'org-roam-buffer-toggle))
