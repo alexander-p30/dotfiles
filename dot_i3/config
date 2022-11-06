@@ -182,7 +182,7 @@ for_window [title="Zettelkasten Machine"] mark org_mode
 # }}}
 
 # Workspaces {{{
-set $ws1 1:
+set $ws1 1:
 set $ws2 2:
 set $ws3 3:
 set $ws4 4:
