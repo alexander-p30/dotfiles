@@ -1,60 +1,66 @@
 #!/bin/bash
 
 SINKS=$(pactl list short sinks | awk -v OFS='\t' '{print $2}')
-SINK_KEYWORDS=( "G533" "bluez" )
-SINK_ICONS=( "" "" "蓼")
-SINK_KEYWORD_COUNT=${#SINK_KEYWORDS[@]}
-
 CURRENT_SINK=$(pactl get-default-sink)
 
-NEW_SINK_KEYWORD=""
-NEW_SINK_KEYWORD_IDX=""
-CURRENT_SINK_KEYWORD_IDX=""
-for sink in "${!SINK_KEYWORDS[@]}" ; do
-  sink_name=${SINK_KEYWORDS[$sink]}
-  if [[ "$CURRENT_SINK" == *"$sink_name"* ]]; then
-    CURRENT_SINK_KEYWORD_IDX=$sink
-    NEW_SINK_KEYWORD_IDX=$(expr $sink + 1)
-    break
+SINK_ICONS=("G533:" "bluez:")
+DEFAULT_ICON="蓼"
+
+CURRENT_SINK_IDX=0
+CURRENT_SINK_ICON=""
+FOUND_CURRENT_SINK=""
+for sink_data in ${SINK_ICONS[@]}; do
+  IFS=':' read -r sink_alias sink_icon <<< $sink_data
+  if [[ "$CURRENT_SINK" == *"$sink_alias"* ]]; then
+    CURRENT_SINK_ICON=$sink_icon
+    FOUND_CURRENT_SINK=true
+    break 2
   fi
+  CURRENT_SINK_IDX=$((CURRENT_SINK_IDX + 1))
 done
 
-if [[ "$1" == "show-current" ]]; then
-  if [[ -z $CURRENT_SINK_KEYWORD_IDX ]]; then
-    CURRENT_SINK_KEYWORD_IDX=$SINK_KEYWORD_COUNT
+if [[ "$1" != "next-output" ]]; then
+  if [[ "$1" == "update-polybar" ]]; then
+    polybar-msg action "#sound-output.hook.0"
   fi
-  echo ${SINK_ICONS[$CURRENT_SINK_KEYWORD_IDX]}
-elif [[ "$1" == "next-output" ]]; then
-  NEW_SINK=""
-  # If its the default sink keyword
-  if [[ -z $NEW_SINK_KEYWORD_IDX ]]; then
-    NEW_SINK_KEYWORD_IDX=0
+  if [[ -z $CURRENT_SINK_ICON ]];then
+    CURRENT_SINK_ICON=$DEFAULT_ICON
   fi
-
-  # If it's the last sink keyword
-  if [ "$NEW_SINK_KEYWORD_IDX" -eq $SINK_KEYWORD_COUNT ]; then
-    NEW_SINK_KEYWORD="default"
-    NEW_SINK=$(grep -Ev "$(echo ${SINK_KEYWORDS[@]}|tr " " "|")" <<< "$SINKS" | head -n 1)
-  else
-    NEW_SINK_KEYWORD=${SINK_KEYWORDS[$NEW_SINK_KEYWORD_IDX]}
-    NEW_SINK=$(grep $NEW_SINK_KEYWORD <<< $SINKS)
-  fi
-
-  if [[ -z $NEW_SINK ]]; then
-    NEW_SINK_KEYWORD="default"
-    NEW_SINK_KEYWORD_IDX=$SINK_KEYWORD_COUNT
-    NEW_SINK=$(grep -Ev "$(echo ${SINK_KEYWORDS[@]}|tr " " "|")" <<< "$SINKS" | head -n 1)
-  fi
-
-  pactl set-default-sink $NEW_SINK
-  polybar-msg action "#sound-output.hook.0"
-  echo ${SINK_ICONS[$NEW_SINK_KEYWORD_IDX]}
-elif [[ "$1" == "update-polybar" ]]; then
-  if [[ -z $CURRENT_SINK_KEYWORD_IDX ]]; then
-    CURRENT_SINK_KEYWORD_IDX=$SINK_KEYWORD_COUNT
-  fi
-  polybar-msg action "#sound-output.hook.0"
-  echo ${SINK_ICONS[$CURRENT_SINK_KEYWORD_IDX]}
-else
-  echo "Invalid action"
+  echo $CURRENT_SINK_ICON
+  exit
 fi
+
+NEXT_SINK_ICON=$DEFAULT_ICON
+NEXT_SINK=$(grep -Ev "$(echo ${SINK_ICONS[@]}|tr ":" "|"|tr " " "|")" <<< "$SINKS" | head -n 1)
+# Current sink is the default
+if [[ -z $FOUND_CURRENT_SINK ]]; then
+  for sink_data in ${SINK_ICONS[@]}; do
+    while IFS= read -r available_sink; do
+
+      IFS=':' read -r sink_alias sink_icon <<< $sink_data
+      if [[ "$available_sink" == *"$sink_alias"* ]]; then
+        NEXT_SINK=$available_sink
+        NEXT_SINK_ICON=$sink_icon
+        break 2
+      fi
+    done <<< "$SINKS"
+  done
+# Current sink is other than the default and next sink is not the default
+elif [[ $((CURRENT_SINK_IDX + 1)) < "${#SINK_ICONS[@]}" ]]; then
+  IFS=':' read -r next_sink_alias next_sink_icon <<< ${SINK_ICONS[$((CURRENT_SINK_IDX + 1))]}
+
+  while IFS= read -r available_sink; do
+    if [[ $available_sink == *"$next_sink_alias"* ]]; then
+      NEXT_SINK_ICON=$next_sink_icon
+      NEXT_SINK=$available_sink
+    fi
+  done <<< "$SINKS"
+fi
+
+if [[ "$CURRENT_SINK" == "$NEXT_SINK" ]]; then
+  notify-send -u normal "   Sound control: No other available sinks!"
+fi
+
+pactl set-default-sink $NEXT_SINK
+polybar-msg action "#sound-output.hook.0"
+echo $NEXT_SINK_ICON
