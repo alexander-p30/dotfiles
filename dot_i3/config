@@ -72,7 +72,6 @@ bindsym $mod+Ctrl+k exec "$HOME/.scripts/keebs.sh"
 
 # Polybar
 bindsym $mod+Ctrl+h exec polybar-msg cmd toggle
-bindsym $mod+Shift+p exec "$HOME/.config/polybar/launch.sh && nitrogen --restore && exec notify-send 'Polybar and nitrogen restarted'"
 
 # dunst
 bindsym Mod1+space exec dunstctl close
@@ -311,7 +310,7 @@ exec --no-startup-id compton -b -f
 exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
 exec_always --no-startup-id sleep 1; $HOME/.config/autorandr/startup.sh
-exec_always --no-startup-id sleep 1.5; $HOME/.config/polybar/launch.sh
+exec_always --no-startup-id sleep 3; $HOME/.config/polybar/launch.sh
 
 # }}}
 

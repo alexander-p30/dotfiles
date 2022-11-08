@@ -70,7 +70,7 @@ modules-left = i3 xwindow-left xwindow xwindow-right
 modules-center = popup-calendar-left popup-calendar popup-calendar-right uptime-left uptime uptime-right
 modules-right = ${env:MODULES_RIGHT:filesystem-left filesystem filesystem-right backlight-left backlight backlight-right sound-output-polling sound-output-left sound-output sound-output-right pulseaudio-left pulseaudio pulseaudio-right memory-left memory memory-right cpu-left cpu cpu-right battery-left battery battery-right}
 
-tray-position = ${env:TRAY_POS:}
+tray-position = ${env:TRAY_POS:none}
 tray-padding = 0
 tray-maxsize = 16
 
