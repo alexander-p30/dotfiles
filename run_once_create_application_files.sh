@@ -1,0 +1,90 @@
+#! /bin/bash
+
+echo "============================"
+applications_path="$HOME/.local/share/applications"
+echo ":: Adding application (.desktop) files to $applications_path"
+
+echo
+echo ':: Reset polybar'
+FILE="$applications_path/reset_polybar.desktop"
+if ! test -f "$FILE"; then
+  echo -e "\t🟢 $FILE does not exist, creating it..."
+  sudo touch $FILE
+  sudo tee $FILE <<EOL
+[Desktop Entry]
+Name=Reset polybar
+GenericName=Reset polybar
+Icon=display
+Exec=/home/alexander/.config/polybar/launch.sh
+Terminal=false
+Type=Application
+EOL
+else
+  echo -e "⚠️  File $FILE already exists, aborting..."
+fi
+
+# C340-specific setup
+if [ "$(hostnamectl hostname)" == alexander-c340 ]; then
+  echo
+  echo "🟢 Starting c340 specific applications"
+else
+  echo "🟢 Finished adding application files"
+  exit 0
+fi
+
+
+echo
+echo ':: Switch screen setup to builtin screen only'
+FILE="$applications_path/screen_builtin.desktop"
+if ! test -f "$FILE"; then
+  echo -e "\t🟢 $FILE does not exist, creating it..."
+  sudo touch $FILE
+  sudo tee $FILE <<EOL
+[Desktop Entry]
+Name=Switch screen setup to laptop builtin
+Icon=display
+Exec=/bin/bash -c "autorandr -l builtin"
+Terminal=false
+Type=Application
+EOL
+else
+  echo -e "⚠️  File $FILE already exists, aborting..."
+fi
+
+echo
+echo ':: Switch screen setup to builtin screen and ultrawide external monitor'
+FILE="$applications_path/screen_external75.desktop"
+if ! test -f "$FILE"; then
+  echo -e "\t🟢 $FILE does not exist, creating it..."
+  sudo touch $FILE
+  sudo tee $FILE <<EOL
+[Desktop Entry]
+Name=Switch screen setup to ultrawide 75Hz
+Icon=display
+Exec=/bin/bash -c "autorandr -l ultrawide"
+Terminal=false
+Type=Application
+EOL
+else
+  echo -e "⚠️  File $FILE already exists, aborting..."
+fi
+
+echo
+echo ':: Reset screen setup'
+FILE="$applications_path/screen_fast_alternate.desktop"
+if ! test -f "$FILE"; then
+  echo -e "\t🟢 $FILE does not exist, creating it..."
+  sudo touch $FILE
+  sudo tee $FILE <<EOL
+[Desktop Entry]
+Name=Switch screen setup fast alternate
+Icon=display
+Exec=/bin/bash -c "autorandr -l builtin && sleep 1 && autorandr -l ultrawide"
+Terminal=false
+Type=Application
+EOL
+else
+  echo -e "⚠️  File $FILE already exists, aborting..."
+fi
+
+echo "🟢 Finished adding application files"
