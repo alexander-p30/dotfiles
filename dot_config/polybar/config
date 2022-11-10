@@ -183,8 +183,6 @@ label = "%{T4}%{T-} %gb_used%"
 [module/pulseaudio]
 type = internal/pulseaudio
 
-format-volume-prefix = " "
-format-volume-suffix = " "
 format-volume = "%{T5}<ramp-volume>%{T-} <label-volume>"
 format-volume-foreground = ${colors.volume}
 format-volume-background = ${colors.background}
@@ -310,7 +308,7 @@ content = " "
 
 [module/sound-output-left]
 type = custom/text
-content = " "
+content = "  "
 
 [module/sound-output-right]
 type = custom/text
@@ -330,7 +328,7 @@ content = " "
 
 [module/pulseaudio-right]
 type = custom/text
-content = " "
+content = ""
 
 [module/memory-left]
 inherit = module/left-limit
