@@ -183,18 +183,14 @@ label = "%{T4}%{T-} %gb_used%"
 [module/pulseaudio]
 type = internal/pulseaudio
 
-format-volume = "%{T5}<ramp-volume>%{T-} <label-volume>"
+format-volume = "<label-volume>"
 format-volume-foreground = ${colors.volume}
 format-volume-background = ${colors.background}
 label-volume = %percentage%%
 
 format-muted-foreground = ${colors.volume}
 format-muted-background = ${colors.background}
-label-muted = "%{T5}%{T-} muted"
-
-ramp-volume-0 = ""
-ramp-volume-1 = ""
-ramp-volume-2 = ""
+label-muted = "MUTED"
 
 [module/battery]
 type = internal/battery
@@ -267,6 +263,7 @@ initial = 1
 format-prefix = "%{T4}"
 format-suffix = "%{T-}"
 click-left = ~/.scripts/control_sound_output.sh next-output
+format-foreground = ${colors.volume}
 
 [module/sound-output-polling]
 type = custom/script
@@ -308,7 +305,7 @@ content = " "
 
 [module/sound-output-left]
 type = custom/text
-content = "  "
+content = " "
 
 [module/sound-output-right]
 type = custom/text
