@@ -156,6 +156,7 @@ return require('packer').startup({ function(use)
   use 'NTBBloodbath/doom-one.nvim'
   use 'lukas-reineke/indent-blankline.nvim'
   use 'MunifTanjim/nui.nvim'
+  use 'stevearc/dressing.nvim'
   --
   if Packer_bootstrap then
     require('packer').sync()
