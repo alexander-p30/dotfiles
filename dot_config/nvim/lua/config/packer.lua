@@ -24,8 +24,7 @@ return require('packer').startup({ function(use)
   use 'lambdalisue/nerdfont.vim'
 
   -- Git
-  use 'airblade/vim-gitgutter'
-  use 'APZelos/blamer.nvim'
+  use 'lewis6991/gitsigns.nvim'
   use 'tpope/vim-fugitive'
 
   -- LS, syntax highlighting and programming utils

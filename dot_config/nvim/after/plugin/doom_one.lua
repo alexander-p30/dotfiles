@@ -9,7 +9,6 @@ local config = {
     transparency_amount = 20,
   },
   plugins_integrations = {
-    gitgutter = true,
     telescope = true,
     whichkey = true,
     indent_blankline = true,

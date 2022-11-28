@@ -92,10 +92,6 @@ nnoremap('<leader>re', '', {
   end
 })
 
--- gitgutter hunk navigation
-nnoremap('<CR>', ':GitGutterNextHunk<CR>', { silent = true })
-nnoremap('<backspace>', ':GitGutterPrevHunk<CR>', { silent = true })
-
 -- Git
 nnoremap('<leader>gg', ':Git<CR>', { silent = true })
 nnoremap('<leader>gq', '', {
