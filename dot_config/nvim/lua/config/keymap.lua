@@ -7,6 +7,12 @@ local util = require('config.functions')
 -- MAPLEADER
 vim.g.mapleader = ' '
 
+-- Centralize cursor on vertical movement
+nnoremap('<C-d>', '<C-d>zz')
+nnoremap('<C-u>', '<C-u>zz')
+nnoremap('n', 'nzzzv')
+nnoremap('N', 'Nzzzv')
+
 -- Add {count}k and {count}j to jumplist
 vim.cmd([[
 nnoremap <expr> k (v:count > 1 ? "m'" . v:count : '') . 'k'
