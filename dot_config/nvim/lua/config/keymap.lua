@@ -20,25 +20,25 @@ nnoremap <expr> j (v:count > 1 ? "m'" . v:count : '') . 'j'
 ]])
 
 -- Terminal/test-related bindings {{{
-nnoremap('<leader>tt', ':Ttoggle<CR>', { silent = true })
+nnoremap('<leader>tt', vim.cmd.Ttoggle, { silent = true })
 nnoremap('<leader>alt', ':A<CR>')
 
-nnoremap('<leader>tn', '', { callback = function() util.test_in_neoterm('tn') end })
-nnoremap('<leader>tf', '', { callback = function() util.test_in_neoterm('tf') end })
-nnoremap('<leader>ts', '', { callback = function() util.test_in_neoterm('ts') end })
-nnoremap('<leader>tl', '', { callback = function() util.test_in_neoterm('tl') end })
+nnoremap('<leader>tn', function() util.test_in_neoterm('tn') end)
+nnoremap('<leader>tf', function() util.test_in_neoterm('tf') end)
+nnoremap('<leader>ts', function() util.test_in_neoterm('ts') end)
+nnoremap('<leader>tl', function() util.test_in_neoterm('tl') end)
 
-nnoremap('<leader>tv', ':TestVisit<CR>')
+nnoremap('<leader>tv', vim.cmd.TestVisit)
 nnoremap('<leader>tc', ':Tclose!<CR>')
 -- }}}
 
 -- Tabs {{{
-nnoremap('<leader>tan', ':tabedit %<CR> ', { silent = true })
-nnoremap('<leader>taN', ':tabnew<CR>', { silent = true })
-nnoremap('<leader>taO', ':tabonly<CR>', { silent = true })
-nnoremap('<leader>tac', ':tabclose<CR>', { silent = true })
-nnoremap('<leader>tal', ':tabnext<CR>', { silent = true })
-nnoremap('<leader>tah', ':tabprevious<CR>', { silent = true })
+nnoremap('<leader>tan', ':tabedit %<CR>', { silent = true })
+nnoremap('<leader>taN', vim.cmd.tabnew, { silent = true })
+nnoremap('<leader>taO', vim.cmd.tabonly, { silent = true })
+nnoremap('<leader>tac', vim.cmd.tabclose, { silent = true })
+nnoremap('<leader>tal', vim.cmd.tabnext, { silent = true })
+nnoremap('<leader>tah', vim.cmd.tabprev, { silent = true })
 
 nnoremap('<leader>ta1', '1gt', { silent = true })
 nnoremap('<leader>ta2', '2gt', { silent = true })
@@ -49,10 +49,6 @@ nnoremap('<leader>ta6', '6gt', { silent = true })
 nnoremap('<leader>ta7', '7gt', { silent = true })
 nnoremap('<leader>ta8', '8gt', { silent = true })
 nnoremap('<leader>ta9', '9gt', { silent = true })
--- }}}
-
--- Linting {{{
-nnoremap('<leader>cq', '', { callback = function() util.lint_in_neoterm() end })
 -- }}}
 
 -- Yanking and pasting clipboard {{{
@@ -84,30 +80,19 @@ vnoremap('<leader>p', '"_dP')
 nmap('<leader>yfp', ':let @+ = expand("%")<CR>')
 
 -- Clear search highlighting
-nnoremap('<C-h>', ':noh<CR>', { silent = true })
+nnoremap('<C-h>', vim.cmd.noh, { silent = true })
 
 -- Reparse buffers
 nnoremap('<leader>rt', ':write | edit | TSBufEnable highlight<CR>', { silent = true })
 
--- Update configs
-nnoremap('<leader>re', '', {
-  silent = true,
-  callback = function()
-    vim.api.nvim_command('SessionSave')
-    vim.api.nvim_command('luafile ' .. os.getenv('HOME') .. '/.config/nvim/init.lua')
-  end
-})
-
 -- Git
-nnoremap('<leader>gg', ':Git<CR>', { silent = true })
-nnoremap('<leader>gq', '', {
-  silent = true,
-  callback = function()
+nnoremap('<leader>gg', vim.cmd.Git, { silent = true })
+nnoremap('<leader>gq',
+  function()
     util.visit_buffers(function(b)
       util.apply_function_for_buffer_with_ft(b, 'fugitive', util.delete_buffer_func(b, {}))
     end)
-  end
-})
+  end, { silent = true, })
 nnoremap('<leader>gP', ':Git push<CR>')
 nnoremap('<leader>gsP', ':Git push -u origin HEAD<CR>')
 nnoremap('<leader>gp', ':Git pull<CR>')
@@ -141,18 +126,18 @@ vnoremap('<Up>', ':m \'<-2<CR>gv=gv')
 vnoremap('<Down>', ':m \'>+1<CR>gv=gv')
 
 -- Quickfix list navigation
-nnoremap('<leader>cn', ':cnext <CR>')
-nnoremap('<leader>cp', ':cprev <CR>')
-nnoremap('<leader>co', ':copen <CR>', { silent = true })
-nnoremap('<leader>cc', ':cc <CR>', { silent = true })
-nnoremap('<leader>cC', ':cclose <CR>', { silent = true })
+nnoremap('<leader>cn', vim.cmd.cnext)
+nnoremap('<leader>cp', vim.cmd.cprev)
+nnoremap('<leader>co', vim.cmd.copen, { silent = true })
+nnoremap('<leader>cc', vim.cmd.cc, { silent = true })
+nnoremap('<leader>cC', vim.cmd.cclose, { silent = true })
 
 -- Location list navigation
-nnoremap('<leader>ln', ':lnext <CR>')
-nnoremap('<leader>lp', ':lprev <CR>')
-nnoremap('<leader>lo', ':lopen <CR>', { silent = true })
-nnoremap('<leader>lc', ':lc <CR>', { silent = true })
-nnoremap('<leader>lC', ':lclose <CR>', { silent = true })
+nnoremap('<leader>ln', vim.cmd.lnext)
+nnoremap('<leader>lp', vim.cmd.lprev)
+nnoremap('<leader>lo', vim.cmd.lopen, { silent = true })
+nnoremap('<leader>lc', vim.cmd.lc, { silent = true })
+nnoremap('<leader>lC', vim.cmd.lclose, { silent = true })
 -- }}}
 
 -- Esc to leave terminal mode

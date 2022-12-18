@@ -14,8 +14,10 @@ opt.shiftwidth = 2
 opt.expandtab = true
 opt.smartindent = true
 
-opt.timeoutlen = 500
-opt.updatetime = 500
+-- Timing
+opt.timeoutlen = 1000
+opt.updatetime = 250
+
 -- Dinamically loaded vim configs
 opt.exrc = true
 
