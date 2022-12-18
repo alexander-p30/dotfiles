@@ -9,7 +9,7 @@ end
 return require('packer').startup({ function(use)
   use 'wbthomason/packer.nvim'
 
-  -- File-related
+  -- File-navigation
   use {
     'nvim-telescope/telescope.nvim',
     requires = {
@@ -102,7 +102,6 @@ return require('packer').startup({ function(use)
 
   -- Other
   use 'kassio/neoterm'
-  use 'antoinemadec/FixCursorHold.nvim'
   use 'olimorris/persisted.nvim'
   use 'simeji/winresizer'
   use {
@@ -112,6 +111,7 @@ return require('packer').startup({ function(use)
     end
   }
   use { 'rcarriga/nvim-notify', config = function() vim.notify = require('notify') end }
+  use { 'mbbill/undotree' }
 
   -- Themes / Visual
   use 'navarasu/onedark.nvim'
@@ -144,6 +144,7 @@ return require('packer').startup({ function(use)
     end
   }
   use { 'norcalli/nvim-colorizer.lua', config = function() require('colorizer').setup() end }
+  use { 'j-hui/fidget.nvim', config = function() require('fidget').setup() end }
   use 'folke/tokyonight.nvim'
   use {
     'kyazdani42/nvim-web-devicons',
