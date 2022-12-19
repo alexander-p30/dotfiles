@@ -74,6 +74,10 @@ return require('packer').startup({ function(use)
       cmd = { 'TSPlaygroundToggle', 'TSHighlightCapturesUnderCursor' },
     },
   }
+  use {
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    after = 'nvim-treesitter',
+  }
   use { 'neovimhaskell/haskell-vim', ft = 'haskell' }
   use { 'mboughaba/i3config.vim', ft = 'i3config' }
   use 'fladson/vim-kitty'
@@ -94,6 +98,7 @@ return require('packer').startup({ function(use)
       ))
     end,
   }
+  use 'tpope/vim-sleuth'
 
   -- Projectionist
   use 'tpope/vim-projectionist'
@@ -145,7 +150,12 @@ return require('packer').startup({ function(use)
   }
   use { 'norcalli/nvim-colorizer.lua', config = function() require('colorizer').setup() end }
   use { 'j-hui/fidget.nvim', config = function() require('fidget').setup() end }
-  use 'folke/tokyonight.nvim'
+  use {
+    'folke/tokyonight.nvim',
+    config = function()
+      require("tokyonight").setup({ style = "moon", terminal_colors = false })
+    end
+  }
   use {
     'kyazdani42/nvim-web-devicons',
     config = function()
