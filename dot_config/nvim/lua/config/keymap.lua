@@ -138,7 +138,9 @@ nnoremap('<leader>lp', vim.cmd.lprev)
 nnoremap('<leader>lo', vim.cmd.lopen, { silent = true })
 nnoremap('<leader>lc', vim.cmd.lc, { silent = true })
 nnoremap('<leader>lC', vim.cmd.lclose, { silent = true })
--- }}}
+
+-- Fast search and replace
+nnoremap('<leader>sr', ":%s///<Left>")
 
 -- Esc to leave terminal mode
 tnoremap('<Esc>', '<C-\\><C-n>')
