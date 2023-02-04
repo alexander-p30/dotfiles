@@ -26,11 +26,6 @@ source ~/.alias/system-aliases
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # }}}
 
-# Kitty {{{
-# Completion for kitty
-kitty + complete setup zsh | source /dev/stdin
-# }}}
-
 # Prompt {{{
 eval "$(starship init zsh)"
 # }}}
