@@ -4,6 +4,7 @@ lint-debounce: 1s
 tools:
   mix_credo: &mix_credo
     lint-command: "mix credo --strict --format=flycheck --read-from-stdin ${INPUT}"
+    lint-ignore-exit-code: true
     lint-stdin: true
     lint-formats:
       - '%f:%l:%c: %t: %m'

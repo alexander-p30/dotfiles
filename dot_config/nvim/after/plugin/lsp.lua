@@ -8,34 +8,34 @@ function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
 end
 
 local function on_attach(_, bufnr)
-  local function buf_set_keymap(...) vim.keymap.set(...) end
-
-  require('lsp_signature').on_attach({
-    bind = true,
-    handler_opts = {
-      border = "rounded"
-    }
-  }, bufnr)
+  require('lsp_signature').on_attach({ bind = true, handler_opts = { border = "rounded" } }, bufnr)
 
   -- Mappings.
-  local opts = { noremap = true, silent = true, buffer = true }
+  local bufopts = { noremap = true, silent = true, buffer = bufnr }
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gD', vim.lsp.buf.declaration, opts)
-  buf_set_keymap('n', 'gd', vim.lsp.buf.definition, opts)
-  buf_set_keymap('n', '<C-w>gv', ':vs<CR><cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', '<C-w>gs', ':sp<CR><cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', vim.lsp.buf.hover, opts)
-  buf_set_keymap('n', 'gi', vim.lsp.buf.implementation, opts)
-  buf_set_keymap('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-  buf_set_keymap('i', '<C-q>', vim.lsp.buf.signature_help, opts)
-  buf_set_keymap('n', '<leader>D', vim.lsp.buf.type_definition, opts)
-  buf_set_keymap('n', '<leader>rn', vim.lsp.buf.rename, opts)
-  buf_set_keymap('n', '<leader>ca', vim.lsp.buf.code_action, opts)
-  buf_set_keymap('n', 'gr', vim.lsp.buf.references, opts)
-  buf_set_keymap('n', '<leader>e', vim.diagnostic.open_float, opts)
-  buf_set_keymap('n', '[e', vim.diagnostic.goto_prev, opts)
-  buf_set_keymap('n', ']e', vim.diagnostic.goto_next, opts)
-  buf_set_keymap('n', '<leader>li', function() vim.lsp.buf.format({ async = true }) end, opts)
+  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
+  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+  vim.keymap.set('n', '<C-w>gv', ':vs<CR><cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
+  vim.keymap.set('n', '<C-w>gs', ':sp<CR><cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
+  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
+  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+  vim.keymap.set('i', '<C-q>', vim.lsp.buf.signature_help, bufopts)
+  vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
+  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
+  vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
+  vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+  vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, bufopts)
+  vim.keymap.set('n', '[e', vim.diagnostic.goto_prev, bufopts)
+  vim.keymap.set('n', ']e', vim.diagnostic.goto_next, bufopts)
+  vim.keymap.set('n', '<leader>li', function() vim.lsp.buf.format({ async = true }) end, bufopts)
+
+  -- Workspace stuff
+  vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+  vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+  vim.keymap.set('n', '<space>wl', function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end, bufopts)
 end
 
 local function get_ls_cmd(ls)
@@ -45,8 +45,8 @@ end
 
 local function config(ls, ...)
   local capabilities = require('cmp_nvim_lsp').default_capabilities(
-    vim.lsp.protocol.make_client_capabilities()
-  )
+          vim.lsp.protocol.make_client_capabilities()
+      )
 
   return { capabilities = capabilities, on_attach = on_attach, cmd = { get_ls_cmd(ls), ... } }
 end
@@ -61,26 +61,26 @@ nvim_lsp.solargraph.setup(config('solargraph', 'stdio'))
 nvim_lsp.pyright.setup(config('pyright-langserver', '--stdio'))
 
 nvim_lsp.sumneko_lua.setup({
-  cmd = { get_ls_cmd('lua-language-server') },
-  on_attach = on_attach,
-  settings = {
-    Lua = {
-      runtime = { version = 'LuaJIT', },
-      diagnostics = { globals = { 'vim' }, },
-      workspace = {
-        library = {
-          vim.api.nvim_get_runtime_file('', true),
-          vim.api.nvim_get_runtime_file('/lua/vim/lsp', true),
+    cmd = { get_ls_cmd('lua-language-server') },
+    on_attach = on_attach,
+    settings = {
+        Lua = {
+            runtime = { version = 'LuaJIT', },
+            diagnostics = { globals = { 'vim' }, },
+            workspace = {
+                library = {
+                    vim.api.nvim_get_runtime_file('', true),
+                    vim.api.nvim_get_runtime_file('/lua/vim/lsp', true),
+                },
+            },
+            telemetry = { enable = false, },
         },
-      },
-      telemetry = { enable = false, },
     },
-  },
 })
 
 nvim_lsp.efm.setup({ filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } })
 
-local autoformat_fts = { 'ex', 'exs', 'go', 'rs', 'rb', 'erb', 'lua' }
+local autoformat_fts = { 'ex', 'exs', 'heex', 'go', 'rs', 'rb', 'erb', 'lua' }
 -- Auto-format on save
 for _, ft in pairs(autoformat_fts) do
   vim.api.nvim_command('autocmd BufWritePre *.' .. ft .. ' lua vim.lsp.buf.format { timeout_ms = 500 }')
