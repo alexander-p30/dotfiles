@@ -69,7 +69,6 @@ return require('packer').startup({ function(use)
   use {
     'nvim-treesitter/nvim-treesitter',
     run = ':TSUpdate',
-    'p00f/nvim-ts-rainbow',
     {
       'nvim-treesitter/playground',
       cmd = { 'TSPlaygroundToggle', 'TSHighlightCapturesUnderCursor' },
@@ -99,7 +98,6 @@ return require('packer').startup({ function(use)
       ))
     end,
   }
-  use 'tpope/vim-sleuth'
 
   -- Projectionist
   use 'tpope/vim-projectionist'
