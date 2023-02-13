@@ -60,7 +60,7 @@ nvim_lsp.rust_analyzer.setup(config('rust-analyzer'))
 nvim_lsp.solargraph.setup(config('solargraph', 'stdio'))
 nvim_lsp.pyright.setup(config('pyright-langserver', '--stdio'))
 
-nvim_lsp.sumneko_lua.setup({
+nvim_lsp.lua_ls.setup({
     cmd = { get_ls_cmd('lua-language-server') },
     on_attach = on_attach,
     settings = {
