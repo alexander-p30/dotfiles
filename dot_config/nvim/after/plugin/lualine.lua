@@ -174,7 +174,7 @@ ins_left {
 ins_left {
   -- Lsp server name .
   function()
-    local msg = 'No Active Lsp'
+    local msg = '-'
     local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
     local clients = vim.lsp.get_active_clients()
     if next(clients) == nil then
@@ -188,7 +188,7 @@ ins_left {
     end
     return msg
   end,
-  icon = ' LSP:',
+  icon = ' ',
   color = { fg = '#ffffff', gui = 'bold' },
 }
 
@@ -199,23 +199,9 @@ ins_right { 'progress', color = { fg = colors.fg, gui = 'bold' } }
 ins_right { 'location' }
 
 ins_right {
-  'o:encoding', -- option component same as &encoding in viml
-  fmt = string.upper, -- I'm not sure why it's upper case either ;)
-  cond = conditions.hide_in_width,
-  color = { fg = colors.green, gui = 'bold' },
-}
-
-ins_right {
-  'fileformat',
-  fmt = string.upper,
-  icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
-  color = { fg = colors.green, gui = 'bold' },
-}
-
-ins_right {
   'filetype',
   fmt = string.upper,
-  icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
+  icons_enabled = true, -- I think icons are cool but Eviline doesn't have them. sigh
   color = { fg = colors.magenta, gui = 'bold' },
 }
 
@@ -245,20 +231,6 @@ ins_left_inactive {
 ins_right_inactive { 'progress', color = { fg = colors.fg } }
 
 ins_right_inactive { 'location' }
-
-ins_right_inactive {
-  'o:encoding', -- option component same as &encoding in viml
-  fmt = string.upper, -- I'm not sure why it's upper case either ;)
-  cond = conditions.hide_in_width,
-  color = { fg = colors.green },
-}
-
-ins_right_inactive {
-  'fileformat',
-  fmt = string.upper,
-  icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
-  color = { fg = colors.green },
-}
 
 ins_right_inactive {
   'filetype',
