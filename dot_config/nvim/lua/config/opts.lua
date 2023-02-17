@@ -1,8 +1,5 @@
 local opt = vim.opt
 
--- Hide "command bar"
-opt.ch = 0
-
 -- Folding {{{
 opt.foldenable = false
 opt.foldmethod = 'expr'
