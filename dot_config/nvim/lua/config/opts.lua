@@ -1,5 +1,9 @@
 local opt = vim.opt
 
+-- MAPLEADER
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
 -- Folding {{{
 opt.foldenable = false
 opt.foldmethod = 'expr'

@@ -4,9 +4,6 @@ local vnoremap = require('config.remap').vnoremap
 local tnoremap = require('config.remap').tnoremap
 local util = require('config.functions')
 
--- MAPLEADER
-vim.g.mapleader = ' '
-
 -- Centralize cursor on vertical movement
 nnoremap('<C-d>', '<C-d>zz')
 nnoremap('<C-u>', '<C-u>zz')
