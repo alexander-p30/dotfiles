@@ -28,7 +28,7 @@ require('lazy').setup({
 
   -- Git
   'lewis6991/gitsigns.nvim',
-  { 'tpope/vim-fugitive',          cmd = 'Git' },
+  'tpope/vim-fugitive',
 
   -- LS, syntax highlighting and programming utils
   {
@@ -53,8 +53,8 @@ require('lazy').setup({
   'ray-x/lsp_signature.nvim',
   'onsails/lspkind-nvim',
   'vim-test/vim-test',
-  { 'elixir-editors/vim-elixir', ft = { 'elixir', 'eelixir', 'heex' } },
-  { "windwp/nvim-autopairs",     config = true },
+  { 'elixir-editors/vim-elixir',   ft = { 'elixir', 'eelixir', 'heex' } },
+  { "windwp/nvim-autopairs",       config = true },
   'tpope/vim-surround',
   'tpope/vim-commentary',
   { 'tpope/vim-endwise',         ft = { 'ruby', 'elixir', 'eelixir', 'heex' } },
