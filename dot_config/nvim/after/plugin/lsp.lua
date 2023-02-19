@@ -31,9 +31,9 @@ local function on_attach(_, bufnr)
   vim.keymap.set('n', '<leader>li', function() vim.lsp.buf.format({ async = true }) end, bufopts)
 
   -- Workspace stuff
-  vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
-  vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-  vim.keymap.set('n', '<space>wl', function()
+  vim.keymap.set('n', '<space>lwa', vim.lsp.buf.add_workspace_folder, bufopts)
+  vim.keymap.set('n', '<space>lwr', vim.lsp.buf.remove_workspace_folder, bufopts)
+  vim.keymap.set('n', '<space>lwl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, bufopts)
 end
@@ -45,8 +45,8 @@ end
 
 local function config(ls, ...)
   local capabilities = require('cmp_nvim_lsp').default_capabilities(
-          vim.lsp.protocol.make_client_capabilities()
-      )
+    vim.lsp.protocol.make_client_capabilities()
+  )
 
   return { capabilities = capabilities, on_attach = on_attach, cmd = { get_ls_cmd(ls), ... } }
 end
@@ -61,21 +61,21 @@ nvim_lsp.solargraph.setup(config('solargraph', 'stdio'))
 nvim_lsp.pyright.setup(config('pyright-langserver', '--stdio'))
 
 nvim_lsp.lua_ls.setup({
-    cmd = { get_ls_cmd('lua-language-server') },
-    on_attach = on_attach,
-    settings = {
-        Lua = {
-            runtime = { version = 'LuaJIT', },
-            diagnostics = { globals = { 'vim' }, },
-            workspace = {
-                library = {
-                    vim.api.nvim_get_runtime_file('', true),
-                    vim.api.nvim_get_runtime_file('/lua/vim/lsp', true),
-                },
-            },
-            telemetry = { enable = false, },
+  cmd = { get_ls_cmd('lua-language-server') },
+  on_attach = on_attach,
+  settings = {
+    Lua = {
+      runtime = { version = 'LuaJIT', },
+      diagnostics = { globals = { 'vim' }, },
+      workspace = {
+        library = {
+          vim.api.nvim_get_runtime_file('', true),
+          vim.api.nvim_get_runtime_file('/lua/vim/lsp', true),
         },
+      },
+      telemetry = { enable = false, },
     },
+  },
 })
 
 nvim_lsp.efm.setup({ filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } })
