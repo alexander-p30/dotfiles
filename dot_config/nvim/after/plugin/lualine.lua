@@ -6,17 +6,19 @@ local lualine = require 'lualine'
 -- Color table for highlights
 -- stylua: ignore
 local colors = {
-  bg       = '#181825',
-  fg       = '#CDD6F4',
-  yellow   = '#F9E2AF',
-  cyan     = '#89DCEB',
-  darkblue = '#11111B',
-  green    = '#A6E3A1',
-  orange   = '#FAB387',
-  violet   = '#B4BEFE',
-  magenta  = '#CBA6F7',
-  blue     = '#89B4FA',
-  red      = '#F38BA8',
+  bg         = '#181825',
+  fg         = '#CDD6F4',
+  yellow     = '#F9E2AF',
+  cyan       = '#89DCEB',
+  darkblue   = '#11111B',
+  green      = '#A6E3A1',
+  orange     = '#FAB387',
+  violet     = '#B4BEFE',
+  magenta    = '#CBA6F7',
+  blue       = '#89B4FA',
+  red        = '#F38BA8',
+  gray       = '#464651',
+  light_gray = '#8C8C92',
 }
 
 local conditions = {
@@ -150,6 +152,14 @@ ins_left {
   path = 0,
   cond = conditions.buffer_not_empty,
   color = { fg = colors.magenta, gui = 'bold' },
+  padding = { left = 1, right = 0 }
+}
+
+ins_left {
+  function()
+    return '*'
+  end,
+  color = { fg = colors.magenta, gui = 'bold' }, -- Sets highlighting of component
 }
 
 ins_left {
@@ -163,15 +173,15 @@ ins_left {
   },
 }
 
--- Insert mid section. You can make any number of sections in neovim :)
--- for lualine it's any number greater then 2
-ins_left {
-  function()
-    return '%='
-  end,
-}
+-- -- Insert mid section. You can make any number of sections in neovim :)
+-- -- for lualine it's any number greater then 2
+-- ins_left {
+--   function()
+--     return '%='
+--   end,
+-- }
 
-ins_left {
+ins_right {
   -- Lsp server name .
   function()
     local msg = '-'
@@ -189,7 +199,7 @@ ins_left {
     return msg
   end,
   icon = ' ',
-  color = { fg = '#ffffff', gui = 'bold' },
+  color = { fg = colors.light_gray, gui = 'bold' },
 }
 
 -- Add components to right sections
@@ -216,36 +226,62 @@ ins_right {
 -- Add components to inactive buffer
 
 ins_left_inactive {
+  function()
+    return '▊'
+  end,
+  color = { fg = colors.gray },
+  padding = { left = 0, right = 0 }
+}
+
+ins_left_inactive {
+  function()
+    return ''
+  end,
+  color = { fg = colors.gray },
+}
+
+
+ins_left_inactive {
   -- filesize component
   'filesize',
   cond = conditions.buffer_not_empty,
+  color = { fg = colors.gray }
 }
 
 ins_left_inactive {
   'filename',
   path = 1,
   cond = conditions.buffer_not_empty,
-  color = { fg = colors.violet },
+  color = { fg = colors.light_gray },
 }
 
-ins_right_inactive { 'progress', color = { fg = colors.fg } }
+ins_right_inactive { 'progress', color = { fg = colors.gray } }
 
-ins_right_inactive { 'location' }
+ins_right_inactive { 'location', color = { fg = colors.gray } }
 
 ins_right_inactive {
   'filetype',
   fmt = string.upper,
-  icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
-  color = { fg = colors.magenta },
+  icons_enabled = true, -- I think icons are cool but Eviline doesn't have them. sigh
+  colored = false,
+  color = { fg = colors.gray, gui = 'bold' },
+}
+
+ins_right_inactive {
+  function()
+    return '▊'
+  end,
+  color = { fg = colors.gray },
+  padding = { left = 1 },
 }
 
 -- Add components to tab's left sections
 
 ins_tab_left {
   'tabs',
-  mode = 2,
+  mode = 1,
   tabs_color = {
-    active = { fg = colors.red, bg = colors.bg, gui = 'bold' },
+    active = { fg = colors.red, bg = colors.gray, gui = 'bold' },
   },
 }
 
@@ -267,7 +303,7 @@ ins_tab_left {
 ins_tab_right {
   'diff',
   -- Is it me or the symbol for modified us really weird
-  symbols = { added = ' ', modified = '柳 ', removed = ' ' },
+  symbols = { added = ' ', modified = '柳', removed = ' ' },
   diff_color = {
     added = { fg = colors.green },
     modified = { fg = colors.orange },
