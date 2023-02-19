@@ -144,3 +144,6 @@ nnoremap('<leader>sr', ":%s///<Left>")
 
 -- Esc to leave terminal mode
 tnoremap('<Esc>', '<C-\\><C-n>')
+
+-- Open undotree
+nnoremap('<leader>u', vim.cmd.UndotreeToggle)

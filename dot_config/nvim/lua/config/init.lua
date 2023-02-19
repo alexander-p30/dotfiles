@@ -1,8 +1,10 @@
+require('config.opts')
 require('config.packer')
 require('config.autocmds')
 require('config.functions')
 require('config.keymap')
-require('config.opts')
+
+vim.api.nvim_command('colorscheme catppuccin')
 
 -- vim-test
 vim.g['test#strategy'] = 'neoterm'
