@@ -31,7 +31,7 @@ require('lazy').setup({
 
   -- Git
   'lewis6991/gitsigns.nvim',
-  'tpope/vim-fugitive',
+  { 'tpope/vim-fugitive',          cmd = 'Git' },
 
   -- LS, syntax highlighting and programming utils
   {
@@ -59,15 +59,11 @@ require('lazy').setup({
   'ray-x/lsp_signature.nvim',
   'onsails/lspkind-nvim',
   'vim-test/vim-test',
-  { 'elixir-editors/vim-elixir',   ft = { 'elixir', 'eelixir', 'heex' } },
-  { "windwp/nvim-autopairs",       config = true },
+  { 'elixir-editors/vim-elixir', ft = { 'elixir', 'eelixir', 'heex' } },
+  { "windwp/nvim-autopairs",     config = true },
   'tpope/vim-surround',
   'tpope/vim-commentary',
-  {
-    'tpope/vim-endwise',
-    ft = { 'ruby', 'elixir', 'eelixir', 'heex' },
-    commit = '9471eeb'
-  },
+  { 'tpope/vim-endwise',         ft = { 'ruby', 'elixir', 'eelixir', 'heex' } },
   'mg979/vim-visual-multi',
   {
     'nvim-treesitter/nvim-treesitter',
@@ -78,13 +74,13 @@ require('lazy').setup({
       'nvim-treesitter/nvim-treesitter-textobjects',
     },
   },
+  'RRethy/vim-illuminate',
   { 'neovimhaskell/haskell-vim', ft = 'haskell' },
   { 'mboughaba/i3config.vim',    ft = 'i3config' },
-  'fladson/vim-kitty',
-  'RRethy/vim-illuminate',
-  'kmonad/kmonad-vim',
-  { 'Olical/conjure',     ft = 'clojure' },
-  { 'rust-lang/rust.vim', ft = 'rust' },
+  { 'fladson/vim-kitty',         ft = 'kitty' },
+  { 'kmonad/kmonad-vim',         ft = 'kbd' },
+  { 'Olical/conjure',            ft = 'clojure' },
+  { 'rust-lang/rust.vim',        ft = 'rust' },
   {
     'gelguy/wilder.nvim',
     config = function()
@@ -113,11 +109,11 @@ require('lazy').setup({
     config = { create_mappings = true, mapping = 'mtt' },
     ft = { 'elixir', 'eelixir', 'heex' }
   },
-  { 'rcarriga/nvim-notify',        config = function() vim.notify = require('notify') end },
+  { 'rcarriga/nvim-notify',  config = function() vim.notify = require('notify') end },
   'mbbill/undotree',
 
   -- Themes / Visual
-  'navarasu/onedark.nvim',
+  { 'navarasu/onedark.nvim', lazy = true },
   {
     'catppuccin/nvim',
     name = 'catppuccin',
@@ -151,9 +147,9 @@ require('lazy').setup({
     config = { style = "moon", terminal_colors = false },
     lazy = true
   },
-  { 'kyazdani42/nvim-web-devicons', config = { default = true } },
+  { 'nvim-tree/nvim-web-devicons', config = { default = true } },
   'nvim-lualine/lualine.nvim',
-  { 'NTBBloodbath/doom-one.nvim',   lazy = true },
+  { 'NTBBloodbath/doom-one.nvim',  lazy = true },
   { 'lukas-reineke/indent-blankline.nvim', config = {
     char = '|',
     buftype_exclude = { 'terminal' },
