@@ -1,5 +1,5 @@
 require('config.opts')
-require('config.packer')
+require('config.plugins')
 require('config.autocmds')
 require('config.functions')
 require('config.keymap')
