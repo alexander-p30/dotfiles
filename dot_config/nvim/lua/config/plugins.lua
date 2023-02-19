@@ -47,11 +47,8 @@ require('lazy').setup({
     'hrsh7th/cmp-buffer',
     'hrsh7th/cmp-path',
     'hrsh7th/nvim-cmp',
-    {
-      'saadparwaiz1/cmp_luasnip',
-      config = function() require('luasnip.loaders.from_snipmate').lazy_load() end,
-    },
-    'L3MON4D3/LuaSnip'
+    'SirVer/ultisnips',
+    'quangnguyen30192/cmp-nvim-ultisnips'
   },
   'ray-x/lsp_signature.nvim',
   'onsails/lspkind-nvim',
