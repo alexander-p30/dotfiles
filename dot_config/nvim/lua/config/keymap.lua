@@ -54,6 +54,11 @@ nnoremap('<C-p>', '"+p')
 vnoremap('<C-p>', '"+p')
 -- }}}
 
+-- Splits {{{
+-- 'Maximize' window
+nnoremap('<C-w>m', '<C-w>_ | <C-w>|')
+-- }}}
+
 -- Writing and Closing {{{
 nnoremap('<leader>w', ':w<CR>')
 nnoremap('<leader>qw', ':wq<CR>')

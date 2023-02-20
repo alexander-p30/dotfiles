@@ -48,6 +48,7 @@ local config = {
       normal = { c = { fg = colors.fg, bg = colors.bg } },
       inactive = { c = { fg = colors.fg, bg = colors.bg } },
     },
+    globalstatus = true,
   },
   sections = {
     -- these are to remove the defaults
@@ -153,13 +154,6 @@ ins_left {
   cond = conditions.buffer_not_empty,
   color = { fg = colors.magenta, gui = 'bold' },
   padding = { left = 1, right = 0 }
-}
-
-ins_left {
-  function()
-    return '*'
-  end,
-  color = { fg = colors.magenta, gui = 'bold' }, -- Sets highlighting of component
 }
 
 ins_left {

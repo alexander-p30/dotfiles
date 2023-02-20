@@ -151,5 +151,6 @@ require('lazy').setup({
   },
   'MunifTanjim/nui.nvim',
   'stevearc/dressing.nvim',
+  { 'nvim-zh/colorful-winsep.nvim', config = { highlight = { bg = '' } } }
   --
 })
