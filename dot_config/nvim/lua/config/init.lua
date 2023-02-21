@@ -4,7 +4,7 @@ require('config.autocmds')
 require('config.functions')
 require('config.keymap')
 
-vim.api.nvim_command('colorscheme catppuccin')
+vim.cmd.colorscheme('catppuccin')
 
 -- vim-test
 vim.g['test#strategy'] = 'neoterm'
@@ -16,4 +16,4 @@ vim.g.neoterm_autoscroll = 1
 vim.g.neoterm_automap_keys = ''
 
 -- theme
-vim.cmd('highlight LineNr guifg=#9ca0a4')
+vim.cmd.highlight('LineNr guifg=#9ca0a4')

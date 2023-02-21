@@ -28,7 +28,11 @@ M.apply_function_for_buffer_with_ft = function(buffer, ft, func)
 end
 
 M.visit_buffers = function(func)
-  for _, buffer in pairs(vim.api.nvim_list_bufs()) do func(buffer) end
+  for _, buffer in pairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_valid(buffer) then
+      func(buffer)
+    end
+  end
 end
 
 M.delete_buffer_func = function(buffer, opts)
