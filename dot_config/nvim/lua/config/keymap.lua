@@ -1,8 +1,8 @@
-local nmap = require('config.remap').nmap
-local nnoremap = require('config.remap').nnoremap
-local vnoremap = require('config.remap').vnoremap
-local tnoremap = require('config.remap').tnoremap
-local util = require('config.functions')
+local nmap = require('helper.remap').nmap
+local nnoremap = require('helper.remap').nnoremap
+local vnoremap = require('helper.remap').vnoremap
+local tnoremap = require('helper.remap').tnoremap
+local util = require('helper.functions')
 
 -- Centralize cursor on vertical movement
 nnoremap('<C-d>', '<C-d>zz')
@@ -143,7 +143,7 @@ nnoremap('<leader>lc', vim.cmd.lc, { silent = true })
 nnoremap('<leader>lC', vim.cmd.lclose, { silent = true })
 
 -- Fast search and replace
-nnoremap('<leader>sr', ":%s///<Left>")
+nnoremap('<leader>sr', ':%s///<Left>')
 
 -- Esc to leave terminal mode
 tnoremap('<Esc>', '<C-\\><C-n>')
