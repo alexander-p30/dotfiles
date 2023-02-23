@@ -92,7 +92,8 @@ nnoremap('<leader>gg', vim.cmd.Git, { silent = true })
 nnoremap('<leader>gq',
   function()
     util.visit_buffers(function(b)
-      util.apply_function_for_buffer_with_ft(b, 'fugitive', util.delete_buffer_func(b, {}))
+      local buf_ft = vim.api.nvim_buf_get_option(b, 'filetype')
+      if buf_ft == 'fugitive' then vim.api.nvim_buf_delete(b, {}) end
     end)
   end, { silent = true, })
 nnoremap('<leader>gP', ':Git push<CR>')
