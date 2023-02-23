@@ -5,30 +5,33 @@ require('persisted').setup({
   autosave = true,
   autoload = true,
   on_autoload_no_session = function() vim.notify('No existing session to load.') end,
-  before_save = function()
-    local delete_buggy_buffers = function(buffer)
-      local buffer_ft = vim.api.nvim_buf_get_option(buffer, 'filetype')
-      if buffer_ft == 'neo-tree' or buffer_ft == 'packer' then
-        vim.api.nvim_buf_delete(buffer, {})
-      end
-    end
-
-    util.visit_buffers(delete_buggy_buffers)
-  end,
-  after_save = function() vim.notify('Session saved!') end,
-  after_source = function() vim.notify('Session loaded...') end,
-  telescope = {
-    before_source = function()
-      local delete_neoterm_buffer = function(buffer)
-        util.apply_function_for_buffer_with_ft(
-          buffer,
-          'neoterm',
-          util.delete_buffer_func(buffer, { force = true })
-        )
-      end
-
-      util.visit_buffers(delete_neoterm_buffer)
-    end,
-    after_source = function(session) vim.notify('Loaded session ' .. session.name) end,
-  },
 })
+
+local group = vim.api.nvim_create_augroup('PersistedHooks', {})
+
+local hook_specs = {
+  { pattern = 'PersistedSavePre', callback = function()
+    util.visit_buffers(function(b)
+      local buf_ft = vim.api.nvim_buf_get_option(b, 'filetype')
+      if buf_ft == 'neo-tree' then vim.api.nvim_buf_delete(b, {}) end
+    end)
+  end },
+  { pattern = 'PersistedSavePost', callback = function() vim.notify('Session saved!') end },
+  { pattern = 'PersistedLoadPost', callback = function(session)
+    vim.notify('Session loaded! ' .. session.data)
+  end },
+  { pattern = 'PersistedTelescopeLoadPre', callback = function(_)
+    util.visit_buffers(function(b)
+      local buf_ft = vim.api.nvim_buf_get_option(b, 'filetype')
+      if buf_ft == 'neoterm' then vim.api.nvim_buf_delete(b, { force = true }) end
+    end)
+  end },
+  { pattern = 'PersistedTelescopeLoadPost', callback = function(session)
+    vim.notify('Loaded session ' .. session.data.name)
+  end }
+}
+
+for _, hook_spec in pairs(hook_specs) do
+  hook_spec.group = group
+  vim.api.nvim_create_autocmd({ 'User' }, hook_spec)
+end
