@@ -100,7 +100,7 @@ require('lazy').setup({
   'simeji/winresizer',
   {
     'ustrajunior/ex_maps',
-    config = { create_mappings = true, mapping = 'mtt' },
+    opts = { create_mappings = true, mapping = 'mtt' },
     ft = { 'elixir', 'eelixir', 'heex' }
   },
   { 'rcarriga/nvim-notify',  config = function() vim.notify = require('notify') end },
@@ -111,7 +111,7 @@ require('lazy').setup({
   {
     'catppuccin/nvim',
     name = 'catppuccin',
-    config = {
+    opts = {
       transparent_background = false,
       term_colors = true,
       flavour = 'mocha',
@@ -138,19 +138,19 @@ require('lazy').setup({
   { 'j-hui/fidget.nvim',           config = true },
   {
     'folke/tokyonight.nvim',
-    config = { style = "moon", terminal_colors = false },
+    opts = { style = "moon", terminal_colors = false },
     lazy = true
   },
-  { 'nvim-tree/nvim-web-devicons', config = { default = true } },
+  { 'nvim-tree/nvim-web-devicons', opts = { default = true } },
   'nvim-lualine/lualine.nvim',
   { 'NTBBloodbath/doom-one.nvim',  lazy = true },
-  { 'lukas-reineke/indent-blankline.nvim', config = {
+  { 'lukas-reineke/indent-blankline.nvim', opts = {
     char = '|',
     buftype_exclude = { 'terminal' },
     show_current_context = true, }
   },
   'MunifTanjim/nui.nvim',
   'stevearc/dressing.nvim',
-  { 'nvim-zh/colorful-winsep.nvim', config = { highlight = { bg = '' } } }
+  { 'nvim-zh/colorful-winsep.nvim', opts = { highlight = { bg = '' } } }
   --
 })
