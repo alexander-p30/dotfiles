@@ -7,7 +7,10 @@ function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
   return orig_util_open_floating_preview(contents, syntax, opts, ...)
 end
 
-local function on_attach(_, bufnr)
+require('lsp-format').setup({})
+
+local function on_attach(client, bufnr)
+  require('lsp-format').on_attach(client)
   require('lsp_signature').on_attach({ bind = true, handler_opts = { border = "rounded" } }, bufnr)
 
   -- Mappings.
@@ -79,9 +82,3 @@ nvim_lsp.lua_ls.setup({
 })
 
 nvim_lsp.efm.setup({ filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } })
-
-local autoformat_fts = { 'ex', 'exs', 'heex', 'go', 'rs', 'rb', 'erb', 'lua' }
--- Auto-format on save
-for _, ft in pairs(autoformat_fts) do
-  vim.api.nvim_command('autocmd BufWritePre *.' .. ft .. ' lua vim.lsp.buf.format { timeout_ms = 500 }')
-end

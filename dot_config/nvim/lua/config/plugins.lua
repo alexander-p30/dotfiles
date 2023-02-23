@@ -40,7 +40,9 @@ require('lazy').setup({
       'williamboman/mason-lspconfig.nvim',
       config = function() require("mason-lspconfig").setup({ automatic_installation = true }) end
     },
-    "neovim/nvim-lspconfig"
+    { 'neovim/nvim-lspconfig',
+      dependencies = { 'lukas-reineke/lsp-format.nvim' }
+    }
   },
   {
     'hrsh7th/cmp-nvim-lsp',
