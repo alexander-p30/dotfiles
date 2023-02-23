@@ -23,8 +23,6 @@ require('lazy').setup({
   },
   { 'nvim-neo-tree/neo-tree.nvim', cmd = 'Neotree' },
 
-  -- Fonts and assets
-  'lambdalisue/nerdfont.vim',
 
   -- Git
   'lewis6991/gitsigns.nvim',
@@ -143,9 +141,8 @@ require('lazy').setup({
     opts = { style = "moon", terminal_colors = false },
     lazy = true
   },
-  { 'nvim-tree/nvim-web-devicons', opts = { default = true } },
+  { 'nvim-tree/nvim-web-devicons',  opts = { default = true } },
   'nvim-lualine/lualine.nvim',
-  { 'NTBBloodbath/doom-one.nvim',  lazy = true },
   { 'lukas-reineke/indent-blankline.nvim', opts = {
     char = '|',
     buftype_exclude = { 'terminal' },
