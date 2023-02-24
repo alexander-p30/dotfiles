@@ -19,7 +19,7 @@ opt.expandtab = true
 opt.smartindent = true
 
 -- Timing
-opt.timeoutlen = 1000
+opt.timeoutlen = 300
 opt.updatetime = 250
 
 -- Dinamically loaded vim configs

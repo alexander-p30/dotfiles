@@ -21,4 +21,5 @@ return {
   },
   'simeji/winresizer',
   'mbbill/undotree'
+  { 'folke/which-key.nvim', config = true }
 }
