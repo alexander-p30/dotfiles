@@ -1,51 +1,24 @@
+local util = require('helper.functions')
+
+local telescope_keymaps = {
+  { keymap = '<leader><space>', cmd = '<cmd>Telescope find_files<CR>' },
+  { keymap = '<leader>f',       cmd = '<cmd>Telescope live_grep<CR>' },
+  { keymap = '<leader>b',       cmd = '<cmd>Telescope buffers<CR>' },
+  { keymap = '<leader>gco',     cmd = '<cmd>Telescope git_branches<CR>' },
+  { keymap = '<leader>gcc',     cmd = '<cmd>Telescope git_commits<CR>' },
+  { keymap = '<leader>sh',      cmd = '<cmd>Telescope help_tags<CR>' },
+  { keymap = '<leader>ss',      cmd = '<cmd>Telescope persisted<CR>' },
+  { keymap = '<leader>cs',      cmd = '<cmd>Telescope colorscheme<CR>' },
+}
+
 return {
   {
     'nvim-telescope/telescope.nvim',
+    keys = util.map(telescope_keymaps, function(_, spec) return spec.keymap end),
     dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-lua/popup.nvim',
       { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
-      {
-        'olimorris/persisted.nvim',
-        config = function()
-          local util = require('helper.functions')
-
-          require('persisted').setup({
-            use_git_branch = true,
-            autosave = true,
-            autoload = true,
-            on_autoload_no_session = function() vim.notify('No existing session to load.') end,
-          })
-
-          local group = vim.api.nvim_create_augroup('PersistedHooks', {})
-
-          local hook_specs = {
-            { pattern = 'PersistedSavePre', callback = function()
-              util.visit_buffers(function(b)
-                local buf_ft = vim.api.nvim_buf_get_option(b, 'filetype')
-                if buf_ft == 'neo-tree' then vim.api.nvim_buf_delete(b, {}) end
-              end)
-            end },
-            { pattern = 'PersistedSavePost', callback = function() vim.notify('Session saved!') end },
-            { pattern = 'PersistedLoadPost', callback = function(session)
-              vim.notify('Session loaded! ' .. session.data)
-            end },
-            { pattern = 'PersistedTelescopeLoadPre', callback = function(_)
-              util.visit_buffers(function(b)
-                local buf_ft = vim.api.nvim_buf_get_option(b, 'filetype')
-                if buf_ft == 'neoterm' then vim.api.nvim_buf_delete(b, { force = true }) end
-              end)
-            end },
-            { pattern = 'PersistedTelescopeLoadPost', callback = function(session)
-              vim.notify('Loaded session ' .. session.data.name)
-            end }
-          }
-
-          for _, hook_spec in pairs(hook_specs) do
-            hook_spec.group = group
-            vim.api.nvim_create_autocmd({ 'User' }, hook_spec)
-          end
-        end }
 
     },
     config = function()
@@ -92,18 +65,14 @@ return {
 
       local opts = { noremap = true, silent = true }
 
-      vim.api.nvim_set_keymap('n', '<leader><space>', '<cmd>Telescope find_files<CR>', opts)
-      vim.api.nvim_set_keymap('n', '<leader>f', '<cmd>Telescope live_grep<CR>', opts)
-      vim.api.nvim_set_keymap('n', '<leader>b', '<cmd>Telescope buffers<CR>', opts)
-      vim.api.nvim_set_keymap('n', '<leader>gco', '<cmd>Telescope git_branches<CR>', opts)
-      vim.api.nvim_set_keymap('n', '<leader>gcc', '<cmd>Telescope git_commits<CR>', opts)
-      vim.api.nvim_set_keymap('n', '<leader>sh', '<cmd>Telescope help_tags<CR>', opts)
-      vim.api.nvim_set_keymap('n', '<leader>ss', '<cmd>Telescope persisted<CR>', opts)
-      vim.api.nvim_set_keymap('n', '<leader>cs', '<cmd>Telescope colorscheme<CR>', opts)
+      for _, spec in pairs(telescope_keymaps) do
+        vim.api.nvim_set_keymap('n', spec.keymap, spec.cmd, opts)
+      end
     end
   },
   {
     'nvim-neo-tree/neo-tree.nvim',
+    cmd = 'Neotree',
     dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-tree/nvim-web-devicons',

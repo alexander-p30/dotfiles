@@ -1,6 +1,16 @@
 return {
   {
     'hrsh7th/nvim-cmp',
+    event = 'InsertEnter',
+    dependencies = {
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-path',
+      'SirVer/ultisnips',
+      'quangnguyen30192/cmp-nvim-ultisnips',
+      'onsails/lspkind-nvim',
+      { 'windwp/nvim-autopairs', config = true }
+    },
     config = function()
       local cmp = require('cmp')
       local lspkind = require('lspkind')
@@ -59,19 +69,11 @@ return {
         'confirm_done',
         cmp_autopairs.on_confirm_done()
       )
-    end,
-    dependencies = {
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-path',
-      'SirVer/ultisnips',
-      'quangnguyen30192/cmp-nvim-ultisnips',
-      'onsails/lspkind-nvim',
-      { 'windwp/nvim-autopairs', config = true }
-    }
+    end
   },
   {
     'gelguy/wilder.nvim',
+    keys = { ':', '/', '?' },
     config = function()
       local wilder = require('wilder')
       wilder.setup({ modes = { ':', '/', '?' } })

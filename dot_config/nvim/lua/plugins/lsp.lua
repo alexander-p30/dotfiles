@@ -2,8 +2,8 @@ return {
   'neovim/nvim-lspconfig',
   dependencies = {
     'lukas-reineke/lsp-format.nvim',
-    'ray-x/lsp_signature.nvim',
-    { 'j-hui/fidget.nvim', config = true }
+    { 'ray-x/lsp_signature.nvim', event = 'InsertEnter' },
+    { 'j-hui/fidget.nvim',        config = true }
   },
   config = function()
     local nvim_lsp = require('lspconfig')

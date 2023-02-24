@@ -1,5 +1,5 @@
 return {
-  { 'navarasu/onedark.nvim',       lazy = true },
+  { 'navarasu/onedark.nvim', event = 'VeryLazy' },
   {
     'catppuccin/nvim',
     name = 'catppuccin',
@@ -28,19 +28,24 @@ return {
   },
   {
     'folke/tokyonight.nvim',
-    opts = { style = 'moon', terminal_colors = false },
-    lazy = true
+    event = 'VeryLazy',
+    opts = { style = 'moon', terminal_colors = false }
   },
   { 'lukas-reineke/indent-blankline.nvim',
+    event = 'VeryLazy',
     opts = {
       char = '|',
       buftype_exclude = { 'terminal' },
-      show_current_context = true, }
+      show_current_context = true,
+    }
   },
-  { 'rcarriga/nvim-notify',        config = function() vim.notify = require('notify') end },
-  { 'norcalli/nvim-colorizer.lua', config = true },
-  { 'nvim-tree/nvim-web-devicons', opts = { default = true } },
-  'MunifTanjim/nui.nvim',
-  'stevearc/dressing.nvim',
+  { 'rcarriga/nvim-notify',  config = function() vim.notify = require('notify') end },
+  {
+    'norcalli/nvim-colorizer.lua',
+    event = 'VeryLazy',
+    config = true
+  },
+  { 'nvim-tree/nvim-web-devicons',  opts = { default = true } },
+  { 'stevearc/dressing.nvim',       event = 'VeryLazy' },
   { 'nvim-zh/colorful-winsep.nvim', opts = { highlight = { bg = '' } } }
 }

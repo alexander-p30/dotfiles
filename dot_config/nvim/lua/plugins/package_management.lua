@@ -1,10 +1,13 @@
 return {
   {
     'williamboman/mason.nvim',
-    config = function() require('mason').setup({ ui = { border = 'rounded' } }) end
+    cmd = 'Mason',
+    config = function() require('mason').setup({ ui = { border = 'rounded' } }) end,
+    dependencies = {
+      {
+        'williamboman/mason-lspconfig.nvim',
+        config = function() require('mason-lspconfig').setup({ automatic_installation = true }) end
+      }
+    }
   },
-  {
-    'williamboman/mason-lspconfig.nvim',
-    config = function() require('mason-lspconfig').setup({ automatic_installation = true }) end
-  }
 }
