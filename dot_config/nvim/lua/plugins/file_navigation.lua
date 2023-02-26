@@ -9,6 +9,7 @@ local telescope_keymaps = {
   { keymap = '<leader>sh',      cmd = '<cmd>Telescope help_tags<CR>' },
   { keymap = '<leader>ss',      cmd = '<cmd>Telescope persisted<CR>' },
   { keymap = '<leader>cs',      cmd = '<cmd>Telescope colorscheme<CR>' },
+  { keymap = '<leader>nf',      cmd = '<cmd>Telescope notify<CR>' },
 }
 
 return {
@@ -62,6 +63,7 @@ return {
 
       require('telescope').load_extension('fzf')
       require('telescope').load_extension('persisted')
+      require('telescope').load_extension('notify')
 
       local opts = { noremap = true, silent = true }
 

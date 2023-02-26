@@ -1,5 +1,5 @@
 return {
-  { 'navarasu/onedark.nvim', event = 'VeryLazy' },
+  { 'navarasu/onedark.nvim',        event = 'VeryLazy' },
   {
     'catppuccin/nvim',
     name = 'catppuccin',
@@ -39,7 +39,10 @@ return {
       show_current_context = true,
     }
   },
-  { 'rcarriga/nvim-notify',  config = function() vim.notify = require('notify') end },
+  {
+    'rcarriga/nvim-notify',
+    config = function() vim.notify = require('notify') end,
+  },
   {
     'norcalli/nvim-colorizer.lua',
     event = 'VeryLazy',

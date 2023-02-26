@@ -150,3 +150,6 @@ tnoremap('<Esc>', '<C-\\><C-n>')
 
 -- Open undotree
 nnoremap('<leader>u', vim.cmd.UndotreeToggle)
+
+-- Dismiss notifications
+nnoremap('<leader>nd', vim.notify.dismiss)

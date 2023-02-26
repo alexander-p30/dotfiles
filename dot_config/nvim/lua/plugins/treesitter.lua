@@ -64,9 +64,5 @@ return {
         },
       }
     })
-
-    -- highlight rascal files as java
-    local ft_to_parser = require 'nvim-treesitter.parsers'.filetype_to_parsername
-    ft_to_parser.routeros = 'java'
   end
 }
