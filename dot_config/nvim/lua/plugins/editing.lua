@@ -18,7 +18,6 @@ return {
     },
     config = true
   },
-  { 'tpope/vim-endwise',      ft = { 'ruby', 'elixir', 'eelixir', 'heex' } },
   { 'mg979/vim-visual-multi', keys = { { '<C-n>', mode = 'v' }, '<C-down>' } },
   { 'RRethy/vim-illuminate',  event = 'VeryLazy' },
   {

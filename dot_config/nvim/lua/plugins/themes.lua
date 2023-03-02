@@ -3,6 +3,7 @@ return {
   {
     'catppuccin/nvim',
     name = 'catppuccin',
+    event = 'VeryLazy',
     opts = {
       transparent_background = false,
       term_colors = true,
@@ -23,8 +24,7 @@ return {
           }
         end
       }
-    },
-    lazy = true
+    }
   },
   {
     'folke/tokyonight.nvim',

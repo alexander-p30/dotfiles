@@ -37,7 +37,7 @@ return {
         previewers.buffer_previewer_maker(filepath, bufnr, opts)
       end
 
-      require('telescope').setup {
+      require('telescope').setup({
         extensions = {
           fzf = { fuzzy = true, override_generic_sorter = true, override_file_sorter = true, case_mode = 'smart_case' },
         },
@@ -59,7 +59,7 @@ return {
           help_tags = { theme = 'ivy' },
           colorscheme = { theme = 'ivy', enable_preview = true }
         }
-      }
+      })
 
       require('telescope').load_extension('fzf')
       require('telescope').load_extension('persisted')
@@ -74,7 +74,6 @@ return {
   },
   {
     'nvim-neo-tree/neo-tree.nvim',
-    cmd = 'Neotree',
     dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-tree/nvim-web-devicons',

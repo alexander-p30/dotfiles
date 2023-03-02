@@ -6,8 +6,9 @@ return {
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-path',
-      'SirVer/ultisnips',
-      'quangnguyen30192/cmp-nvim-ultisnips',
+      'honza/vim-snippets',
+      { 'L3MON4D3/LuaSnip',      version = '1.*', build = 'make install_jsregexp' },
+      'saadparwaiz1/cmp_luasnip',
       'onsails/lspkind-nvim',
       { 'windwp/nvim-autopairs', config = true }
     },
@@ -15,45 +16,55 @@ return {
       local cmp = require('cmp')
       local lspkind = require('lspkind')
       local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+      local luasnip = require('luasnip')
+
+      require('luasnip.loaders.from_snipmate').lazy_load()
 
       cmp.setup({
         formatting = {
           format = lspkind.cmp_format({
             mode = 'symbol_text',
-            maxwidth = 60, -- prevent the popup from showing more than provided characters
-
-            -- The function below will be called before any actual modifications from lspkind
-            -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
+            maxwidth = 60,
             before = function(entry, vim_item)
               vim_item.menu = ({
                     nvim_lsp = '[LSP]',
                     look = '[Dict]',
-                    bufferi = '[Buffer]'
+                    buffer = '[Buffer]',
+                    luasnip = '[LuaSnip]',
+                    path = '[Path]'
                   })[entry.source.name]
+
+              if not vim_item.menu then vim.notify(entry.source.name) end
 
               return vim_item
             end
           })
         },
         snippet = {
-          expand = function(args)
-            vim.fn['UltiSnips#Anon'](args.body)
-          end
+          expand = function(args) require('luasnip').lsp_expand(args.body) end
         },
         window = {
           completion = cmp.config.window.bordered(),
           documentation = cmp.config.window.bordered(),
         },
         mapping = cmp.mapping.preset.insert({
-          ['<C-d>'] = cmp.mapping.scroll_docs( -4),
-          ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<C-Space>'] = cmp.mapping.complete(),
-          ['<C-e>'] = cmp.mapping.close(),
-          ['<Tab>'] = cmp.mapping.confirm({ select = true }),
+              ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+              ['<C-f>'] = cmp.mapping.scroll_docs(4),
+              ['<C-Space>'] = cmp.mapping.complete(),
+              ['<C-e>'] = cmp.mapping.close(),
+              ['<C-CR>'] = cmp.mapping(function(_) luasnip.expand_or_jump() end, { 'i', 's' }),
+              ['<Tab>'] = cmp.mapping.confirm({ select = true }),
+              ['<S-Tab>'] = cmp.mapping(function(fallback)
+            if luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { 'i', 's' }),
         }),
         sources = {
           { name = 'nvim_lsp' },
-          { name = 'ultisnips' },
+          { name = 'luasnip' },
           { name = 'buffer' },
           { name = 'path' },
         }
