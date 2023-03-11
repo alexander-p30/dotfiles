@@ -14,7 +14,7 @@ return {
       },
       preview_config = { border = 'rounded' },
       current_line_blame = true,
-      current_line_blame_formatter = '🤡 <author>, <author_time:%Y/%m/%d %H:%M> • <summary>',
+      current_line_blame_formatter = '   <author>, <author_time:%Y/%m/%d %H:%M> • <summary>',
       current_line_blame_opts = { delay = 300 },
       on_attach = function(bufnr)
         local gs = package.loaded.gitsigns
