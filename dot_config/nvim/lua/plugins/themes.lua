@@ -31,7 +31,8 @@ return {
     event = 'VeryLazy',
     opts = { style = 'moon', terminal_colors = false }
   },
-  { 'lukas-reineke/indent-blankline.nvim',
+  {
+    'lukas-reineke/indent-blankline.nvim',
     event = 'VeryLazy',
     opts = {
       char = '|',

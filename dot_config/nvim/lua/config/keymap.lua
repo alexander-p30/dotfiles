@@ -18,15 +18,15 @@ nnoremap <expr> j (v:count > 1 ? "m'" . v:count : '') . 'j'
 
 -- Terminal/test-related bindings {{{
 nnoremap('<leader>tt', vim.cmd.Ttoggle, { silent = true })
+nnoremap('<leader>tc', ':Tclose!<CR>')
+
 nnoremap('<leader>alt', ':A<CR>')
 
-nnoremap('<leader>tn', function() util.test_in_neoterm('tn') end)
-nnoremap('<leader>tf', function() util.test_in_neoterm('tf') end)
-nnoremap('<leader>ts', function() util.test_in_neoterm('ts') end)
-nnoremap('<leader>tl', function() util.test_in_neoterm('tl') end)
-
+nnoremap('<leader>tn', vim.cmd.TestNearest)
+nnoremap('<leader>tf', vim.cmd.TestFile)
+nnoremap('<leader>ts', vim.cmd.TestSuite)
+nnoremap('<leader>tl', vim.cmd.TestLast)
 nnoremap('<leader>tv', vim.cmd.TestVisit)
-nnoremap('<leader>tc', ':Tclose!<CR>')
 -- }}}
 
 -- Tabs {{{
