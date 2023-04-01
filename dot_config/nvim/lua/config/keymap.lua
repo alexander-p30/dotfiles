@@ -57,6 +57,12 @@ vnoremap('<C-p>', '"+p')
 -- Splits {{{
 -- 'Maximize' window
 nnoremap('<C-w>m', '<C-w>_ | <C-w>|')
+
+-- Movement
+nnoremap('<C-h>', '<C-w>h')
+nnoremap('<C-j>', '<C-w>j')
+nnoremap('<C-k>', '<C-w>k')
+nnoremap('<C-l>', '<C-w>l')
 -- }}}
 
 -- Writing and Closing {{{
@@ -82,7 +88,7 @@ vnoremap('<leader>p', '"_dP')
 nmap('<leader>yfp', ':let @+ = expand("%")<CR>')
 
 -- Clear search highlighting
-nnoremap('<C-h>', vim.cmd.noh, { silent = true })
+nnoremap('<C-i>', vim.cmd.noh, { silent = true })
 
 -- Reparse buffers
 nnoremap('<leader>rt', ':write | edit | TSBufEnable highlight<CR>', { silent = true })
@@ -96,6 +102,8 @@ nnoremap('<leader>gq',
       if buf_ft == 'fugitive' then vim.api.nvim_buf_delete(b, {}) end
     end)
   end, { silent = true, })
+nnoremap('<leader>gh', '<cmd>diffget //2<CR>')
+nnoremap('<leader>gl', '<cmd>diffget //3<CR>')
 nnoremap('<leader>gP', ':Git push<CR>')
 nnoremap('<leader>gsP', ':Git push -u origin HEAD<CR>')
 nnoremap('<leader>gp', ':Git pull<CR>')
