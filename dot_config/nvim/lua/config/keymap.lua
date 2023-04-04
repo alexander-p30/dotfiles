@@ -88,7 +88,7 @@ vnoremap('<leader>p', '"_dP')
 nmap('<leader>yfp', ':let @+ = expand("%")<CR>')
 
 -- Clear search highlighting
-nnoremap('<C-i>', vim.cmd.noh, { silent = true })
+nnoremap('<leader>noh', vim.cmd.noh, { silent = true })
 
 -- Reparse buffers
 nnoremap('<leader>rt', ':write | edit | TSBufEnable highlight<CR>', { silent = true })
