@@ -10,7 +10,7 @@ return {
     config = function()
       require('nvim-treesitter.configs').setup({
         ensure_installed = {
-          'help', 'elixir', 'heex', 'ruby', 'html', 'javascript', 'c', 'cpp', 'go', 'haskell', 'java',
+          'elixir', 'heex', 'ruby', 'html', 'javascript', 'c', 'cpp', 'go', 'haskell', 'java',
           'lua', 'bash', 'erlang', 'sql', 'clojure', 'cmake', 'dockerfile', 'fennel', 'http', 'json',
           'json5', 'jsonc', 'make', 'org', 'python', 'rasi', 'typescript', 'tsx', 'yaml'
         },
