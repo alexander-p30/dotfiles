@@ -47,6 +47,7 @@ yay --needed -S age \
     exa \
     fd \
     flameshot \
+    galendae-git \
     git \
     gitflow-avh \
     google-chrome \
@@ -99,7 +100,6 @@ yay --needed -S age \
     ttf-font-awesome \
     ttf-inconsolata \
     ttf-indic-otf \
-    ttf-iosevka-nerd \
     ttf-liberation \
     ttf-mac-fonts \
     ttf-monofur \

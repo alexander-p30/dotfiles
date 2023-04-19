@@ -244,7 +244,7 @@ interval = 30
 type = custom/script
 exec = ~/.scripts/calendar.sh
 interval = 5
-click-left = ~/.scripts/calendar.sh --popup &
+click-left = galendae
 
 format-prefix = " %{T6}%{T-}"
 format-suffix = " "
