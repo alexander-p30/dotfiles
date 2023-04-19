@@ -256,20 +256,20 @@ format-background = ${colors.background}
 
 [module/sound-output]
 type = custom/ipc
-hook-0 = ~/.scripts/control_sound_output.sh show-current
-hook-1 = ~/.scripts/control_sound_output.sh update-polybar
-initial = 1
+hook-0 = ~/.scripts/control_sound_output.py show-current
+hook-1 = ~/.scripts/control_sound_output.py next
+initial = 0
 
 format-prefix = "%{T4}"
 format-suffix = "%{T-}"
-click-left = ~/.scripts/control_sound_output.sh next-output
+click-left = "#sound-output.hook.1"
 format-foreground = ${colors.volume}
 
 [module/sound-output-polling]
 type = custom/script
-exec = ~/.scripts/control_sound_output.sh update-polybar
+exec = polybar-msg action sound-output hook 0
 label = ""
-interval = 2
+interval = 0.5
 
 [module/left-limit]
 type = custom/text
