@@ -1,5 +1,9 @@
 #! /bin/bash
 
+{{- if eq .chezmoi.os "darwin" }}
+exit 0
+{{- end}}
+
 echo "============================"
 applications_path="$HOME/.local/share/applications"
 echo ":: Adding application (.desktop) files to $applications_path"

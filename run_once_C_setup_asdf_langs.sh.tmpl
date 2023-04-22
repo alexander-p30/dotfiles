@@ -1,5 +1,9 @@
 #!/bin/sh
 
+{{- if eq .chezmoi.os "darwin" }}
+exit 0
+{{- end}}
+
 # Plugins
 asdf plugin add erlang
 asdf plugin add elixir

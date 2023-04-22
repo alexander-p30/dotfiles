@@ -1,0 +1,23 @@
+{{- if eq .chezmoi.os "darwin" }}
+#configs
+./dot_config/autorandr/
+./dot_config/dunst
+./dot_config/efm-langserver/
+./dot_config/galendae/
+./dot_config/polybar/
+./dot_config/rofi
+./dot_config/yay
+./dot_config/picom.conf
+./dot_i3/
+./dot_Xresources.tmpl
+./dot_bashrc
+
+# scripts
+./dot_scripts/executable_cedit.sh
+./dot_scripts/executable_control_sound_output.py
+./dot_scripts/executable_i3exit.sh
+./dot_scripts/executable_keebs.sh
+./dot_scripts/executable_keyboard-fn.sh
+./dot_scripts/executable_switch_to_current.sh  
+./dot_scripts/executable_system-uptime-pretty.sh
+{{- end }}

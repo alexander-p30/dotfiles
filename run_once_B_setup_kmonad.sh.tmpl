@@ -1,5 +1,9 @@
 #! /bin/bash
 
+{{- if eq .chezmoi.os "darwin" }}
+exit 0
+{{- end}}
+
 echo "============================"
 echo ":: Setting up kmonad"
 

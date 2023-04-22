@@ -1,5 +1,5 @@
 # command_timeout = 1000
 [custom.chezmoi_status]
-command = "chezmoi_status"
+command = "~/.scripts/chezmoi_status.sh"
 when = true
 ignore_timeout = true
