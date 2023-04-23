@@ -2,40 +2,40 @@
 
 include ./theme.conf
 
-# Fonts {{{
-font_family      Fira Code
+# Fonts
+font_size 14.0
+
+{{- if ne .chezmoi.os "darwin" }}
+font_family      Fira Code Retina
 bold_font        Fira Code Bold
-italic_font      Fira Code
+italic_font      Fira Code Retina
 bold_italic_font Fira Code Bold
 
 font_size 12.0
+{{- end }}
 
 disable_ligatures never
-# }}}
 
-# Layouts/Windows {{{
+
+# Layouts/Windows
 enabled_layouts splits, stack
 
 tab_bar_style separator
 tab_separator "   "
 
-# }}}
-
-# Visual {{{
+# Visual
 background_opacity 0.85
 dynamic_background_opacity yes
-# }}}
 
-# Windows {{{
-# Styling {{{
+# Windows
+# Styling
 active_border_color #a9a1e1
 inactive_border_color #504945
 window_margin_width 0
 window_padding_width 0
 window_border_width 2pt
-# }}}
 
-# Navigation {{{
+# Navigation
 map ctrl+a>h neighboring_window left
 map ctrl+a>j neighboring_window bottom
 map ctrl+a>k neighboring_window top
@@ -47,9 +47,8 @@ map ctrl+a>shift+k move_window top
 map ctrl+a>shift+l move_window right
 
 map ctrl+a>ctrl+r start_resizing_window
-# }}}
 
-# Managing {{{
+# Managing
 map ctrl+a>a toggle_layout stack
 
 map ctrl+a>h neighboring_window left
@@ -64,11 +63,9 @@ map ctrl+a>c close_window
 map kitty_mod+w no_op
 map ctrl+a>shift+c close_tab
 map ctrl+a>r layout_action rotate
-# }}}
-# }}}
 
-# Tabs {{{
-# Styling {{{
+# Tabs
+# Styling
 tab_title_template "{index-1}:{sup.num_windows}{title}"
 active_tab_title_template "{index-1}:{sup.num_windows}{title}*"
 
@@ -80,9 +77,8 @@ inactive_tab_background #a9a1e1
 inactive_tab_font_style normal
 
 tab_bar_background #a9a1e1
-# }}}
 
-# Navigation {{{
+# Navigation
 map ctrl+a>. next_tab
 map ctrl+a>, previous_tab
 
@@ -95,27 +91,23 @@ map ctrl+a>5 goto_tab 6
 map ctrl+a>6 goto_tab 7
 map ctrl+a>7 goto_tab 8
 map ctrl+a>8 goto_tab 9
-# }}}
 
-# Managing {{{
+# Managing
 map ctrl+a>t new_tab_with_cwd
 map ctrl+a>shift+t set_tab_title
 map ctrl+a>shift+. move_tab_forward
 map ctrl+a>shift+, move_tab_backward
-# }}}
-# }}}
 
-# Config {{{
+# Config
 enable_audio_bell no
 editor nvim
 allow_remote_control yes
 confirm_os_window_close 2
-# }}}
 
-# General Maps {{{
+# General Maps
 map ctrl+a>q quit
 map ctrl+a>e kitten hints
 map ctrl+a>o launch --stdin-source=@screen_scrollback --type=tab --title="scrollback search" nvim -c ":g/^$/d"
 map ctrl+a>ctrl+c load_config_file /home/alexander/.config/kitty/kitty.conf
-# }}}
 
+macos_show_window_title_in window

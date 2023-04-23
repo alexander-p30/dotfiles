@@ -1,21 +1,22 @@
 #!/bin/sh
 
+# Erlang/Elixir
+asdf plugin add erlang
+asdf plugin add elixir
+
+asdf install erlang 25.3
+asdf global erlang 25.3
+asdf install elixir 1.14.4-otp-25
+asdf global elixir 1.14.4-otp-25
+
 {{- if eq .chezmoi.os "darwin" }}
 exit 0
 {{- end}}
 
 # Plugins
-asdf plugin add erlang
-asdf plugin add elixir
 asdf plugin add golang
 asdf plugin add nodejs
 asdf plugin add ruby
-
-# Erlang/Elixir
-asdf install erlang 24.3.3
-asdf global erlang 24.3.3
-asdf install elixir 1.13.2-otp-24
-asdf global elixir 1.13.2-otp-24
 
 # Go
 asdf install golang 1.18.1

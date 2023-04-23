@@ -1,7 +1,7 @@
 # vim:foldmethod=marker
 
 # oh-my-zsh {{{
-export ZSH="/home/alexander/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Theme
 
@@ -30,6 +30,9 @@ source ~/.alias/system-aliases
 eval "$(starship init zsh)"
 # }}}
 # }}}
+
+# Keep IEx history
+export ERL_AFLAGS="-kernel shell_history enabled"
 
 TEMP_RUN=$RUN
 export RUN=
