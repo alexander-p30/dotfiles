@@ -42,9 +42,9 @@ return {
       vim.keymap.set('n', '<leader>li', function() vim.lsp.buf.format({ async = true }) end, bufopts)
 
       -- Workspace stuff
-      vim.keymap.set('n', '<space>lwa', vim.lsp.buf.add_workspace_folder, bufopts)
-      vim.keymap.set('n', '<space>lwr', vim.lsp.buf.remove_workspace_folder, bufopts)
-      vim.keymap.set('n', '<space>lwl', function()
+      vim.keymap.set('n', '<leader>lwa', vim.lsp.buf.add_workspace_folder, bufopts)
+      vim.keymap.set('n', '<leader>lwr', vim.lsp.buf.remove_workspace_folder, bufopts)
+      vim.keymap.set('n', '<leader>lwl', function()
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
       end, bufopts)
     end
@@ -62,7 +62,16 @@ return {
       return { capabilities = capabilities, on_attach = on_attach, cmd = { get_ls_cmd(ls), ... } }
     end
 
-    nvim_lsp.elixirls.setup(config('elixir-ls'))
+    local elixir_config = config('elixir-ls')
+    elixir_config.on_attach = function(client, bufnr)
+      on_attach(client, bufnr)
+
+      vim.keymap.set('n', '<leader>fp', ':ElixirFromPipe<cr>', { buffer = true, noremap = true })
+      vim.keymap.set('n', '<leader>tp', ':ElixirToPipe<cr>', { buffer = true, noremap = true })
+      vim.keymap.set('v', '<leader>em', ':ElixirExpandMacro<cr>', { buffer = true, noremap = true })
+    end
+
+    nvim_lsp.elixirls.setup(elixir_config)
     nvim_lsp.gopls.setup(config('gopls'))
     nvim_lsp.tsserver.setup(config('typescript-language-server', '--stdio'))
     nvim_lsp.clangd.setup(config('clangd'))
@@ -88,7 +97,5 @@ return {
         },
       },
     })
-
-    nvim_lsp.efm.setup({ filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } })
   end
 }
