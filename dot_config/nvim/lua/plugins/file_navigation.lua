@@ -10,12 +10,16 @@ local telescope_keymaps = {
   { keymap = '<leader>ss',      cmd = '<cmd>Telescope persisted<CR>' },
   { keymap = '<leader>cs',      cmd = '<cmd>Telescope colorscheme<CR>' },
   { keymap = '<leader>nf',      cmd = '<cmd>Telescope notify<CR>' },
+  { keymap = 'gr',              cmd = '<cmd>Telescope lsp_references<CR>' },
+  { keymap = 'gd',              cmd = '<cmd>Telescope lsp_definitions<CR>' }
 }
+
+local lazy_load_telescope_keys = util.map(telescope_keymaps, function(_, spec) return spec.keymap end)
 
 return {
   {
     'nvim-telescope/telescope.nvim',
-    keys = util.map(telescope_keymaps, function(_, spec) return spec.keymap end),
+    keys = lazy_load_telescope_keys,
     dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-lua/popup.nvim',
@@ -49,7 +53,7 @@ return {
             show_all_buffers = true,
             mappings = {
               i = { ['<c-e>'] = 'delete_buffer', },
-              n = { ['d'] = 'delete_buffer',['<c-e>'] = 'delete_buffer' }
+              n = { ['d'] = 'delete_buffer', ['<c-e>'] = 'delete_buffer' }
             }
           },
           find_files = { theme = 'ivy', hidden = true },
@@ -57,7 +61,9 @@ return {
           git_branches = { theme = 'ivy' },
           git_commits = { theme = 'ivy' },
           help_tags = { theme = 'ivy' },
-          colorscheme = { theme = 'ivy', enable_preview = true }
+          colorscheme = { theme = 'ivy', enable_preview = true },
+          lsp_references = { theme = 'cursor', layout_config = { width = 0.8, height = 0.5 } },
+          lsp_definitions = { theme = 'cursor', layout_config = { width = 0.8, height = 0.5 } },
         }
       })
 

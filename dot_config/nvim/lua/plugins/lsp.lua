@@ -25,7 +25,7 @@ return {
       local bufopts = { noremap = true, silent = true, buffer = bufnr }
       -- See `:help vim.lsp.*` for documentation on any of the below functions
       vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+      -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
       vim.keymap.set('n', '<C-w>gv', ':vs<CR><cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
       vim.keymap.set('n', '<C-w>gs', ':sp<CR><cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
@@ -35,7 +35,7 @@ return {
       vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
       vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
       vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
-      vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+      -- vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
       vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, bufopts)
       vim.keymap.set('n', '[e', vim.diagnostic.goto_prev, bufopts)
       vim.keymap.set('n', ']e', vim.diagnostic.goto_next, bufopts)
