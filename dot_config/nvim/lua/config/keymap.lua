@@ -78,6 +78,8 @@ nnoremap('<leader>Q', ':q!<CR>', { silent = true })
 nnoremap('<C-b>', ':Neotree toggle=true reveal<CR>', { silent = true })
 -- }}}
 
+nnoremap('<C-t>', '<C-6>', { silent = true })
+
 -- Copy until end of line
 nnoremap('Y', 'y$')
 
