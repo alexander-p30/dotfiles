@@ -38,6 +38,12 @@ compdef remotectl
 compdef _remotectl remotectl
 source <(remotectl completion zsh)
 
+if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+  tmux a -t default || exec tmux new -s default && exit;
+fi
+
+bindkey -s ^f "tmux-sessionizer\n"
+
 TEMP_RUN=$RUN
 export RUN=
 eval "$TEMP_RUN" # run arbitrary commands ```RUN='echo "it works"' zsh```

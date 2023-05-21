@@ -59,10 +59,10 @@ vnoremap('<C-p>', '"+p')
 nnoremap('<C-w>m', '<C-w>_ | <C-w>|')
 
 -- Movement
-nnoremap('<C-h>', '<C-w>h')
-nnoremap('<C-j>', '<C-w>j')
-nnoremap('<C-k>', '<C-w>k')
-nnoremap('<C-l>', '<C-w>l')
+nnoremap('<C-h>', '<cmd> TmuxNavigateLeft<CR>')
+nnoremap('<C-j>', '<cmd> TmuxNavigateDown<CR>')
+nnoremap('<C-k>', '<cmd> TmuxNavigateUp<CR>')
+nnoremap('<C-l>', '<cmd> TmuxNavigateRight<CR>')
 -- }}}
 
 -- Writing and Closing {{{

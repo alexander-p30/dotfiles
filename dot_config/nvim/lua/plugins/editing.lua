@@ -31,5 +31,6 @@ return {
   },
   { 'simeji/winresizer',    keys = '<C-e>' },
   { 'mbbill/undotree',      cmd = 'UndotreeToggle' },
-  { 'folke/which-key.nvim', config = true }
+  { 'folke/which-key.nvim', config = true },
+  { 'christoomey/vim-tmux-navigator' }
 }
