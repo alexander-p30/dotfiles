@@ -163,8 +163,8 @@
                   [:##b :!Ob]
                   [:##n :!On]
                   [:##m :!Om]
-                  [:##comma :!Ocomma]
-                  [:##period :!Operiod]
+                  [:##comma :!Oleft_arrow]
+                  [:##period :!Oright_arrow]
                   [:##slash :!Oslash]
 
                   ;; number row
@@ -259,8 +259,8 @@
                   [:##b :!Cb]
                   [:##n :!Cn]
                   [:##m :!Cm]
-                  [:##comma :!Ccomma]
-                  [:##period :!Cperiod]
+                  [:##comma :!Cleft_arrow]
+                  [:##period :!Cright_arrow]
                   [:##slash :!Cslash]
 
                   ;; number row
@@ -549,8 +549,8 @@
                   [:##b :!Qb]
                   [:##n :!Qn]
                   [:##m :!Qm]
-                  [:##comma :!Qcomma]
-                  [:##period :!Qperiod]
+                  [:##comma :!Qleft_arrow]
+                  [:##period :!Qright_arrow]
                   [:##slash :!Qslash]
 
                   ;; number row
@@ -645,8 +645,8 @@
                   [:##b :!Eb]
                   [:##n :!En]
                   [:##m :!Em]
-                  [:##comma :!Ecomma]
-                  [:##period :!Eperiod]
+                  [:##comma :!Eleft_arrow]
+                  [:##period :!Eright_arrow]
                   [:##slash :!Eslash]
 
                   ;; number row

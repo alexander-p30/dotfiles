@@ -10,6 +10,7 @@ local telescope_keymaps = {
   { keymap = '<leader>ss',      cmd = '<cmd>Telescope persisted<CR>' },
   { keymap = '<leader>cs',      cmd = '<cmd>Telescope colorscheme<CR>' },
   { keymap = '<leader>nf',      cmd = '<cmd>Telescope notify<CR>' },
+  { keymap = '<leader>re',      cmd = '<cmd>Telescope resume<CR>' },
   { keymap = 'gr',              cmd = '<cmd>Telescope lsp_references<CR>' },
   { keymap = 'gd',              cmd = '<cmd>Telescope lsp_definitions<CR>' }
 }
