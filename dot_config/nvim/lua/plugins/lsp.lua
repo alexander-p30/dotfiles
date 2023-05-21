@@ -18,7 +18,6 @@ return {
     require('lsp-format').setup({})
 
     local function on_attach(client, bufnr)
-      require('lsp-format').on_attach(client)
       require('lsp_signature').on_attach({ bind = true, handler_opts = { border = 'rounded' } }, bufnr)
 
       -- Mappings.
@@ -47,6 +46,10 @@ return {
       vim.keymap.set('n', '<leader>lwl', function()
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
       end, bufopts)
+
+      if client.name ~= 'ElixirLS' then
+        require('lsp-format').on_attach(client)
+      end
     end
 
     local function get_ls_cmd(ls)
@@ -54,24 +57,33 @@ return {
       return language_servers_dir .. ls
     end
 
-    local function config(ls, ...)
-      local capabilities = require('cmp_nvim_lsp').default_capabilities(
-        vim.lsp.protocol.make_client_capabilities()
-      )
+    local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
+    local function config(ls, ...)
       return { capabilities = capabilities, on_attach = on_attach, cmd = { get_ls_cmd(ls), ... } }
     end
 
-    local elixir_config = config('elixir-ls')
-    elixir_config.on_attach = function(client, bufnr)
-      on_attach(client, bufnr)
+    require('elixir').setup({
+      credo = { enable = true },
+      elixirls = {
+        tag = "v0.14.6",
+        settings = require('elixir.elixirls').settings {
+          dialyzerEnabled = true,
+          fetchDeps = false,
+          enableTestLenses = false,
+          suggestSpecs = false,
+        },
+        on_attach = function(client, bufnr)
+          on_attach(client, bufnr)
 
-      vim.keymap.set('n', '<leader>fp', ':ElixirFromPipe<cr>', { buffer = true, noremap = true })
-      vim.keymap.set('n', '<leader>tp', ':ElixirToPipe<cr>', { buffer = true, noremap = true })
-      vim.keymap.set('v', '<leader>em', ':ElixirExpandMacro<cr>', { buffer = true, noremap = true })
-    end
+          vim.keymap.set('n', '<leader>fp', ':ElixirFromPipe<CR>', { buffer = true, noremap = true })
+          vim.keymap.set('n', '<leader>tp', ':ElixirToPipe<CR>', { buffer = true, noremap = true })
+          vim.keymap.set('v', '<leader>em', ':ElixirExpandMacro<CR>', { buffer = true, noremap = true })
+        end,
+        capabilities = capabilities
+      }
+    })
 
-    nvim_lsp.elixirls.setup(elixir_config)
     nvim_lsp.gopls.setup(config('gopls'))
     nvim_lsp.tsserver.setup(config('typescript-language-server', '--stdio'))
     nvim_lsp.clangd.setup(config('clangd'))
@@ -97,5 +109,7 @@ return {
         },
       },
     })
+
+    -- nvim_lsp.efm.setup({ filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } })
   end
 }

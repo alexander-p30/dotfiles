@@ -7,18 +7,25 @@ return {
   { 'Olical/conjure',            ft = 'clojure' },
   { 'rust-lang/rust.vim',        ft = 'rust' },
   {
-    'elixir-tools/elixir-tools.nvim',
-    ft = { 'elixir', 'eex', 'heex', 'surface' },
+    "elixir-tools/elixir-tools.nvim",
+    ft = { "ex", "elixir", "eex", "heex", "surface" },
+    dependencies = { "nvim-lua/plenary.nvim" }
+  },
+  {
+    'mhartington/formatter.nvim',
+    ft = { "ex", "elixir", "eex", "heex", "surface" },
     config = function()
-      local elixir = require('elixir')
-
-      elixir.setup({
-        credo = { enabled = true },
-        elixirls = { enabled = false }
+      require("formatter").setup({
+        logging = true,
+        log_level = vim.log.levels.WARN,
+        filetype = {
+          elixir = {
+            require("formatter.filetypes.elixir").mixformat,
+          },
+        },
       })
-    end,
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
+
+      vim.api.nvim_command("autocmd BufWritePost * FormatWrite")
+    end
   }
 }
