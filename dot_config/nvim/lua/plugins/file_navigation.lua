@@ -1,21 +1,41 @@
 local util = require('helper.functions')
 
+local function build_keymap(keymap, cmd, desc)
+  return { keymap = keymap, cmd = cmd, desc = desc }
+end
+
 local telescope_keymaps = {
-  { keymap = '<leader><space>', cmd = '<cmd>Telescope find_files<CR>' },
-  { keymap = '<leader>f',       cmd = '<cmd>Telescope live_grep<CR>' },
-  { keymap = '<leader>b',       cmd = '<cmd>Telescope buffers<CR>' },
-  { keymap = '<leader>gco',     cmd = '<cmd>Telescope git_branches<CR>' },
-  { keymap = '<leader>gcc',     cmd = '<cmd>Telescope git_commits<CR>' },
-  { keymap = '<leader>sh',      cmd = '<cmd>Telescope help_tags<CR>' },
-  { keymap = '<leader>ss',      cmd = '<cmd>Telescope persisted<CR>' },
-  { keymap = '<leader>cs',      cmd = '<cmd>Telescope colorscheme<CR>' },
-  { keymap = '<leader>nf',      cmd = '<cmd>Telescope notify<CR>' },
-  { keymap = '<leader>re',      cmd = '<cmd>Telescope resume<CR>' },
-  { keymap = 'gr',              cmd = '<cmd>Telescope lsp_references<CR>' },
-  { keymap = 'gd',              cmd = '<cmd>Telescope lsp_definitions<CR>' }
+  build_keymap('<leader><space>', '<cmd>Telescope find_files<CR>', 'Telescope find_files'),
+  build_keymap('<leader>f', '<cmd>Telescope live_grep<CR>', 'Telescope live_grep'),
+  build_keymap('<leader>b', '<cmd>Telescope buffers<CR>', 'Telescope buffers'),
+  build_keymap('<leader>gco', '<cmd>Telescope git_branches<CR>', 'Telescope git_branches'),
+  build_keymap('<leader>gcc', '<cmd>Telescope git_commits<CR>', 'Telescope git_commits'),
+  build_keymap('<leader>sh', '<cmd>Telescope help_tags<CR>', 'Telescope help_tags'),
+  build_keymap('<leader>ss', '<cmd>Telescope persisted<CR>', 'Telescope persisted'),
+  build_keymap('<leader>cs', '<cmd>Telescope colorscheme<CR>', 'Telescope colorscheme'),
+  build_keymap('<leader>nf', '<cmd>Telescope notify<CR>', 'Telescope notify'),
+  build_keymap('<leader>re', '<cmd>Telescope resume<CR>', 'Telescope resume'),
+  build_keymap('gr', '<cmd>Telescope lsp_references<CR>', 'LSP go to references'),
+  build_keymap('gd', '<cmd>Telescope lsp_definitions<CR>', 'LSP go to definition')
 }
 
-local lazy_load_telescope_keys = util.map(telescope_keymaps, function(_, spec) return spec.keymap end)
+local harpoon_keymaps = {
+  build_keymap('<leader>ha', function() require("harpoon.mark").add_file() end, 'Add harpoon mark'),
+  build_keymap('<leader>hs', function() require("harpoon.ui").toggle_quick_menu() end, 'Show harpoon menu'),
+  build_keymap('<leader>h1', function() require("harpoon.ui").nav_file(1) end, 'Open harpoon mark #1'),
+  build_keymap('<leader>h2', function() require("harpoon.ui").nav_file(2) end, 'Open harpoon mark #2'),
+  build_keymap('<leader>h3', function() require("harpoon.ui").nav_file(3) end, 'Open harpoon mark #3'),
+  build_keymap('<leader>h4', function() require("harpoon.ui").nav_file(4) end, 'Open harpoon mark #4'),
+  build_keymap('<leader>h5', function() require("harpoon.ui").nav_file(5) end, 'Open harpoon mark #5'),
+}
+
+local lazy_load_telescope_keys = util.map(telescope_keymaps, function(_, spec)
+  return { spec.keymap, spec.cmd, noremap = true, silent = true, desc = spec.desc }
+end)
+
+local lazy_load_harpoon_keys = util.map(harpoon_keymaps, function(_, spec)
+  return { spec.keymap, spec.cmd, noremap = true, silent = true, desc = spec.desc }
+end)
 
 return {
   {
@@ -71,12 +91,6 @@ return {
       require('telescope').load_extension('fzf')
       require('telescope').load_extension('persisted')
       require('telescope').load_extension('notify')
-
-      local opts = { noremap = true, silent = true }
-
-      for _, spec in pairs(telescope_keymaps) do
-        vim.api.nvim_set_keymap('n', spec.keymap, spec.cmd, opts)
-      end
     end
   },
   {
@@ -111,5 +125,10 @@ return {
         }
       },
     }
+  },
+  {
+    'ThePrimeagen/harpoon',
+    keys = lazy_load_harpoon_keys,
+    dependencies = { 'nvim-lua/plenary.nvim' },
   }
 }
