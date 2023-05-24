@@ -28,7 +28,6 @@ return {
       vim.keymap.set('n', '<C-w>gv', ':vs<CR><cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
       vim.keymap.set('n', '<C-w>gs', ':sp<CR><cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
       vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-      vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
       vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, bufopts)
       vim.keymap.set('i', '<C-q>', vim.lsp.buf.signature_help, bufopts)
       vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
@@ -38,7 +37,6 @@ return {
       vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, bufopts)
       vim.keymap.set('n', '[e', vim.diagnostic.goto_prev, bufopts)
       vim.keymap.set('n', ']e', vim.diagnostic.goto_next, bufopts)
-      vim.keymap.set('n', '<leader>li', function() vim.lsp.buf.format({ async = true }) end, bufopts)
 
       -- Workspace stuff
       vim.keymap.set('n', '<leader>lwa', vim.lsp.buf.add_workspace_folder, bufopts)

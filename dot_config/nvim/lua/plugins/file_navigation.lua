@@ -16,7 +16,8 @@ local telescope_keymaps = {
   build_keymap('<leader>nf', '<cmd>Telescope notify<CR>', 'Telescope notify'),
   build_keymap('<leader>re', '<cmd>Telescope resume<CR>', 'Telescope resume'),
   build_keymap('gr', '<cmd>Telescope lsp_references<CR>', 'LSP go to references'),
-  build_keymap('gd', '<cmd>Telescope lsp_definitions<CR>', 'LSP go to definition')
+  build_keymap('gd', '<cmd>Telescope lsp_definitions<CR>', 'LSP go to definition'),
+  build_keymap('gi', '<cmd>Telescope lsp_implementations<CR>', 'LSP go to implementation')
 }
 
 local harpoon_keymaps = {

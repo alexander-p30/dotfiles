@@ -33,8 +33,8 @@ return {
         end, { expr = true, buffer = bufnr })
 
         -- Actions
-        nnoremap('<leader>hp', gs.preview_hunk)
-        nnoremap('<leader>hb', function() gs.blame_line { full = true } end)
+        nnoremap('<leader>ghp', gs.preview_hunk, { desc = 'Preview hunk diff under ther cursor' })
+        nnoremap('<leader>ghb', function() gs.blame_line { full = true } end, { desc = 'Blame hunk under the cursor' })
       end
     }
   },

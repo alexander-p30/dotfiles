@@ -17,35 +17,35 @@ nnoremap <expr> j (v:count > 1 ? "m'" . v:count : '') . 'j'
 ]])
 
 -- Terminal/test-related bindings {{{
-nnoremap('<leader>tt', vim.cmd.Ttoggle, { silent = true })
-nnoremap('<leader>tc', ':Tclose!<CR>')
+nnoremap('<leader>tt', vim.cmd.Ttoggle, { silent = true, desc = 'Toggle terminal' })
+nnoremap('<leader>tc', ':Tclose!<CR>', { desc = 'Close terminal' })
 
-nnoremap('<leader>alt', ':A<CR>')
+nnoremap('<leader>alt', ':A<CR>', { desc = 'Alternate between implementation and test files' })
 
-nnoremap('<leader>tn', vim.cmd.TestNearest)
-nnoremap('<leader>tf', vim.cmd.TestFile)
-nnoremap('<leader>ts', vim.cmd.TestSuite)
-nnoremap('<leader>tl', vim.cmd.TestLast)
-nnoremap('<leader>tv', vim.cmd.TestVisit)
+nnoremap('<leader>tn', vim.cmd.TestNearest, { desc = 'Run test on current line' })
+nnoremap('<leader>tf', vim.cmd.TestFile, { desc = 'Run test on current file' })
+nnoremap('<leader>ts', vim.cmd.TestSuite, { desc = 'Run test suite' })
+nnoremap('<leader>tl', vim.cmd.TestLast, { desc = 'Run last test' })
+nnoremap('<leader>tv', vim.cmd.TestVisit, { desc = 'Visit last run test' })
 -- }}}
 
 -- Tabs {{{
-nnoremap('<leader>tan', ':tabedit %<CR>', { silent = true })
-nnoremap('<leader>taN', vim.cmd.tabnew, { silent = true })
-nnoremap('<leader>taO', vim.cmd.tabonly, { silent = true })
-nnoremap('<leader>tac', vim.cmd.tabclose, { silent = true })
-nnoremap('<leader>tal', vim.cmd.tabnext, { silent = true })
-nnoremap('<leader>tah', vim.cmd.tabprev, { silent = true })
+nnoremap('<leader>tan', ':tabedit %<CR>', { silent = true, desc = 'Open current buffer in a new tab' })
+nnoremap('<leader>taN', vim.cmd.tabnew, { silent = true, desc = 'Create new tab' })
+nnoremap('<leader>taO', vim.cmd.tabonly, { silent = true, desc = 'Close all tabs except current' })
+nnoremap('<leader>tac', vim.cmd.tabclose, { silent = true, desc = 'Close current tab' })
+nnoremap('<leader>tal', vim.cmd.tabnext, { silent = true, desc = 'Go to tab on the left' })
+nnoremap('<leader>tah', vim.cmd.tabprev, { silent = true, desc = 'Go to tab on the right' })
 
-nnoremap('<leader>ta1', '1gt', { silent = true })
-nnoremap('<leader>ta2', '2gt', { silent = true })
-nnoremap('<leader>ta3', '3gt', { silent = true })
-nnoremap('<leader>ta4', '4gt', { silent = true })
-nnoremap('<leader>ta5', '5gt', { silent = true })
-nnoremap('<leader>ta6', '6gt', { silent = true })
-nnoremap('<leader>ta7', '7gt', { silent = true })
-nnoremap('<leader>ta8', '8gt', { silent = true })
-nnoremap('<leader>ta9', '9gt', { silent = true })
+nnoremap('<leader>ta1', '1gt', { silent = true, desc = 'Go to tab #1' })
+nnoremap('<leader>ta2', '2gt', { silent = true, desc = 'Go to tab #2' })
+nnoremap('<leader>ta3', '3gt', { silent = true, desc = 'Go to tab #3' })
+nnoremap('<leader>ta4', '4gt', { silent = true, desc = 'Go to tab #4' })
+nnoremap('<leader>ta5', '5gt', { silent = true, desc = 'Go to tab #5' })
+nnoremap('<leader>ta6', '6gt', { silent = true, desc = 'Go to tab #6' })
+nnoremap('<leader>ta7', '7gt', { silent = true, desc = 'Go to tab #7' })
+nnoremap('<leader>ta8', '8gt', { silent = true, desc = 'Go to tab #8' })
+nnoremap('<leader>ta9', '9gt', { silent = true, desc = 'Go to tab #9' })
 -- }}}
 
 -- Yanking and pasting clipboard {{{
@@ -75,7 +75,7 @@ nnoremap('<leader>Q', ':q!<CR>', { silent = true })
 -- }}}
 
 -- Neotree {{{
-nnoremap('<C-b>', ':Neotree toggle=true reveal<CR>', { silent = true })
+nnoremap('<C-b>', ':Neotree toggle=true reveal<CR>', { silent = true, desc = 'Neotree' })
 -- }}}
 
 nnoremap('<C-t>', '<C-6>', { silent = true })
@@ -84,34 +84,38 @@ nnoremap('<C-t>', '<C-6>', { silent = true })
 nnoremap('Y', 'y$')
 
 -- Paste but keep register
-vnoremap('<leader>p', '"_dP')
+vnoremap('<leader>p', '"_dP', { desc = 'Paste but keep register' })
 
 -- Copy current filepath
-nmap('<leader>yfp', ':let @+ = expand("%")<CR>')
+nmap('<leader>yfp', ':let @+ = expand("%")<CR>', { desc = 'Copy current file path to system clipboard' })
 
 -- Clear search highlighting
-nnoremap('<leader>noh', vim.cmd.noh, { silent = true })
+nnoremap('<leader>noh', vim.cmd.noh, { silent = true, desc = 'Clear search highlight' })
 
 -- Reparse buffers
-nnoremap('<leader>rt', ':write | edit | TSBufEnable highlight<CR>', { silent = true })
+nnoremap(
+  '<leader>rt',
+  ':write | edit | TSBufEnable highlight<CR>',
+  { silent = true, desc = 'Reload tree-sitter hightlight for current buffer' }
+)
 
 -- Git
-nnoremap('<leader>gg', vim.cmd.Git, { silent = true })
+nnoremap('<leader>gg', vim.cmd.Git, { silent = true, desc = 'Open fugitive' })
 nnoremap('<leader>gq',
   function()
     util.visit_buffers(function(b)
       local buf_ft = vim.api.nvim_buf_get_option(b, 'filetype')
       if buf_ft == 'fugitive' then vim.api.nvim_buf_delete(b, {}) end
     end)
-  end, { silent = true, })
-nnoremap('<leader>gh', '<cmd>diffget //2<CR>')
-nnoremap('<leader>gl', '<cmd>diffget //3<CR>')
+  end, { silent = true, desc = 'Close fugitive' })
+nnoremap('<leader>gmh', '<cmd>diffget //2<CR>', { desc = 'Get diff from file on the left' })
+nnoremap('<leader>gml', '<cmd>diffget //3<CR>', { desc = 'Get diff from file on the right' })
 nnoremap('<leader>gP', ':Git push<CR>')
 nnoremap('<leader>gsP', ':Git push -u origin HEAD<CR>')
 nnoremap('<leader>gp', ':Git pull<CR>')
 nnoremap('<leader>gcb', ':Git checkout -b ')
 nnoremap('<leader>gc-', ':Git checkout -')
-nnoremap('<leader>gh', ':Git log -p -- <C-r>%<CR>')
+nnoremap('<leader>ghi', ':Git log -p -- <C-r>%<CR>', { desc = 'Open git history for file' })
 
 -- Git flow mappings
 -- Feature
@@ -125,18 +129,18 @@ nnoremap('<leader>gfhs', ':Git flow hotfix start ')
 
 
 -- Delete all buffers
-nnoremap('<leader>db', ':%bd <bar> e#')
-nnoremap('<leader>dab', ':%bd')
+nnoremap('<leader>db', ':%bd <bar> e#', { desc = 'Populate comand with delete all buffers except current' })
+nnoremap('<leader>dab', ':%bd', { desc = 'Populate comand with delete all buffers' })
 
 -- Increment number under the cursor
 nnoremap('<C-s>', '<C-a>')
 
 -- Sort selection
-vnoremap('<leader>so', ':\'<,\'>sort<CR>', { silent = true })
+vnoremap('<leader>so', ':\'<,\'>sort<CR>', { silent = true, desc = 'Sort selected lines' })
 
 -- Move visual selection
-vnoremap('<Up>', ':m \'<-2<CR>gv=gv')
-vnoremap('<Down>', ':m \'>+1<CR>gv=gv')
+vnoremap('<Up>', ':m \'<-2<CR>gv=gv', { desc = 'Move selected lines up' })
+vnoremap('<Down>', ':m \'>+1<CR>gv=gv', { desc = 'Move selected lines down' })
 
 -- Quickfix list navigation
 nnoremap('<leader>cn', vim.cmd.cnext)
@@ -153,13 +157,13 @@ nnoremap('<leader>lc', vim.cmd.lc, { silent = true })
 nnoremap('<leader>lC', vim.cmd.lclose, { silent = true })
 
 -- Fast search and replace
-nnoremap('<leader>sr', ':%s///<Left>')
+nnoremap('<leader>sr', ':%s///<Left>', { desc = 'Populate command to search and replace' })
 
 -- Esc to leave terminal mode
 tnoremap('<Esc>', '<C-\\><C-n>')
 
 -- Open undotree
-nnoremap('<leader>u', vim.cmd.UndotreeToggle)
+nnoremap('<leader>u', vim.cmd.UndotreeToggle, { desc = 'Open undotree' })
 
 -- Dismiss notifications
-nnoremap('<leader>nd', vim.notify.dismiss)
+nnoremap('<leader>nd', vim.notify.dismiss, { desc = 'Dismiss all notifications' })
