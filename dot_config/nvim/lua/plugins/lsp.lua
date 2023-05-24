@@ -45,7 +45,11 @@ return {
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
       end, bufopts)
 
-      if client.name ~= 'ElixirLS' then
+      if client.name == 'ElixirLS' then
+        local opts = { noremap = true, desc = 'Format current buffer with formatter.nvim' }
+        vim.keymap.set('n', '<leader>li', ':Format<CR>', opts)
+      else
+        vim.keymap.set('n', '<leader>li', function() vim.lsp.buf.format({ async = true }) end, bufopts)
         require('lsp-format').on_attach(client)
       end
     end
