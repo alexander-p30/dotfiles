@@ -108,7 +108,7 @@ return {
       function()
         return '▊'
       end,
-      color = { fg = colors.blue }, -- Sets highlighting of component
+      color = { fg = colors.blue },      -- Sets highlighting of component
       padding = { left = 0, right = 1 }, -- We don't need space before this
     }
 
@@ -300,7 +300,7 @@ return {
     ins_tab_right {
       'diff',
       -- Is it me or the symbol for modified us really weird
-      symbols = { added = ' ', modified = '柳', removed = ' ' },
+      symbols = { added = '+', modified = '*', removed = '-' },
       diff_color = {
         added = { fg = colors.green },
         modified = { fg = colors.orange },

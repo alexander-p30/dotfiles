@@ -14,3 +14,6 @@ alias lg="lazygit"
 
 # Chezmoi
 alias c="chezmoi"
+
+# Tmux-sessionizer
+alias tms="tmux-sessionizer"

@@ -68,7 +68,6 @@ return {
     require('elixir').setup({
       credo = { enable = true },
       elixirls = {
-        tag = "v0.14.6",
         settings = require('elixir.elixirls').settings {
           dialyzerEnabled = true,
           fetchDeps = false,
