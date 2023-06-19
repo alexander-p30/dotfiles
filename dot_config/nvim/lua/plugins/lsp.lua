@@ -3,7 +3,7 @@ return {
   dependencies = {
     'lukas-reineke/lsp-format.nvim',
     'ray-x/lsp_signature.nvim',
-    { 'j-hui/fidget.nvim', config = true }
+    { 'j-hui/fidget.nvim', config = true, tag = 'legacy' }
   },
   config = function()
     local nvim_lsp = require('lspconfig')
@@ -77,8 +77,8 @@ return {
         on_attach = function(client, bufnr)
           on_attach(client, bufnr)
 
-          vim.keymap.set('n', '<leader>fp', ':ElixirFromPipe<CR>', { buffer = true, noremap = true })
-          vim.keymap.set('n', '<leader>tp', ':ElixirToPipe<CR>', { buffer = true, noremap = true })
+          vim.keymap.set('n', '<leader>efp', ':ElixirFromPipe<CR>', { buffer = true, noremap = true })
+          vim.keymap.set('n', '<leader>etp', ':ElixirToPipe<CR>', { buffer = true, noremap = true })
           vim.keymap.set('v', '<leader>em', ':ElixirExpandMacro<CR>', { buffer = true, noremap = true })
         end,
         capabilities = capabilities

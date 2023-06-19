@@ -136,7 +136,7 @@ nnoremap('<leader>dab', ':%bd', { desc = 'Populate comand with delete all buffer
 nnoremap('<C-s>', '<C-a>')
 
 -- Sort selection
-vnoremap('<leader>so', ':\'<,\'>sort<CR>', { silent = true, desc = 'Sort selected lines' })
+vnoremap('<leader>so', ':\'<,\'>sort i<CR>', { silent = true, desc = 'Sort selected lines' })
 
 -- Move visual selection
 vnoremap('<Up>', ':m \'<-2<CR>gv=gv', { desc = 'Move selected lines up' })
