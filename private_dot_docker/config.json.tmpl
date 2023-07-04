@@ -1,0 +1,19 @@
+{{- if eq .chezmoi.os "darwin" }}
+{{-
+`{
+  "auths": {},
+  "psFormat": "table {{.ID}}: {{.Names}}\\t{{.Image}}\\t{{.Status}}\\t{{.State}}\\t{{.Ports}}",
+  "credsStore": "desktop",
+  "currentContext": "desktop-linux"
+}
+`
+-}}
+{{- else -}}
+{{
+`{
+  "credsStore": "desktop",
+  "psFormat": "table {{.ID}}: {{.Names}}\\t{{.Image}}\\t{{.Status}}\\t{{.State}}\\t{{.Ports}}"
+}
+`
+-}}
+{{- end -}}

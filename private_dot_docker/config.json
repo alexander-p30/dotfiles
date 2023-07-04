@@ -1,4 +1,0 @@
-{
-  "credsStore": "desktop",
-  "psFormat": "table {{.ID}}: {{.Names}}\\t{{.Image}}\\t{{.Status}}\\t{{.State}}\\t{{.Ports}}"
-}
