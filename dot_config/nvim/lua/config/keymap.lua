@@ -100,21 +100,27 @@ nnoremap(
 )
 
 -- Git
-nnoremap('<leader>gg', vim.cmd.Git, { silent = true, desc = 'Open fugitive' })
-nnoremap('<leader>gq',
+nnoremap(
+  '<leader>gg',
   function()
-    util.visit_buffers(function(b)
-      local buf_ft = vim.api.nvim_buf_get_option(b, 'filetype')
-      if buf_ft == 'fugitive' then vim.api.nvim_buf_delete(b, {}) end
+    local fugitive = nil
+
+    util.visit_buffers(function(buf)
+      local buf_ft = vim.api.nvim_buf_get_option(buf, 'filetype')
+      if buf_ft == 'fugitive' then fugitive = buf end
     end)
-  end, { silent = true, desc = 'Close fugitive' })
+
+    if fugitive then vim.api.nvim_buf_delete(fugitive, {}) else vim.cmd.Git() end
+  end,
+  { silent = true, desc = 'Toggle fugitive' }
+)
 nnoremap('<leader>gmh', '<cmd>diffget //2<CR>', { desc = 'Get diff from file on the left' })
 nnoremap('<leader>gml', '<cmd>diffget //3<CR>', { desc = 'Get diff from file on the right' })
 nnoremap('<leader>gP', ':Git push<CR>')
 nnoremap('<leader>gsP', ':Git push -u origin HEAD<CR>')
 nnoremap('<leader>gp', ':Git pull<CR>')
 nnoremap('<leader>gcb', ':Git checkout -b ')
-nnoremap('<leader>gc-', ':Git checkout -')
+nnoremap('<leader>gc-', ':Git checkout -', { desc = 'Checkout to last branch' })
 nnoremap('<leader>ghi', ':Git log -p -- <C-r>%<CR>', { desc = 'Open git history for file' })
 
 -- Git flow mappings
