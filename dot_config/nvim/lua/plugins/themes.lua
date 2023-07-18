@@ -44,11 +44,6 @@ return {
     'rcarriga/nvim-notify',
     config = function() vim.notify = require('notify') end,
   },
-  {
-    'norcalli/nvim-colorizer.lua',
-    event = 'VeryLazy',
-    config = true
-  },
   { 'nvim-tree/nvim-web-devicons',  opts = { default = true } },
   { 'stevearc/dressing.nvim',       event = 'VeryLazy' },
   { 'nvim-zh/colorful-winsep.nvim', opts = { highlight = { bg = '' } } }

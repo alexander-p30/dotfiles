@@ -114,6 +114,7 @@ nnoremap(
   end,
   { silent = true, desc = 'Toggle fugitive' }
 )
+nnoremap('<leader>gr', vim.cmd.Git, { desc = 'Open/refresh fugitive buffer' })
 nnoremap('<leader>gmh', '<cmd>diffget //2<CR>', { desc = 'Get diff from file on the left' })
 nnoremap('<leader>gml', '<cmd>diffget //3<CR>', { desc = 'Get diff from file on the right' })
 nnoremap('<leader>gP', ':Git push<CR>')
