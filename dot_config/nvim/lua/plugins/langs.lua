@@ -1,4 +1,5 @@
 return {
+  { 'elixir-editors/vim-elixir', ft = { 'ex', 'elixir', 'eex', 'heex', 'surface' } },
   { 'neovimhaskell/haskell-vim', ft = 'haskell' },
   { 'mboughaba/i3config.vim',    ft = 'i3config' },
   { 'fladson/vim-kitty',         ft = 'kitty' },
