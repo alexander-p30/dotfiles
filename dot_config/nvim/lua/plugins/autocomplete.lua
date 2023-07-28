@@ -27,12 +27,12 @@ return {
             maxwidth = 60,
             before = function(entry, vim_item)
               vim_item.menu = ({
-                    nvim_lsp = '[LSP]',
-                    look = '[Dict]',
-                    buffer = '[Buffer]',
-                    luasnip = '[LuaSnip]',
-                    path = '[Path]'
-                  })[entry.source.name]
+                nvim_lsp = '[LSP]',
+                look = '[Dict]',
+                buffer = '[Buffer]',
+                luasnip = '[LuaSnip]',
+                path = '[Path]'
+              })[entry.source.name]
 
               if not vim_item.menu then vim.notify(entry.source.name) end
 
@@ -48,13 +48,13 @@ return {
           documentation = cmp.config.window.bordered(),
         },
         mapping = cmp.mapping.preset.insert({
-              ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-              ['<C-f>'] = cmp.mapping.scroll_docs(4),
-              ['<C-Space>'] = cmp.mapping.complete(),
-              ['<C-e>'] = cmp.mapping.close(),
-              ['<C-CR>'] = cmp.mapping(function(_) luasnip.expand_or_jump() end, { 'i', 's' }),
-              ['<Tab>'] = cmp.mapping.confirm({ select = true }),
-              ['<S-Tab>'] = cmp.mapping(function(fallback)
+          ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-e>'] = cmp.mapping.close(),
+          ['<C-CR>'] = cmp.mapping(function(_) luasnip.expand_or_jump() end, { 'i', 's' }),
+          ['<Tab>'] = cmp.mapping.confirm({ select = true }),
+          ['<S-Tab>'] = cmp.mapping(function(fallback)
             if luasnip.jumpable(-1) then
               luasnip.jump(-1)
             else
