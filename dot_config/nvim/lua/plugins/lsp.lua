@@ -3,7 +3,7 @@ return {
   dependencies = {
     'lukas-reineke/lsp-format.nvim',
     'ray-x/lsp_signature.nvim',
-    { 'j-hui/fidget.nvim', config = true, tag = 'legacy' }
+    { 'j-hui/fidget.nvim', config = true, tag = 'legacy' },
   },
   config = function()
     local nvim_lsp = require('lspconfig')
@@ -45,13 +45,14 @@ return {
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
       end, bufopts)
 
-      if client.name == 'ElixirLS' then
-        local opts = { noremap = true, desc = 'Format current buffer with formatter.nvim' }
-        vim.keymap.set('n', '<leader>li', ':Format<CR>', opts)
+      if client.name == 'elixirls' then
+        vim.keymap.set('n', '<leader>li', ':Format<CR>',
+          { noremap = true, desc = 'Format current buffer with formatter.nvim' })
       else
         vim.keymap.set('n', '<leader>li', function() vim.lsp.buf.format({ async = true }) end, bufopts)
-        require('lsp-format').on_attach(client)
       end
+
+      require('lsp-format').on_attach(client)
     end
 
     local function get_ls_cmd(ls)
@@ -65,26 +66,8 @@ return {
       return { capabilities = capabilities, on_attach = on_attach, cmd = { get_ls_cmd(ls), ... } }
     end
 
-    require('elixir').setup({
-      credo = { enable = true },
-      elixirls = {
-        settings = require('elixir.elixirls').settings {
-          dialyzerEnabled = true,
-          fetchDeps = false,
-          enableTestLenses = false,
-          suggestSpecs = false,
-        },
-        on_attach = function(client, bufnr)
-          on_attach(client, bufnr)
-
-          vim.keymap.set('n', '<leader>efp', ':ElixirFromPipe<CR>', { buffer = true, noremap = true })
-          vim.keymap.set('n', '<leader>etp', ':ElixirToPipe<CR>', { buffer = true, noremap = true })
-          vim.keymap.set('v', '<leader>em', ':ElixirExpandMacro<CR>', { buffer = true, noremap = true })
-        end,
-        capabilities = capabilities
-      }
-    })
-
+    nvim_lsp.elixirls.setup(config('elixir-ls'))
+    nvim_lsp.efm.setup({ filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } })
     nvim_lsp.gopls.setup(config('gopls'))
     nvim_lsp.tsserver.setup(config('typescript-language-server', '--stdio'))
     nvim_lsp.clangd.setup(config('clangd'))
@@ -110,7 +93,5 @@ return {
         },
       },
     })
-
-    -- nvim_lsp.efm.setup({ filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } })
   end
 }

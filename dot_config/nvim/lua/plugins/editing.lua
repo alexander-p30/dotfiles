@@ -29,8 +29,18 @@ return {
       vim.g.neoterm_automap_keys = ''
     end
   },
-  { 'simeji/winresizer',    keys = '<C-e>' },
-  { 'mbbill/undotree',      cmd = 'UndotreeToggle' },
-  { 'folke/which-key.nvim', config = true },
-  { 'christoomey/vim-tmux-navigator' }
+  { 'simeji/winresizer',             keys = '<C-e>' },
+  { 'mbbill/undotree',               cmd = 'UndotreeToggle' },
+  { 'folke/which-key.nvim',          config = true },
+  { 'christoomey/vim-tmux-navigator' },
+  {
+    'johnfrankmorgan/whitespace.nvim',
+    config = function()
+      require('whitespace-nvim').setup({
+        highlight = 'DiffDelete',
+        ignored_filetypes = { 'TelescopePrompt', 'Trouble', 'help' },
+        ignore_terminal = true,
+      })
+    end
+  }
 }

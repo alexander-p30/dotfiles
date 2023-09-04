@@ -8,6 +8,7 @@ return {
   { 'rust-lang/rust.vim',        ft = 'rust' },
   {
     'elixir-tools/elixir-tools.nvim',
+    enabled = false,
     event = { 'BufReadPre', 'BufNewFile' },
     dependencies = { 'nvim-lua/plenary.nvim' }
   },
@@ -24,8 +25,6 @@ return {
           },
         },
       })
-
-      vim.api.nvim_command('autocmd BufWritePost * FormatWrite')
     end
   }
 }

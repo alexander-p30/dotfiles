@@ -1,5 +1,6 @@
 return {
-  { 'navarasu/onedark.nvim',        event = 'VeryLazy' },
+  { 'ellisonleao/gruvbox.nvim', event = 'VeryLazy' },
+  { 'navarasu/onedark.nvim',    event = 'VeryLazy' },
   {
     'catppuccin/nvim',
     name = 'catppuccin',

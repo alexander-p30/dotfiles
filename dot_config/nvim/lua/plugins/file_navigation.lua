@@ -46,7 +46,7 @@ return {
       'nvim-lua/plenary.nvim',
       'nvim-lua/popup.nvim',
       { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
-
+      'neovim/nvim-lspconfig'
     },
     config = function()
       local previewers = require('telescope.previewers')

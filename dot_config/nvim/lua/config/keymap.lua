@@ -101,20 +101,16 @@ nnoremap(
 
 -- Git
 nnoremap(
-  '<leader>gg',
+  '<leader>gq',
   function()
-    local fugitive = nil
-
     util.visit_buffers(function(buf)
       local buf_ft = vim.api.nvim_buf_get_option(buf, 'filetype')
-      if buf_ft == 'fugitive' then fugitive = buf end
+      if buf_ft == 'fugitive' then vim.api.nvim_buf_delete(buf, {}) end
     end)
-
-    if fugitive then vim.api.nvim_buf_delete(fugitive, {}) else vim.cmd.Git() end
   end,
-  { silent = true, desc = 'Toggle fugitive' }
+  { silent = true, desc = 'Close fugitive' }
 )
-nnoremap('<leader>gr', vim.cmd.Git, { desc = 'Open/refresh fugitive buffer' })
+nnoremap('<leader>gg', vim.cmd.Git, { desc = 'Open/refresh fugitive buffer' })
 nnoremap('<leader>gmh', '<cmd>diffget //2<CR>', { desc = 'Get diff from file on the left' })
 nnoremap('<leader>gml', '<cmd>diffget //3<CR>', { desc = 'Get diff from file on the right' })
 nnoremap('<leader>gP', ':Git push<CR>')
