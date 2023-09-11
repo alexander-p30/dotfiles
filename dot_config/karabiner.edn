@@ -4,10 +4,10 @@
   :profiles {:Default
                 {
                  :default true
-                 :alone   180
-                 :delay   200
-                 :held    200
-                 :sim     100
+                 :alone   280
+                 :delay   300
+                 :held    1000
+                 :sim     120
                  }
              } 
   :simlayers {;; left-hand on CAGS
