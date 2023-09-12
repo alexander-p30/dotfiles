@@ -1,14 +1,11 @@
 # vim:syntax=bash
 
 # znap {{{
-[[ -r ~/.config/znap/znap.zsh ]] ||
+[[ -r ~/.config/znap/znap-core/znap.zsh ]] ||
     git clone --depth 1 -- \
-        https://github.com/marlonrichert/zsh-snap.git ~/.config/znap
+        https://github.com/marlonrichert/zsh-snap.git ~/.config/znap/znap-core
 
-source ~/.config/znap/znap.zsh
-
-# Setup plugins directory
-zstyle ':znap:*' repos-dir ~/.config/zsh-plugins
+source ~/.config/znap/znap-core/znap.zsh
 
 # Start prompt
 znap eval starship 'starship init zsh --print-full-init'
