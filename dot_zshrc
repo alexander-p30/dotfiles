@@ -1,49 +1,64 @@
-# vim:foldmethod=marker
+# vim:syntax=bash
 
-# oh-my-zsh {{{
-export ZSH="$HOME/.oh-my-zsh"
+# znap {{{
+[[ -r ~/.config/znap/znap.zsh ]] ||
+    git clone --depth 1 -- \
+        https://github.com/marlonrichert/zsh-snap.git ~/.config/znap
 
-# Theme
+source ~/.config/znap/znap.zsh
 
-plugins=(
-	asdf
-  docker-compose
-	git
-	zsh-syntax-highlighting
-	zsh-autosuggestions	
-)
+# Setup plugins directory
+zstyle ':znap:*' repos-dir ~/.config/zsh-plugins
 
-source $ZSH/oh-my-zsh.sh
+# Start prompt
+znap eval starship 'starship init zsh --print-full-init'
+znap prompt
+
+# Plugins
+znap source zsh-users/zsh-autosuggestions
+znap source zsh-users/zsh-syntax-highlighting
+znap source wfxr/forgit
+
+# From Prezto
+znap source sorin-ionescu/prezto
+znap source sorin-ionescu/prezto \
+  modules/helper \
+  modules/completion \
+  modules/environment \
+  modules/terminal \
+  modules/editor \
+  modules/history \
+  modules/directory \
+  modules/utility
+
+# FZF
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Completions
+znap fpath _remotectl 'remotectl completion zsh'
+znap fpath _rustup 'rustup completions zsh'
+znap fpath _cargo 'rustup completions zsh cargo'
 # }}}
 
-# User configuration {{{
-# File sourcing {{{
+# Aliases {{{
 source ~/.alias/git-aliases
 source ~/.alias/rails-aliases
 source ~/.alias/soft-aliases
 source ~/.alias/system-aliases
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-# }}}
-
-# Prompt {{{
-eval "$(starship init zsh)"
-# }}}
 # }}}
 
 # Keep IEx history
 export ERL_AFLAGS="-kernel shell_history enabled"
 
-compdef remotectl
-compdef _remotectl remotectl
-source <(remotectl completion zsh)
-
+# Avoid nested tmux
 if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
   tmux a -t default || exec tmux new -s default && exit;
 fi
 
-bindkey -s ^f "tmux-sessionizer\n"
+# Run sessionizer on Ctrl-f
+bindkey -s '^f' 'tmux-sessionizer\n'
 
+# run arbitrary commands ```RUN='echo "it works"' zsh```
 TEMP_RUN=$RUN
 export RUN=
-eval "$TEMP_RUN" # run arbitrary commands ```RUN='echo "it works"' zsh```
+eval "$TEMP_RUN"
