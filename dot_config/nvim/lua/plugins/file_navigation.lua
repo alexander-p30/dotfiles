@@ -84,8 +84,18 @@ return {
           git_commits = { theme = 'ivy' },
           help_tags = { theme = 'ivy' },
           colorscheme = { theme = 'ivy', enable_preview = true },
-          lsp_references = { theme = 'cursor', layout_config = { width = 0.8, height = 0.5 } },
-          lsp_definitions = { theme = 'cursor', layout_config = { width = 0.8, height = 0.5 } },
+          lsp_references = {
+            theme = 'dropdown',
+            fname_width = 80,
+            path_display = { shorten = 7 },
+            layout_config = { width = 0.8, height = 0.5 }
+          },
+          lsp_definitions = {
+            theme = 'dropdown',
+            fname_width = 80,
+            path_display = { shorten = 7 },
+            layout_config = { width = 0.8, height = 0.5 }
+          },
         }
       })
 
