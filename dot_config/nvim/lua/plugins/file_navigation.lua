@@ -111,6 +111,7 @@ return {
       'nvim-tree/nvim-web-devicons',
       'MunifTanjim/nui.nvim'
     },
+    branch = "v3.x",
     opts = {
       popup_border_style = 'rounded',
       filesystem = {
