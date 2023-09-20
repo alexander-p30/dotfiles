@@ -18,4 +18,9 @@ M.map = function(table, mapper)
   return list
 end
 
+M.string_ends_with = function(str, suffix)
+  local suffix_size = string.len(suffix)
+  return string.sub(str, -suffix_size, -1) == suffix
+end
+
 return M

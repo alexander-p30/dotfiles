@@ -1,3 +1,5 @@
+local util = require('helper.functions')
+
 return {
   'neovim/nvim-lspconfig',
   dependencies = {
@@ -18,7 +20,14 @@ return {
     require('lsp-format').setup({})
 
     local function on_attach(client, bufnr)
-      require('lsp_signature').on_attach({ bind = true, handler_opts = { border = 'rounded' } }, bufnr)
+      local buffer_name = vim.api.nvim_buf_get_name(bufnr)
+
+      if not util.string_ends_with(buffer_name, "_test.exs") then
+        require('lsp_signature').on_attach({
+          bind = true,
+          handler_opts = { border = 'rounded' }
+        }, bufnr)
+      end
 
       -- Mappings.
       local bufopts = { noremap = true, silent = true, buffer = bufnr }
