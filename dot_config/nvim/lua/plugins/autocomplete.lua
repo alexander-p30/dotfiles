@@ -41,7 +41,7 @@ return {
           })
         },
         snippet = {
-          expand = function(args) require('luasnip').lsp_expand(args.body) end
+          expand = function(args) luasnip.lsp_expand(args.body) end
         },
         window = {
           completion = cmp.config.window.bordered(),

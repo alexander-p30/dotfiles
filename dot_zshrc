@@ -14,7 +14,9 @@ znap prompt
 # Plugins
 znap source zsh-users/zsh-autosuggestions
 znap source zsh-users/zsh-syntax-highlighting
-znap source wfxr/forgit
+znap source ohmyzsh/ohmyzsh \
+  plugins/asdf \
+  plugins/git
 
 # From Prezto
 znap source sorin-ionescu/prezto
