@@ -23,4 +23,26 @@ M.string_ends_with = function(str, suffix)
   return string.sub(str, -suffix_size, -1) == suffix
 end
 
+local escape_pattern = function(pattern)
+  -- Escape special characters in the pattern
+  return pattern:gsub("[%(%)%.%%%+%-%*%?%[%]%^%$]", "%%%1")
+end
+
+-- taken form https://stackoverflow.com/a/7615129
+M.split_string = function(str, separator)
+  if separator == nil then
+    separator = "%s"
+  else
+    separator = escape_pattern(separator)
+  end
+
+  local string_parts = {}
+
+  for part in string.gmatch(str, "([^" .. separator .. "]*)") do
+    if part ~= "" then table.insert(string_parts, part) end
+  end
+
+  return string_parts
+end
+
 return M

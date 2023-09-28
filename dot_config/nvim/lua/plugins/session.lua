@@ -1,8 +1,24 @@
+local util = require('helper.functions');
+
+local sanitize_session_name = function(session_name)
+  local branch_separator = "@@"
+
+  -- absolute/but%escaped%path@@branch.nvim
+  local name_parts = util.split_string(session_name, branch_separator)
+  local path = name_parts[1]
+  -- remove trailing .vim
+  local branch = string.sub(name_parts[2], 0, string.len(name_parts[2]) - 4)
+
+  -- path is escaped by %, lets get only the current folder name
+  local path_parts = util.split_string(path, "%")
+  local folder = path_parts[#path_parts]
+
+  return folder .. "@" .. branch
+end;
+
 return {
   'olimorris/persisted.nvim',
   config = function()
-    local util = require('helper.functions')
-
     require('persisted').setup({
       use_git_branch = true,
       autosave = true,
@@ -26,7 +42,7 @@ return {
       {
         pattern = 'PersistedLoadPost',
         callback = function(session)
-          vim.notify('Session loaded! ' .. session.data)
+          vim.notify('Session loaded! ' .. sanitize_session_name(session.data))
         end
       },
       {
