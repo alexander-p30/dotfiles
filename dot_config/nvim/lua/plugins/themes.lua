@@ -1,10 +1,9 @@
 return {
-  { 'ellisonleao/gruvbox.nvim', event = 'VeryLazy' },
-  { 'navarasu/onedark.nvim',    event = 'VeryLazy' },
+  'ellisonleao/gruvbox.nvim',
+  'navarasu/onedark.nvim',
   {
     'catppuccin/nvim',
     name = 'catppuccin',
-    event = 'VeryLazy',
     opts = {
       transparent_background = false,
       term_colors = true,
@@ -29,12 +28,10 @@ return {
   },
   {
     'folke/tokyonight.nvim',
-    event = 'VeryLazy',
     opts = { style = 'moon', terminal_colors = false }
   },
   {
     'lukas-reineke/indent-blankline.nvim',
-    event = 'VeryLazy',
     opts = {
       char = '|',
       buftype_exclude = { 'terminal' },
