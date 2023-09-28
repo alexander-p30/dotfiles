@@ -21,16 +21,26 @@ return {
 
     local function on_attach(client, bufnr)
       local buffer_name = vim.api.nvim_buf_get_name(bufnr)
+      local bufopts = { noremap = true, silent = true, buffer = bufnr }
 
-      if not util.string_ends_with(buffer_name, "_test.exs") then
-        require('lsp_signature').on_attach({
-          bind = true,
-          handler_opts = { border = 'rounded' }
-        }, bufnr)
+      -- Set up alternative keymap to format file and disable lsp-signature on elixir test files
+      if client.name == 'elixirls' then
+        vim.keymap.set('n', '<leader>li', ':Format<CR>',
+          { noremap = true, desc = 'Format current buffer with formatter.nvim' })
+
+        if not util.string_ends_with(buffer_name, "_test.exs") then
+          require('lsp_signature').on_attach({
+            bind = true,
+            handler_opts = { border = 'rounded' }
+          }, bufnr)
+        end
+      else
+        vim.keymap.set('n', '<leader>li', function() vim.lsp.buf.format({ async = true }) end, bufopts)
       end
 
+      require('lsp-format').on_attach(client)
+
       -- Mappings.
-      local bufopts = { noremap = true, silent = true, buffer = bufnr }
       -- See `:help vim.lsp.*` for documentation on any of the below functions
       vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
       -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
@@ -53,15 +63,6 @@ return {
       vim.keymap.set('n', '<leader>lwl', function()
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
       end, bufopts)
-
-      if client.name == 'elixirls' then
-        vim.keymap.set('n', '<leader>li', ':Format<CR>',
-          { noremap = true, desc = 'Format current buffer with formatter.nvim' })
-      else
-        vim.keymap.set('n', '<leader>li', function() vim.lsp.buf.format({ async = true }) end, bufopts)
-      end
-
-      require('lsp-format').on_attach(client)
     end
 
     local function get_ls_cmd(ls)
