@@ -32,6 +32,7 @@ return {
   },
   {
     'lukas-reineke/indent-blankline.nvim',
+    main = 'ibl',
     opts = {
       char = '|',
       buftype_exclude = { 'terminal' },
