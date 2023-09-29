@@ -103,7 +103,7 @@ nnoremap(
 nnoremap(
   '<leader>gq',
   function()
-    util.visit_buffers(function(buf)
+    util.for_each_buffer(function(buf)
       local buf_ft = vim.api.nvim_buf_get_option(buf, 'filetype')
       if buf_ft == 'fugitive' then vim.api.nvim_buf_delete(buf, {}) end
     end)

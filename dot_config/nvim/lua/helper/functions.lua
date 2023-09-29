@@ -1,6 +1,6 @@
 local M = {}
 
-M.visit_buffers = function(func)
+M.for_each_buffer = function(func)
   for _, buffer in pairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_valid(buffer) then
       func(buffer)
