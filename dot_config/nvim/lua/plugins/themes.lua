@@ -33,11 +33,7 @@ return {
   {
     'lukas-reineke/indent-blankline.nvim',
     main = 'ibl',
-    opts = {
-      char = '|',
-      buftype_exclude = { 'terminal' },
-      show_current_context = true,
-    }
+    opts = {}
   },
   {
     'rcarriga/nvim-notify',
