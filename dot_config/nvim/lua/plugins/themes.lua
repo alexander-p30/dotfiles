@@ -1,6 +1,14 @@
 return {
+  'nyoom-engineering/oxocarbon.nvim',
   'ellisonleao/gruvbox.nvim',
   'navarasu/onedark.nvim',
+  { 'bluz71/vim-moonfly-colors',    name = 'moonfly' },
+  'kvrohit/rasmus.nvim',
+  'ishan9299/modus-theme-vim',
+  {
+    'mcchrish/zenbones.nvim',
+    dependencies = { 'rktjmp/lush.nvim' }
+  },
   {
     'catppuccin/nvim',
     name = 'catppuccin',

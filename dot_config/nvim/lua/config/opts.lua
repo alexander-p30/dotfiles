@@ -1,5 +1,7 @@
 local opt = vim.opt
 
+vim.o.background = 'dark'
+
 -- MAPLEADER
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '

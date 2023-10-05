@@ -19,8 +19,8 @@ return {
 
     require('lsp-format').setup({})
 
-    local function on_attach(client, bufnr)
-      local bufopts = { noremap = true, silent = true, buffer = bufnr }
+    local function on_attach(client, buffer)
+      local bufopts = { noremap = true, silent = true, buffer = buffer }
 
       -- Set up alternative keymap to format file
       if client.name == nvim_lsp.elixirls.name then
@@ -31,12 +31,12 @@ return {
       end
 
       -- Don't setup lsp_signature_help when in an elixir test-file
-      local buffer_name = vim.api.nvim_buf_get_name(bufnr)
+      local buffer_name = vim.api.nvim_buf_get_name(buffer)
       if not util.string_ends_with(buffer_name, "_test.exs") then
         require('lsp_signature').on_attach({
           bind = true,
           handler_opts = { border = 'rounded' }
-        }, bufnr)
+        }, buffer)
       end
 
       require('lsp-format').on_attach(client)
