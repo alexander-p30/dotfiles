@@ -45,4 +45,20 @@ M.split_string = function(str, separator)
   return string_parts
 end
 
+M.table_wrap = function(x)
+  if type(x) ~= "table" then
+    x = { x }
+  end
+
+  return x
+end
+
+M.merge_tables = function(table_a, table_b)
+  for key, value in pairs(table_b) do
+    table_a[key] = value
+  end
+
+  return table_a
+end
+
 return M
