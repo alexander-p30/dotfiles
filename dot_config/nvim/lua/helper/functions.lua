@@ -23,6 +23,11 @@ M.string_ends_with = function(str, suffix)
   return string.sub(str, -suffix_size, -1) == suffix
 end
 
+M.string_starts_with = function(str, suffix)
+  local suffix_size = string.len(suffix)
+  return string.sub(str, 1, suffix_size) == suffix
+end
+
 local escape_pattern = function(pattern)
   -- Escape special characters in the pattern
   return pattern:gsub("[%(%)%.%%%+%-%*%?%[%]%^%$]", "%%%1")

@@ -1,4 +1,19 @@
+local util = require('helper.functions')
+
+
 return {
+  {
+    "Exafunction/codeium.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",
+    },
+    opts = {},
+    cond = function()
+      local remote_projects_path = vim.fn.expand('$HOME/Projects/remote/')
+      return util.string_starts_with(vim.fn.getcwd(), remote_projects_path)
+    end
+  },
   {
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
@@ -25,16 +40,21 @@ return {
           format = lspkind.cmp_format({
             mode = 'symbol_text',
             maxwidth = 60,
+            symbol_map = { Codeium = "", },
             before = function(entry, vim_item)
               vim_item.menu = ({
                 nvim_lsp = '[LSP]',
                 look = '[Dict]',
                 buffer = '[Buffer]',
                 luasnip = '[LuaSnip]',
-                path = '[Path]'
+                path = '[Path]',
+                codeium = '[IA]'
               })[entry.source.name]
 
-              if not vim_item.menu then vim.notify(entry.source.name) end
+              if not vim_item.menu then
+                local message = '[USER] not found in mapped sources: ' .. entry.source.name
+                vim.notify(message)
+              end
 
               return vim_item
             end
@@ -67,6 +87,7 @@ return {
           { name = 'luasnip' },
           { name = 'buffer' },
           { name = 'path' },
+          { name = 'codeium' }
         }
       })
 
