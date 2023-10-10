@@ -20,15 +20,18 @@ local telescope_keymaps = {
   build_keymap('gi', '<cmd>Telescope lsp_implementations<CR>', 'LSP go to implementation')
 }
 
+
 local harpoon_keymaps = {
-  build_keymap('<leader>ha', function() require("harpoon.mark").add_file() end, 'Add harpoon mark'),
-  build_keymap('<leader>hs', function() require("harpoon.ui").toggle_quick_menu() end, 'Show harpoon menu'),
-  build_keymap('<leader>h1', function() require("harpoon.ui").nav_file(1) end, 'Open harpoon mark #1'),
-  build_keymap('<leader>h2', function() require("harpoon.ui").nav_file(2) end, 'Open harpoon mark #2'),
-  build_keymap('<leader>h3', function() require("harpoon.ui").nav_file(3) end, 'Open harpoon mark #3'),
-  build_keymap('<leader>h4', function() require("harpoon.ui").nav_file(4) end, 'Open harpoon mark #4'),
-  build_keymap('<leader>h5', function() require("harpoon.ui").nav_file(5) end, 'Open harpoon mark #5'),
+  build_keymap('<leader>ha', function() require('harpoon.mark').add_file() end, 'Add harpoon mark'),
+  build_keymap('<leader>hs', function() require('harpoon.ui').toggle_quick_menu() end, 'Show harpoon menu')
 }
+
+for i = 1, 9 do
+  local keymap = build_keymap('<leader>h' .. i, function() require('harpoon.ui').nav_file(i) end,
+    'Open harpoon mark #' .. i)
+  table.insert(harpoon_keymaps, keymap)
+end
+
 
 local lazy_load_telescope_keys = util.map(telescope_keymaps, function(_, spec)
   return { spec.keymap, spec.cmd, noremap = true, silent = true, desc = spec.desc }
