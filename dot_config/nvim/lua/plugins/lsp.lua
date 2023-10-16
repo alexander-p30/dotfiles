@@ -8,7 +8,7 @@ return {
     { 'j-hui/fidget.nvim', config = true, tag = 'legacy' },
   },
   config = function()
-    local nvim_lsp = require('lspconfig')
+    local lspconfig = require('lspconfig')
 
     local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
     function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
@@ -23,7 +23,7 @@ return {
       local bufopts = { noremap = true, silent = true, buffer = buffer }
 
       -- Set up alternative keymap to format file
-      if client.name == nvim_lsp.elixirls.name then
+      if client.name == lspconfig.elixirls.name then
         vim.keymap.set('n', '<leader>li', ':Format<CR>',
           { noremap = true, desc = 'Format current buffer with formatter.nvim' })
       else
@@ -77,17 +77,16 @@ return {
       return { capabilities = capabilities, on_attach = on_attach, cmd = { get_ls_cmd(ls), ... } }
     end
 
-    nvim_lsp.elixirls.setup(config('elixir-ls'))
-    nvim_lsp.efm.setup({ filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } })
-    nvim_lsp.gopls.setup(config('gopls'))
-    nvim_lsp.tsserver.setup(config('typescript-language-server', '--stdio'))
-    nvim_lsp.clangd.setup(config('clangd'))
-    nvim_lsp.hls.setup(config('haskell-language-server-wrapper', '--lsp'))
-    nvim_lsp.rust_analyzer.setup(config('rust-analyzer'))
-    nvim_lsp.solargraph.setup(config('solargraph', 'stdio'))
-    nvim_lsp.pyright.setup(config('pyright-langserver', '--stdio'))
+    lspconfig.efm.setup({ filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } })
+    lspconfig.gopls.setup(config('gopls'))
+    lspconfig.tsserver.setup(config('typescript-language-server', '--stdio'))
+    lspconfig.clangd.setup(config('clangd'))
+    lspconfig.hls.setup(config('haskell-language-server-wrapper', '--lsp'))
+    lspconfig.rust_analyzer.setup(config('rust-analyzer'))
+    lspconfig.solargraph.setup(config('solargraph', 'stdio'))
+    lspconfig.pyright.setup(config('pyright-langserver', '--stdio'))
 
-    nvim_lsp.lua_ls.setup({
+    lspconfig.lua_ls.setup({
       cmd = { get_ls_cmd('lua-language-server') },
       on_attach = on_attach,
       settings = {
@@ -104,5 +103,41 @@ return {
         },
       },
     })
+
+    -- Setup lexical or elixirls
+
+    local use_elixirls = false
+    if use_elixirls then
+      lspconfig.elixirls.setup(config('elixir-ls'))
+    else
+      local configs = require('lspconfig.configs')
+      local lexical_config = {
+        filetypes = { 'elixir', 'eelixir', 'heex' },
+        cmd = { vim.fn.expand('~/Projects/personal/lexical/_build/dev/package/lexical/bin/start_lexical.sh') },
+        settings = {},
+      }
+
+      if not configs.lexical then
+        configs.lexical = {
+          default_config = {
+            filetypes = lexical_config.filetypes,
+            cmd = lexical_config.cmd,
+            root_dir = function(fname)
+              return lspconfig.util.root_pattern('mix.exs', '.git')(fname) or vim.loop.os_homedir()
+            end,
+            -- optional settings
+            settings = lexical_config.settings,
+          },
+        }
+      end
+
+      lspconfig.lexical.setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
+        root_dir = function(fname)
+          return lspconfig.util.root_pattern("mix.exs", ".git")(fname)
+        end
+      })
+    end
   end
 }
