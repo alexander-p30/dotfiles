@@ -57,7 +57,7 @@ return {
       {
         pattern = 'PersistedTelescopeLoadPost',
         callback = function(session)
-          vim.notify('Loaded session ' .. session.data.name)
+          vim.notify('Loaded session ' .. sanitize_session_name(session.data.name))
         end
       }
     }

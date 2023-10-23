@@ -10,6 +10,7 @@ return {
     'tpope/vim-surround',
     keys = { 'cs', 'ys', 'ds', { 'S', mode = 'v' } }
   },
+  'tpope/vim-repeat',
   {
     'numToStr/Comment.nvim',
     keys = {

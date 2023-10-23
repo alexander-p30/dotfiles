@@ -1,5 +1,3 @@
-local util = require('helper.functions')
-
 return {
   'neovim/nvim-lspconfig',
   dependencies = {
@@ -30,14 +28,7 @@ return {
         vim.keymap.set('n', '<leader>li', function() vim.lsp.buf.format({ async = true }) end, bufopts)
       end
 
-      -- Don't setup lsp_signature_help when in an elixir test-file
-      local buffer_name = vim.api.nvim_buf_get_name(buffer)
-      if not util.string_ends_with(buffer_name, "_test.exs") then
-        require('lsp_signature').on_attach({
-          bind = true,
-          handler_opts = { border = 'rounded' }
-        }, buffer)
-      end
+      require('lsp_signature').on_attach({ bind = true, handler_opts = { border = 'rounded' } }, buffer)
 
       require('lsp-format').on_attach(client)
 
