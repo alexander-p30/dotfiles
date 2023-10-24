@@ -57,6 +57,11 @@ fi
 # Run sessionizer on Ctrl-f
 bindkey -s '^f' 'tmux-sessionizer\n'
 
+# Setup zoxide
+if (( $+commands[zoxide] )) then
+  znap eval zoxide 'zoxide init zsh'
+fi
+
 # run arbitrary commands ```RUN='echo "it works"' zsh```
 TEMP_RUN=$RUN
 export RUN=
