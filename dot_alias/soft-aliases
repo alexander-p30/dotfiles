@@ -9,11 +9,7 @@ alias cdkt="cd ~/.config/kitty"
 alias kdiff="kitty +kitten diff"
 alias ktsh="kittysh && exit"
 
-# Lazygit
 alias lg="lazygit"
-
-# Chezmoi
 alias c="chezmoi"
-
-# Tmux-sessionizer
 alias tms="tmux-sessionizer"
+alias z="zoxide"
