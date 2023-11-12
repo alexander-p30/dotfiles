@@ -3,18 +3,6 @@ local util = require('helper.functions')
 
 return {
   {
-    "Exafunction/codeium.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "hrsh7th/nvim-cmp",
-    },
-    opts = {},
-    cond = function()
-      local remote_projects_path = vim.fn.expand('$HOME/Projects/remote/')
-      return util.string_starts_with(vim.fn.getcwd(), remote_projects_path)
-    end
-  },
-  {
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
     dependencies = {
@@ -40,7 +28,6 @@ return {
           format = lspkind.cmp_format({
             mode = 'symbol_text',
             maxwidth = 60,
-            symbol_map = { Codeium = "", },
             before = function(entry, vim_item)
               vim_item.menu = ({
                 nvim_lsp = '[LSP]',
@@ -48,7 +35,6 @@ return {
                 buffer = '[Buffer]',
                 luasnip = '[LuaSnip]',
                 path = '[Path]',
-                codeium = '[IA]'
               })[entry.source.name]
 
               if not vim_item.menu then
@@ -87,7 +73,6 @@ return {
           { name = 'luasnip' },
           { name = 'buffer' },
           { name = 'path' },
-          { name = 'codeium' }
         }
       })
 
