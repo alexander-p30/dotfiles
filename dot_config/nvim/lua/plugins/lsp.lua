@@ -3,7 +3,7 @@ return {
   dependencies = {
     'lukas-reineke/lsp-format.nvim',
     'ray-x/lsp_signature.nvim',
-    { 'j-hui/fidget.nvim', config = true, tag = 'legacy' },
+    { 'j-hui/fidget.nvim', config = true },
   },
   config = function()
     local lspconfig = require('lspconfig')
