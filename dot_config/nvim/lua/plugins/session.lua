@@ -1,20 +1,12 @@
-local util = require('helper.functions');
+local util = require('helper.functions')
 
-local sanitize_session_name = function(session_name)
-  local branch_separator = "@@"
+local sanitize_session_name = function(session)
+  -- relative/path/to/folder
+  local split_path = util.split_string(session.dir_path, '/')
+  local folder = split_path[#split_path]
 
-  -- absolute/but%escaped%path@@branch.nvim
-  local name_parts = util.split_string(session_name, branch_separator)
-  local path = name_parts[1]
-  -- remove trailing .vim
-  local branch = string.sub(name_parts[2], 0, string.len(name_parts[2]) - 4)
-
-  -- path is escaped by %, lets get only the current folder name
-  local path_parts = util.split_string(path, "%")
-  local folder = path_parts[#path_parts]
-
-  return folder .. "@" .. branch
-end;
+  return folder .. '@' .. session.branch
+end
 
 return {
   'olimorris/persisted.nvim',
