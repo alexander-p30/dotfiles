@@ -15,7 +15,6 @@ znap prompt
 znap source zsh-users/zsh-autosuggestions
 znap source zsh-users/zsh-syntax-highlighting
 znap source ohmyzsh/ohmyzsh \
-  plugins/asdf \
   plugins/git
 
 # From Prezto
@@ -34,6 +33,7 @@ znap source sorin-ionescu/prezto \
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Completions
+znap fpath _mise 'mise completion zsh'
 znap fpath _remotectl 'remotectl completion zsh'
 znap fpath _rustup 'rustup completions zsh'
 znap fpath _cargo 'rustup completions zsh cargo'
@@ -61,6 +61,10 @@ bindkey -s '^f' 'tmux-sessionizer\n'
 if (( $+commands[zoxide] )) then
   znap eval zoxide 'zoxide init zsh'
 fi
+
+eval "$(~/.local/bin/mise activate zsh)"
+
+alias mise='nocorrect mise'
 
 # run arbitrary commands ```RUN='echo "it works"' zsh```
 TEMP_RUN=$RUN
