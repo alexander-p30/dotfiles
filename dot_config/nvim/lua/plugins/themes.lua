@@ -29,10 +29,7 @@ return {
       term_colors = true,
       flavour = 'mocha',
       integrations = {
-        neotree = false,
-        cmp = true,
-        illuminate = true,
-        telescope = true
+        neotree = true,
       },
       highlight_overrides = {
         all = function(colors)
