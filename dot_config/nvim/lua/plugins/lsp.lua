@@ -4,6 +4,7 @@ return {
     'lukas-reineke/lsp-format.nvim',
     'ray-x/lsp_signature.nvim',
     { 'j-hui/fidget.nvim', config = true },
+    'hrsh7th/nvim-cmp'
   },
   config = function()
     local lspconfig = require('lspconfig')

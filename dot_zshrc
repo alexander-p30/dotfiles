@@ -37,6 +37,7 @@ znap fpath _mise 'mise completion zsh'
 znap fpath _remotectl 'remotectl completion zsh'
 znap fpath _rustup 'rustup completions zsh'
 znap fpath _cargo 'rustup completions zsh cargo'
+znap fpath _colima 'colima completion zsh'
 # }}}
 
 # Aliases {{{

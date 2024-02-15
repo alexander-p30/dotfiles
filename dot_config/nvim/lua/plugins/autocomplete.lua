@@ -1,6 +1,3 @@
-local util = require('helper.functions')
-
-
 return {
   {
     'hrsh7th/nvim-cmp',
@@ -59,7 +56,7 @@ return {
           ['<C-Space>'] = cmp.mapping.complete(),
           ['<C-e>'] = cmp.mapping.close(),
           ['<C-CR>'] = cmp.mapping(function(_) luasnip.expand_or_jump() end, { 'i', 's' }),
-          ['<Tab>'] = cmp.mapping.confirm({ select = true }),
+          ['<C-g>'] = cmp.mapping.confirm({ select = true }),
           ['<S-Tab>'] = cmp.mapping(function(fallback)
             if luasnip.jumpable(-1) then
               luasnip.jump(-1)
@@ -88,6 +85,7 @@ return {
       )
     end
   },
+  'github/copilot.vim',
   {
     'gelguy/wilder.nvim',
     keys = { ':', '/', '?' },
