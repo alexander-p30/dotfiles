@@ -56,7 +56,7 @@ return {
           ['<C-Space>'] = cmp.mapping.complete(),
           ['<C-e>'] = cmp.mapping.close(),
           ['<C-CR>'] = cmp.mapping(function(_) luasnip.expand_or_jump() end, { 'i', 's' }),
-          ['<C-g>'] = cmp.mapping.confirm({ select = true }),
+          ['<Tab>'] = cmp.mapping.confirm({ select = true }),
           ['<S-Tab>'] = cmp.mapping(function(fallback)
             if luasnip.jumpable(-1) then
               luasnip.jump(-1)
@@ -85,7 +85,6 @@ return {
       )
     end
   },
-  'github/copilot.vim',
   {
     'gelguy/wilder.nvim',
     keys = { ':', '/', '?' },
@@ -100,4 +99,18 @@ return {
       ))
     end,
   },
+  {
+    'github/copilot.vim',
+    enabled = function()
+      return vim.fn.hostname() == 'Remote-Estevan-Alexander-de-Paula.local'
+    end,
+    init = function()
+      vim.keymap.set('i', '<C-g>', 'copilot#Accept("\\<CR>")', {
+        expr = true,
+        replace_keycodes = false
+      })
+      vim.g.copilot_no_tab_map = true
+      vim.g.copilot_assume_mapped = true
+    end,
+  }
 }
