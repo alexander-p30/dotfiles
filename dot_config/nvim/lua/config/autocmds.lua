@@ -13,6 +13,12 @@ vim.api.nvim_create_autocmd('BufEnter', {
   callback = add_lines_to_term
 })
 
+vim.api.nvim_create_autocmd('TextYankPost', {
+  desc = 'Highlight when yanking text',
+  group = vim.api.nvim_create_augroup('highligh-yank-group', { clear = true }),
+  callback = function() vim.highlight.on_yank() end
+})
+
 vim.cmd([[
   autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * if mode() != 'c' | checktime | endif
 ]])
