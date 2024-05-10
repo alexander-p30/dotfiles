@@ -132,7 +132,9 @@ nnoremap('<leader>gfhs', ':Git flow hotfix start ')
 
 
 -- Delete all buffers
-nnoremap('<leader>db', ':%bd <bar> e#', { desc = 'Populate comand with delete all buffers except current' })
+nnoremap('<leader>db', ':%bd <bar> e#', { desc = 'Populate command with delete all buffers and reopen current file' })
+nnoremap('<leader>d!b', ':%bd <bar> e#',
+  { desc = 'Populate command with force delete all buffers and reopen current file' })
 nnoremap('<leader>dab', ':%bd', { desc = 'Populate comand with delete all buffers' })
 
 -- Increment number under the cursor

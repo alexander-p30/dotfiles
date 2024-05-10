@@ -72,7 +72,7 @@ return {
     lspconfig.efm.setup({ filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } })
     lspconfig.gopls.setup(config('gopls'))
     lspconfig.tsserver.setup(config('typescript-language-server', '--stdio'))
-    lspconfig.clangd.setup(config('clangd'))
+    lspconfig.clangd.setup(config('clangd', '--offset-encoding=utf-16'))
     lspconfig.hls.setup(config('haskell-language-server-wrapper', '--lsp'))
     lspconfig.rust_analyzer.setup(config('rust-analyzer'))
     lspconfig.solargraph.setup(config('solargraph', 'stdio'))

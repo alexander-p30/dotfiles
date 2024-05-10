@@ -12,7 +12,11 @@ local sanitize_session_name = function(session)
   local path_parts = util.split_string(path, '/')
   local folder = path_parts[#path_parts]
 
-  return folder .. '@' .. branch
+  if branch then
+    return folder .. '@' .. branch
+  end
+
+  return folder
 end;
 
 return {
