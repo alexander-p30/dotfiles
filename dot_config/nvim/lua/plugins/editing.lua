@@ -19,8 +19,17 @@ return {
     },
     config = true
   },
-  { 'mg979/vim-visual-multi', keys = { { '<C-n>', mode = 'v' }, '<C-down>' } },
-  { 'RRethy/vim-illuminate',  event = 'VeryLazy' },
+  { 'mg979/vim-visual-multi',        keys = { { '<C-n>', mode = 'v' }, '<C-down>' } },
+  {
+    'echasnovski/mini.ai',
+    version = '*',
+    config = true
+  },
+  {
+    'echasnovski/mini.cursorword',
+    version = '*',
+    config = true
+  },
   {
     'kassio/neoterm',
     init = function()
