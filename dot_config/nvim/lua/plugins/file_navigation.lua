@@ -4,25 +4,32 @@ local function build_keymap(keymap, cmd, desc)
   return { keymap = keymap, cmd = cmd, desc = desc }
 end
 
+local function telescope_cmd(cmd)
+  return '<cmd>Telescope ' .. cmd .. '<CR>'
+end
+
 local telescope_keymaps = {
-  build_keymap('<leader><space>', '<cmd>Telescope find_files<CR>', 'Telescope find_files'),
-  build_keymap('<leader>f', '<cmd>Telescope live_grep<CR>', 'Telescope live_grep'),
-  build_keymap('<leader>b', '<cmd>Telescope buffers<CR>', 'Telescope buffers'),
-  build_keymap('<leader>gco', '<cmd>Telescope git_branches<CR>', 'Telescope git_branches'),
-  build_keymap('<leader>gcc', '<cmd>Telescope git_commits<CR>', 'Telescope git_commits'),
-  build_keymap('<leader>sh', '<cmd>Telescope help_tags<CR>', 'Search through vim help pages'),
-  build_keymap('<leader>ss', '<cmd>Telescope persisted<CR>', 'Search through sessions'),
-  build_keymap('<leader>cs', '<cmd>Telescope colorscheme<CR>', 'Telescope colorscheme'),
-  build_keymap('<leader>nf', '<cmd>Telescope notify<CR>', 'Search notifications'),
-  build_keymap('<leader>re', '<cmd>Telescope resume<CR>', 'Resume last query'),
-  build_keymap('gr', '<cmd>Telescope lsp_references<CR>', 'LSP go to references'),
-  build_keymap('gd', '<cmd>Telescope lsp_definitions<CR>', 'LSP go to definition'),
-  build_keymap('gi', '<cmd>Telescope lsp_implementations<CR>', 'LSP go to implementation')
+  build_keymap('<leader><space>', telescope_cmd('find_files'), 'Telescope find_files'),
+  build_keymap('<leader>f', telescope_cmd('live_grep'), 'Telescope live_grep'),
+  build_keymap('<leader>b', telescope_cmd('buffers'), 'Telescope buffers'),
+  build_keymap('<leader>gco', telescope_cmd('git_branches'), 'Telescope git_branches'),
+  build_keymap('<leader>gcc', telescope_cmd('git_commits'), 'Telescope git_commits'),
+  build_keymap('<leader>sh', telescope_cmd('help_tags'), 'Search through vim help pages'),
+  build_keymap('<leader>ss', telescope_cmd('persisted'), 'Search through sessions'),
+  build_keymap('<leader>cs', telescope_cmd('colorscheme'), 'Telescope colorscheme'),
+  build_keymap('<leader>nf', telescope_cmd('notify'), 'Search notifications'),
+  build_keymap('<leader>re', telescope_cmd('resume'), 'Resume last query'),
+  -- build_keymap('gr', telescope_cmd('lsp_references'), 'LSP go to references'),
+  -- build_keymap('gd', telescope_cmd('lsp_definitions'), 'LSP go to definition'),
+  -- build_keymap('gi', telescope_cmd('lsp_implementations'), 'LSP go to implementation')
 }
 
 
 local harpoon_keymaps = {
-  build_keymap('<leader>ha', function() require('harpoon.mark').add_file() end, 'Add harpoon mark'),
+  build_keymap('<leader>ha', function()
+    vim.notify('[USER] Added harpoon mark: ' .. vim.fn.expand('%'))
+    require('harpoon.mark').add_file()
+  end, 'Add harpoon mark'),
   build_keymap('<leader>hs', function() require('harpoon.ui').toggle_quick_menu() end, 'Show harpoon menu')
 }
 

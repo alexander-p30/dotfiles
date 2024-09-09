@@ -45,7 +45,8 @@ return {
       vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
       vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
       vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
-      -- vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+      vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
       vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, bufopts)
       vim.keymap.set('n', '[e', vim.diagnostic.goto_prev, bufopts)
       vim.keymap.set('n', ']e', vim.diagnostic.goto_next, bufopts)
@@ -71,7 +72,7 @@ return {
 
     lspconfig.efm.setup({ filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } })
     lspconfig.gopls.setup(config('gopls'))
-    lspconfig.tsserver.setup(config('typescript-language-server', '--stdio'))
+    lspconfig.ts_ls.setup(config('typescript-language-server', '--stdio'))
     lspconfig.clangd.setup(config('clangd', '--offset-encoding=utf-16'))
     lspconfig.hls.setup(config('haskell-language-server-wrapper', '--lsp'))
     lspconfig.rust_analyzer.setup(config('rust-analyzer'))
@@ -126,6 +127,9 @@ return {
       lspconfig.lexical.setup({
         on_attach = on_attach,
         capabilities = capabilities,
+        on_init = function(client)
+          client.offset_encoding = "utf-8"
+        end,
         root_dir = function(fname)
           return lspconfig.util.root_pattern("mix.exs", ".git")(fname)
         end

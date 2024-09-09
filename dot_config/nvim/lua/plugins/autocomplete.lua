@@ -35,7 +35,7 @@ return {
               })[entry.source.name]
 
               if not vim_item.menu then
-                local message = '[USER] not found in mapped sources: ' .. entry.source.name
+                local message = '[USER] Not found in mapped sources: ' .. entry.source.name
                 vim.notify(message)
               end
 

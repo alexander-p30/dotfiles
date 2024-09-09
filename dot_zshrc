@@ -48,7 +48,7 @@ source ~/.alias/system-aliases
 # }}}
 
 # Keep IEx history
-export ERL_AFLAGS="-kernel shell_history enabled"
+export ERL_AFLAGS="+MIscs 2048 -kernel shell_history enabled"
 
 # Avoid nested tmux
 if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then

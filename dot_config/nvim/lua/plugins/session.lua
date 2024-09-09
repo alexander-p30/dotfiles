@@ -1,6 +1,10 @@
 local util = require('helper.functions');
 
 local sanitize_session_name = function(session)
+  if session == nil then
+    return ''
+  end
+
   local branch_separator = '@@'
 
   -- absolute/but%escaped%path@@branch.nvim

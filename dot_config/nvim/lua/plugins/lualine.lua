@@ -315,6 +315,16 @@ return {
       'branch',
       icon = '',
       color = { fg = colors.violet, gui = 'bold' },
+      fmt = function(branch_name)
+        local max_size = 33
+        local ellipsis = '...'
+
+        if string.len(branch_name) > max_size then
+          return string.sub(branch_name, 1, max_size - string.len(ellipsis)) .. ellipsis
+        end
+
+        return branch_name
+      end,
     }
 
     -- Now don't forget to initialize lualine
