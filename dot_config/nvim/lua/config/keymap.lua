@@ -27,6 +27,7 @@ nnoremap('<leader>tf', vim.cmd.TestFile, { desc = 'Run test on current file' })
 nnoremap('<leader>ts', vim.cmd.TestSuite, { desc = 'Run test suite' })
 nnoremap('<leader>tl', vim.cmd.TestLast, { desc = 'Run last test' })
 nnoremap('<leader>tv', vim.cmd.TestVisit, { desc = 'Visit last run test' })
+nnoremap('<leader>tm', ':T mixt<CR>', { desc = 'Start mix-test' })
 -- }}}
 
 -- Tabs {{{
