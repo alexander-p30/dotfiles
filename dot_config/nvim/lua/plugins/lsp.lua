@@ -7,7 +7,7 @@ return {
     'hrsh7th/nvim-cmp'
   },
   config = function()
-    local lspconfig = require('lspconfig')
+    local lspconfig = vim.lsp.config
 
     local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
     function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
@@ -18,46 +18,44 @@ return {
 
     require('lsp-format').setup({})
 
-    local function on_attach(client, buffer)
-      local bufopts = { noremap = true, silent = true, buffer = buffer }
+    vim.api.nvim_create_autocmd('LspAttach', {
+      callback = function(event)
+        -- local client = vim.lsp.get_client_by_id(event.data.client_id)
+        local client = assert(vim.lsp.get_client_by_id(event.data.client_id))
+        local bufnr = event.buf
+        local bufopts = { noremap = true, silent = true, buffer = bufnr }
+        require("lsp-format").on_attach(client, bufnr)
 
-      -- Set up alternative keymap to format file
-      if client.name == lspconfig.elixirls.name then
-        vim.keymap.set('n', '<leader>li', ':Format<CR>',
-          { noremap = true, desc = 'Format current buffer with formatter.nvim' })
-      else
         vim.keymap.set('n', '<leader>li', function() vim.lsp.buf.format({ async = true }) end, bufopts)
+
+        require('lsp_signature').on_attach({ bind = true, handler_opts = { border = 'rounded' } }, bufnr)
+
+        -- Mappings.
+        -- See `:help vim.lsp.*` for documentation on any of the below functions
+        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
+        -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+        vim.keymap.set('n', '<C-w>gv', ':vs<CR><cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
+        vim.keymap.set('n', '<C-w>gs', ':sp<CR><cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+        vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+        vim.keymap.set('i', '<C-q>', vim.lsp.buf.signature_help, bufopts)
+        vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
+        vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
+        vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
+        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+        vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+        vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, bufopts)
+        vim.keymap.set('n', '[e', vim.diagnostic.goto_prev, bufopts)
+        vim.keymap.set('n', ']e', vim.diagnostic.goto_next, bufopts)
+
+        -- Workspace stuff
+        vim.keymap.set('n', '<leader>lwa', vim.lsp.buf.add_workspace_folder, bufopts)
+        vim.keymap.set('n', '<leader>lwr', vim.lsp.buf.remove_workspace_folder, bufopts)
+        vim.keymap.set('n', '<leader>lwl', function()
+          print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+        end, bufopts)
       end
-
-      require('lsp_signature').on_attach({ bind = true, handler_opts = { border = 'rounded' } }, buffer)
-
-      require('lsp-format').on_attach(client)
-
-      -- Mappings.
-      -- See `:help vim.lsp.*` for documentation on any of the below functions
-      vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-      -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-      vim.keymap.set('n', '<C-w>gv', ':vs<CR><cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
-      vim.keymap.set('n', '<C-w>gs', ':sp<CR><cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
-      vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-      vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, bufopts)
-      vim.keymap.set('i', '<C-q>', vim.lsp.buf.signature_help, bufopts)
-      vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
-      vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
-      vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
-      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-      vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-      vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, bufopts)
-      vim.keymap.set('n', '[e', vim.diagnostic.goto_prev, bufopts)
-      vim.keymap.set('n', ']e', vim.diagnostic.goto_next, bufopts)
-
-      -- Workspace stuff
-      vim.keymap.set('n', '<leader>lwa', vim.lsp.buf.add_workspace_folder, bufopts)
-      vim.keymap.set('n', '<leader>lwr', vim.lsp.buf.remove_workspace_folder, bufopts)
-      vim.keymap.set('n', '<leader>lwl', function()
-        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-      end, bufopts)
-    end
+    })
 
     local function get_ls_cmd(ls)
       local language_servers_dir = vim.fn.stdpath('data') .. '/mason/bin/'
@@ -70,70 +68,50 @@ return {
       return { capabilities = capabilities, on_attach = on_attach, cmd = { get_ls_cmd(ls), ... } }
     end
 
-    lspconfig.efm.setup({ filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } })
-    lspconfig.gopls.setup(config('gopls'))
-    lspconfig.ts_ls.setup(config('typescript-language-server', '--stdio'))
-    lspconfig.clangd.setup(config('clangd', '--offset-encoding=utf-16'))
-    lspconfig.hls.setup(config('haskell-language-server-wrapper', '--lsp'))
-    lspconfig.rust_analyzer.setup(config('rust-analyzer'))
-    lspconfig.solargraph.setup(config('solargraph', 'stdio'))
-    lspconfig.pyright.setup(config('pyright-langserver', '--stdio'))
-
-    lspconfig.lua_ls.setup({
-      cmd = { get_ls_cmd('lua-language-server') },
-      on_attach = on_attach,
-      settings = {
-        Lua = {
-          runtime = { version = 'LuaJIT', },
-          diagnostics = { globals = { 'vim' }, },
-          workspace = {
-            library = {
-              vim.api.nvim_get_runtime_file('', true),
-              vim.api.nvim_get_runtime_file('/lua/vim/lsp', true),
+    servers = {
+      efm = { filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } },
+      gopls = config('gopls'),
+      ts_ls = config('typescript-language-server', '--stdio'),
+      clangd = config('clangd', '--offset-encoding=utf-16'),
+      hls = config('haskell-language-server-wrapper', '--lsp'),
+      rust_analyzer = config('rust-analyzer'),
+      solargraph = config('solargraph', 'stdio'),
+      pyright = config('pyright-langserver', '--stdio'),
+      lua_ls = {
+        cmd = { get_ls_cmd('lua-language-server') },
+        on_attach = on_attach,
+        settings = {
+          Lua = {
+            runtime = { version = 'LuaJIT', },
+            diagnostics = { globals = { 'vim' }, },
+            workspace = {
+              library = {
+                vim.api.nvim_get_runtime_file('', true),
+                vim.api.nvim_get_runtime_file('/lua/vim/lsp', true),
+              },
             },
+            telemetry = { enable = false, },
           },
-          telemetry = { enable = false, },
         },
       },
-    })
+      expert = { cmd = { 'expert' } },
+    }
 
-    -- Setup lexical or elixirls
-
-    local use_elixirls = false
-    if use_elixirls then
-      lspconfig.elixirls.setup(config('elixir-ls'))
-    else
-      local configs = require('lspconfig.configs')
-      local lexical_config = {
-        filetypes = { 'elixir', 'eelixir', 'heex' },
-        cmd = { vim.fn.expand('~/Projects/personal/lexical/_build/dev/package/lexical/bin/start_lexical.sh') },
-        settings = {},
-      }
-
-      if not configs.lexical then
-        configs.lexical = {
-          default_config = {
-            filetypes = lexical_config.filetypes,
-            cmd = lexical_config.cmd,
-            root_dir = function(fname)
-              return lspconfig.util.root_pattern('mix.exs', '.git')(fname) or vim.loop.os_homedir()
-            end,
-            -- optional settings
-            settings = lexical_config.settings,
-          },
-        }
+    for name, server_config in pairs(servers) do
+      if server_config == true then
+        server_config = {}
       end
-
-      lspconfig.lexical.setup({
-        on_attach = on_attach,
+      server_config = vim.tbl_deep_extend("force", {}, {
         capabilities = capabilities,
-        on_init = function(client)
-          client.offset_encoding = "utf-8"
-        end,
-        root_dir = function(fname)
-          return lspconfig.util.root_pattern("mix.exs", ".git")(fname)
-        end
-      })
+      }, server_config)
+
+      vim.lsp.config(name, server_config)
+      vim.lsp.enable(name)
     end
+
+    -- lspconfig.lexical.setup({
+    --   filetypes = { 'elixir', 'eelixir', 'heex' },
+    --   cmd = { vim.fn.expand('~/Projects/personal/lexical/_build/dev/package/lexical/bin/start_lexical.sh') }
+    -- })
   end
 }
