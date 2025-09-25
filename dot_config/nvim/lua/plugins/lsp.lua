@@ -65,21 +65,18 @@ return {
     local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
     local function config(ls, ...)
-      return { capabilities = capabilities, on_attach = on_attach, cmd = { get_ls_cmd(ls), ... } }
+      return { capabilities = capabilities, cmd = { ls, ... } }
     end
 
     servers = {
       efm = { filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } },
-      gopls = config('gopls'),
       ts_ls = config('typescript-language-server', '--stdio'),
       clangd = config('clangd', '--offset-encoding=utf-16'),
       hls = config('haskell-language-server-wrapper', '--lsp'),
-      rust_analyzer = config('rust-analyzer'),
       solargraph = config('solargraph', 'stdio'),
       pyright = config('pyright-langserver', '--stdio'),
       lua_ls = {
         cmd = { get_ls_cmd('lua-language-server') },
-        on_attach = on_attach,
         settings = {
           Lua = {
             runtime = { version = 'LuaJIT', },
@@ -94,7 +91,6 @@ return {
           },
         },
       },
-      expert = { cmd = { 'expert' } },
     }
 
     for name, server_config in pairs(servers) do

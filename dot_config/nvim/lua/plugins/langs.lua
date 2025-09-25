@@ -11,20 +11,5 @@ return {
     enabled = false,
     event = { 'BufReadPre', 'BufNewFile' },
     dependencies = { 'nvim-lua/plenary.nvim' }
-  },
-  {
-    'mhartington/formatter.nvim',
-    ft = { 'ex', 'elixir', 'eex', 'heex', 'surface' },
-    config = function()
-      require('formatter').setup({
-        logging = true,
-        log_level = vim.log.levels.WARN,
-        filetype = {
-          elixir = {
-            require('formatter.filetypes.elixir').mixformat,
-          },
-        },
-      })
-    end
   }
 }
