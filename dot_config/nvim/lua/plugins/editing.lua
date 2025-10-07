@@ -1,7 +1,7 @@
 return {
   {
     'vim-test/vim-test',
-    cmd = { 'TestNearest', 'TestFile', 'TestSuite', 'TestLast' },
+    cmd = { 'TestNearest', 'TestFile', 'TestSuite', 'TestLast', 'TestVisit' },
     init = function()
       vim.g['test#strategy'] = 'neoterm'
     end

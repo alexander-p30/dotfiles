@@ -1,4 +1,5 @@
 # vim:syntax=bash
+zstyle '*:compinit' arguments -u
 
 # znap {{{
 [[ -r ~/.config/znap/znap-core/znap.zsh ]] ||
@@ -67,6 +68,9 @@ fi
 eval "$(~/.local/bin/mise activate zsh)"
 
 alias mise='nocorrect mise'
+
+export PATH="/opt/homebrew/opt/icu4c@77/bin:$PATH"
+export PATH="/opt/homebrew/opt/icu4c@77/sbin:$PATH"
 
 # run arbitrary commands ```RUN='echo "it works"' zsh```
 TEMP_RUN=$RUN

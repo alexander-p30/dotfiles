@@ -1,6 +1,5 @@
 background-opacity = 0.9
 background-blur-radius = 20
-theme = challengerDeep
 
 macos-option-as-alt = true
 macos-titlebar-style = hidden

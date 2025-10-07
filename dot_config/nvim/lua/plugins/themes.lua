@@ -59,7 +59,6 @@ return {
     'rcarriga/nvim-notify',
     config = function() vim.notify = require('notify') end,
   },
-  { 'nvim-tree/nvim-web-devicons',  opts = { default = true } },
-  { 'stevearc/dressing.nvim',       event = 'VeryLazy' },
-  { 'nvim-zh/colorful-winsep.nvim', opts = { animate = { enabled = false } } }
+  { 'nvim-tree/nvim-web-devicons', opts = { default = true } },
+  { 'stevearc/dressing.nvim',      event = 'VeryLazy' }
 }
