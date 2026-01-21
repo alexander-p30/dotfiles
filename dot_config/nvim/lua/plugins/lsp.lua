@@ -56,58 +56,5 @@ return {
         end, bufopts)
       end
     })
-
-    local function get_ls_cmd(ls)
-      local language_servers_dir = vim.fn.stdpath('data') .. '/mason/bin/'
-      return language_servers_dir .. ls
-    end
-
-    local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
-
-    local function config(ls, ...)
-      return { capabilities = capabilities, cmd = { ls, ... } }
-    end
-
-    servers = {
-      efm = { filetypes = { 'elixir' }, cmd = { get_ls_cmd('efm-langserver') } },
-      ts_ls = config('typescript-language-server', '--stdio'),
-      clangd = config('clangd', '--offset-encoding=utf-16'),
-      hls = config('haskell-language-server-wrapper', '--lsp'),
-      solargraph = config('solargraph', 'stdio'),
-      pyright = config('pyright-langserver', '--stdio'),
-      lua_ls = {
-        cmd = { get_ls_cmd('lua-language-server') },
-        settings = {
-          Lua = {
-            runtime = { version = 'LuaJIT', },
-            diagnostics = { globals = { 'vim' }, },
-            workspace = {
-              library = {
-                vim.api.nvim_get_runtime_file('', true),
-                vim.api.nvim_get_runtime_file('/lua/vim/lsp', true),
-              },
-            },
-            telemetry = { enable = false, },
-          },
-        },
-      },
-    }
-
-    for name, server_config in pairs(servers) do
-      if server_config == true then
-        server_config = {}
-      end
-      server_config = vim.tbl_deep_extend("force", {}, {
-        capabilities = capabilities,
-      }, server_config)
-
-      vim.lsp.config(name, server_config)
-      vim.lsp.enable(name)
-    end
-
-    -- lspconfig.lexical.setup({
-    --   filetypes = { 'elixir', 'eelixir', 'heex' },
-    --   cmd = { vim.fn.expand('~/Projects/personal/lexical/_build/dev/package/lexical/bin/start_lexical.sh') }
-    -- })
   end
 }
