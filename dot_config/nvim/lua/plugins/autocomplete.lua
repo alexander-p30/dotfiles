@@ -105,8 +105,9 @@ return {
     lazy = false,
     opts = {
       behaviour = {
-        auto_apply_diff_after_generation = false
-      }
+        auto_apply_diff_after_generation = false,
+        auto_suggestions = false
+      },
     },
     build = "make",
     dependencies = {
