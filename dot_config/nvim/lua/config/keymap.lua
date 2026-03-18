@@ -64,6 +64,10 @@ nnoremap('<C-h>', '<cmd> TmuxNavigateLeft<CR>')
 nnoremap('<C-j>', '<cmd> TmuxNavigateDown<CR>')
 nnoremap('<C-k>', '<cmd> TmuxNavigateUp<CR>')
 nnoremap('<C-l>', '<cmd> TmuxNavigateRight<CR>')
+tnoremap('<C-h>', '<C-\\><C-n><cmd>TmuxNavigateLeft<CR>')
+tnoremap('<C-j>', '<C-\\><C-n><cmd>TmuxNavigateDown<CR>')
+tnoremap('<C-k>', '<C-\\><C-n><cmd>TmuxNavigateUp<CR>')
+tnoremap('<C-l>', '<C-\\><C-n><cmd>TmuxNavigateRight<CR>')
 -- }}}
 
 -- Writing and Closing {{{

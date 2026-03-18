@@ -12,6 +12,8 @@ source ~/.config/znap/znap-core/znap.zsh
 znap eval starship 'starship init zsh --print-full-init'
 znap prompt
 
+eval "$(~/.local/bin/mise activate zsh)"
+
 # Plugins
 znap source zsh-users/zsh-autosuggestions
 znap source zsh-users/zsh-syntax-highlighting
@@ -47,27 +49,51 @@ source ~/.alias/git-aliases
 source ~/.alias/rails-aliases
 source ~/.alias/soft-aliases
 source ~/.alias/system-aliases
+alias mise='nocorrect mise'
 # }}}
 
 # Keep IEx history
 export ERL_AFLAGS="+MIscs 2048 -kernel shell_history enabled"
 
-# Avoid nested tmux
-if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-  tmux a -t default || exec tmux new -s default && exit;
+# Save outer terminal before tmux overrides TERM_PROGRAM
+if [ -z "$TMUX" ]; then
+  export OUTER_TERM_PROGRAM="${TERM_PROGRAM}"
 fi
 
-# Run sessionizer on Ctrl-f
-bindkey -s '^f' 'tmux-sessionizer\n'
+# Avoid nested tmux
+if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+  tmux a -t default || tmux new -s default
+fi
+
+# Restore TERM_PROGRAM inside tmux to match outer terminal
+if [ -n "$TMUX" ] && [ -n "$OUTER_TERM_PROGRAM" ]; then
+  export TERM_PROGRAM="$OUTER_TERM_PROGRAM"
+fi
 
 # Setup zoxide
 if (( $+commands[zoxide] )) then
   znap eval zoxide 'zoxide init zsh'
 fi
 
-eval "$(~/.local/bin/mise activate zsh)"
 
-alias mise='nocorrect mise'
+gt() {
+  REMOTE_DIR="$HOME/Projects/remote"
+
+  selected=$(
+    {
+      find "$REMOTE_DIR" -mindepth 1 -maxdepth 1 -type d -name '*worktrees*' \
+        -exec find {} -mindepth 1 -maxdepth 1 -type d \;
+      echo "$REMOTE_DIR/tiger"
+      echo "$REMOTE_DIR/neo"
+      echo "$REMOTE_DIR/dragon"
+    } | sed "s|^$REMOTE_DIR/||" | fzf | sed "s|^|$REMOTE_DIR/|"
+  )
+
+  [[ -n "$selected" ]] && cd "$selected"
+}
+
+# Run gt on Ctrl-f
+bindkey -s '^f' 'gt\n'
 
 export PATH="/opt/homebrew/opt/icu4c@77/bin:$PATH"
 export PATH="/opt/homebrew/opt/icu4c@77/sbin:$PATH"
