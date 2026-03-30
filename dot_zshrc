@@ -12,7 +12,7 @@ source ~/.config/znap/znap-core/znap.zsh
 znap eval starship 'starship init zsh --print-full-init'
 znap prompt
 
-eval "$(~/.local/bin/mise activate zsh)"
+znap eval mise '~/.local/bin/mise activate zsh'
 
 # Plugins
 znap source zsh-users/zsh-autosuggestions
@@ -71,9 +71,7 @@ if [ -n "$TMUX" ] && [ -n "$OUTER_TERM_PROGRAM" ]; then
 fi
 
 # Setup zoxide
-if (( $+commands[zoxide] )) then
-  znap eval zoxide 'zoxide init zsh'
-fi
+znap eval zoxide 'zoxide init zsh'
 
 
 gt() {
