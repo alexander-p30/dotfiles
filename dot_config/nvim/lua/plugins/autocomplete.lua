@@ -7,7 +7,7 @@ return {
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-path',
       'honza/vim-snippets',
-      { 'L3MON4D3/LuaSnip',      version = '1.*', build = 'make install_jsregexp' },
+      { 'L3MON4D3/LuaSnip',      version = '2.*', build = 'make install_jsregexp' },
       'saadparwaiz1/cmp_luasnip',
       'onsails/lspkind-nvim',
       { 'windwp/nvim-autopairs', config = true }
