@@ -1,10 +1,20 @@
 return {
+  {
+    'stevearc/conform.nvim',
+    event = 'BufWritePre',
+    opts = {
+      format_on_save = {
+        lsp_format = 'fallback',
+        timeout_ms = 500,
+      },
+    },
+  },
+  {
   'neovim/nvim-lspconfig',
   dependencies = {
-    'lukas-reineke/lsp-format.nvim',
     'ray-x/lsp_signature.nvim',
     { 'j-hui/fidget.nvim', config = true },
-    'hrsh7th/nvim-cmp'
+    'saghen/blink.cmp',
   },
   config = function()
     local lspconfig = vim.lsp.config
@@ -16,17 +26,13 @@ return {
       return orig_util_open_floating_preview(contents, syntax, opts, ...)
     end
 
-    require('lsp-format').setup({})
-
     vim.api.nvim_create_autocmd('LspAttach', {
       callback = function(event)
-        -- local client = vim.lsp.get_client_by_id(event.data.client_id)
         local client = assert(vim.lsp.get_client_by_id(event.data.client_id))
         local bufnr = event.buf
         local bufopts = { noremap = true, silent = true, buffer = bufnr }
-        require("lsp-format").on_attach(client, bufnr)
 
-        vim.keymap.set('n', '<leader>li', function() vim.lsp.buf.format({ async = true }) end, bufopts)
+        vim.keymap.set('n', '<leader>li', function() require('conform').format({ async = true, lsp_format = 'fallback' }) end, bufopts)
 
         require('lsp_signature').on_attach({ bind = true, handler_opts = { border = 'rounded' } }, bufnr)
 
@@ -56,5 +62,19 @@ return {
         end, bufopts)
       end
     })
+
+    vim.lsp.config('dexter', {
+      cmd = { 'dexter', 'lsp' },
+      root_markers = { '.dexter.db', '.git', 'mix.exs' },
+      filetypes = { 'elixir', 'eelixir', 'heex' },
+      init_options = {
+        followDelegates = true, -- jump through defdelegate to the target function
+        -- stdlibPath = "",      -- override Elixir stdlib path (auto-detected)
+        -- debug = false,        -- verbose logging to stderr (view with :LspLog)
+      },
+    })
+
+    vim.lsp.enable('dexter')
   end
+  }
 }

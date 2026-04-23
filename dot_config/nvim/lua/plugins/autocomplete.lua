@@ -1,89 +1,39 @@
 return {
   {
-    'hrsh7th/nvim-cmp',
-    event = 'InsertEnter',
+    'saghen/blink.cmp',
+    version = '1.*',
     dependencies = {
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-path',
-      'honza/vim-snippets',
       { 'L3MON4D3/LuaSnip',      version = '2.*', build = 'make install_jsregexp' },
-      'saadparwaiz1/cmp_luasnip',
-      'onsails/lspkind-nvim',
-      { 'windwp/nvim-autopairs', config = true }
+      'honza/vim-snippets',
+      { 'windwp/nvim-autopairs', config = true },
     },
-    config = function()
-      local cmp = require('cmp')
-      local lspkind = require('lspkind')
-      local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-      local luasnip = require('luasnip')
-
+    opts = {
+      snippets = { preset = 'luasnip' },
+      sources = {
+        default = { 'lsp', 'path', 'snippets', 'buffer' },
+      },
+      cmdline = {
+        sources = { 'buffer' },
+      },
+      keymap = {
+        preset = 'none',
+        ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
+        ['<C-e>'] = { 'cancel', 'fallback' },
+        ['<Tab>'] = { 'accept', 'fallback' },
+        ['<C-d>'] = { 'scroll_documentation_up', 'fallback' },
+        ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
+        ['<C-CR>'] = { 'snippet_forward', 'fallback' },
+        ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
+      },
+      completion = {
+        documentation = { window = { border = 'rounded' } },
+        menu = { border = 'rounded' },
+      },
+    },
+    config = function(_, opts)
       require('luasnip.loaders.from_snipmate').lazy_load()
-
-      cmp.setup({
-        formatting = {
-          format = lspkind.cmp_format({
-            mode = 'symbol_text',
-            maxwidth = 60,
-            before = function(entry, vim_item)
-              vim_item.menu = ({
-                nvim_lsp = '[LSP]',
-                look = '[Dict]',
-                buffer = '[Buffer]',
-                luasnip = '[LuaSnip]',
-                path = '[Path]',
-              })[entry.source.name]
-
-              if not vim_item.menu then
-                local message = '[USER] Not found in mapped sources: ' .. entry.source.name
-                vim.notify(message)
-              end
-
-              return vim_item
-            end
-          })
-        },
-        snippet = {
-          expand = function(args) luasnip.lsp_expand(args.body) end
-        },
-        window = {
-          completion = cmp.config.window.bordered(),
-          documentation = cmp.config.window.bordered(),
-        },
-        mapping = cmp.mapping.preset.insert({
-          ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-          ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<C-Space>'] = cmp.mapping.complete(),
-          ['<C-e>'] = cmp.mapping.close(),
-          ['<C-CR>'] = cmp.mapping(function(_) luasnip.expand_or_jump() end, { 'i', 's' }),
-          ['<Tab>'] = cmp.mapping.confirm({ select = true }),
-          ['<S-Tab>'] = cmp.mapping(function(fallback)
-            if luasnip.jumpable(-1) then
-              luasnip.jump(-1)
-            else
-              fallback()
-            end
-          end, { 'i', 's' }),
-        }),
-        sources = {
-          { name = 'nvim_lsp' },
-          { name = 'luasnip' },
-          { name = 'buffer' },
-          { name = 'path' },
-        }
-      })
-
-      cmp.setup.cmdline('/', {
-        sources = {
-          { name = 'buffer' }
-        }
-      })
-
-      cmp.event:on(
-        'confirm_done',
-        cmp_autopairs.on_confirm_done()
-      )
-    end
+      require('blink.cmp').setup(opts)
+    end,
   },
   {
     'gelguy/wilder.nvim',
@@ -101,6 +51,7 @@ return {
   },
   {
     "yetone/avante.nvim",
+    enabled = false,
     event = "VeryLazy",
     lazy = false,
     opts = {
@@ -114,12 +65,10 @@ return {
       "stevearc/dressing.nvim",
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",
-      --- The below dependencies are optional,
-      "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
-      "hrsh7th/nvim-cmp",              -- autocompletion for avante commands and mentions
-      "nvim-tree/nvim-web-devicons",   -- or echasnovski/mini.icons
+      "nvim-telescope/telescope.nvim",
+      "saghen/blink.cmp",
+      "nvim-tree/nvim-web-devicons",
       {
-        -- Make sure to set this up properly if you have lazy=true
         'MeanderingProgrammer/render-markdown.nvim',
         opts = {
           file_types = { "markdown", "Avante" },

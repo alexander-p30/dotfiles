@@ -92,7 +92,7 @@ nnoremap('Y', 'y$')
 vnoremap('<leader>p', '"_dP', { desc = 'Paste but keep register' })
 
 -- Copy current filepath
-nmap('<leader>yfp', ':let @+ = expand("%")<CR>', { desc = 'Copy current file path to system clipboard' })
+nmap('<leader>yfp', ':let @+ = fnamemodify(expand("%"), ":.")<CR>', { desc = 'Copy current file path to system clipboard' })
 
 -- Clear search highlighting
 nnoremap('<leader>noh', vim.cmd.noh, { silent = true, desc = 'Clear search highlight' })

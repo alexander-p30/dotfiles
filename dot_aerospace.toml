@@ -116,6 +116,8 @@ alt-8 = 'workspace 7'
 alt-9 = 'workspace 8'
 alt-0 = 'workspace 9'
 
+alt-tab = 'workspace 10'
+
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 alt-shift-1 = 'move-node-to-workspace 0'
 alt-shift-2 = 'move-node-to-workspace 1'
@@ -129,13 +131,13 @@ alt-shift-8 = 'move-node-to-workspace 7'
 alt-shift-9 = 'move-node-to-workspace 8'
 alt-shift-0 = 'move-node-to-workspace 9'
 
-# See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
-alt-tab = 'workspace-back-and-forth'
-# See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
-alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+alt-shift-tab = 'move-node-to-workspace 10'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
 alt-shift-semicolon = 'mode service'
+
+[workspace-to-monitor-force-assignment]
+    10 = 'secondary'
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -150,3 +152,8 @@ alt-shift-h = ['join-with left', 'mode main']
 alt-shift-j = ['join-with down', 'mode main']
 alt-shift-k = ['join-with up', 'mode main']
 alt-shift-l = ['join-with right', 'mode main']
+
+[[on-window-detected]]
+    if.app-id = 'com.mrdashboard.app'
+    check-further-callbacks = true
+    run = ['layout floating']
