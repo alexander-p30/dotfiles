@@ -90,6 +90,10 @@ gt() {
   [[ -n "$selected" ]] && cd "$selected"
 }
 
+how() {
+  claude --model haiku -p "Answer concisely and briefly: how $*"
+}
+
 # Run gt on Ctrl-f
 bindkey -s '^f' 'gt\n'
 
