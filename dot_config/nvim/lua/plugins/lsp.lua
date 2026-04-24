@@ -17,8 +17,6 @@ return {
       'saghen/blink.cmp',
     },
     config = function()
-      local lspconfig = vim.lsp.config
-
       local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
       function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
         opts = opts or {}
@@ -62,6 +60,16 @@ return {
           end, bufopts)
         end
       })
+
+      vim.lsp.config('lua_ls', {
+        settings = {
+          Lua = {
+            diagnostics = {
+              globals = { 'vim' } }
+          }
+        }
+      })
+
 
       vim.lsp.config('dexter', {
         cmd = { 'dexter', 'lsp' },
