@@ -24,6 +24,10 @@ return {
         return orig_util_open_floating_preview(contents, syntax, opts, ...)
       end
 
+      vim.lsp.config('*', {
+        capabilities = require('blink.cmp').get_lsp_capabilities(),
+      })
+
       vim.api.nvim_create_autocmd('LspAttach', {
         callback = function(event)
           local bufnr = event.buf
@@ -37,16 +41,18 @@ return {
           -- Mappings.
           -- See `:help vim.lsp.*` for documentation on any of the below functions
           vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-          -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-          vim.keymap.set('n', '<C-w>gv', ':vs<CR><cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
-          vim.keymap.set('n', '<C-w>gs', ':sp<CR><cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
+          -- vim.keymap.set('n', '<C-w>gv', ':vs<CR><cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
+          -- vim.keymap.set('n', '<C-w>gs', ':sp<CR><cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
+          vim.keymap.set('n', '<C-w>gv', ':vs<CR><cmd>lua require("helper.lsp").goto_definition()<CR>', bufopts)
+          vim.keymap.set('n', '<C-w>gs', ':sp<CR><cmd>lua require("helper.lsp").goto_definition()<CR>', bufopts)
           vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
           vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, bufopts)
           vim.keymap.set('i', '<C-q>', vim.lsp.buf.signature_help, bufopts)
           vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
           vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
           vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
-          vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+          -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+          vim.keymap.set('n', 'gd', require('helper.lsp').goto_definition, bufopts)
           vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
           vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, bufopts)
           vim.keymap.set('n', '[e', vim.diagnostic.goto_prev, bufopts)
