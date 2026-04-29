@@ -53,14 +53,11 @@ return {
     build = function() require("fff.download").download_or_build_binary() end,
     opts = {
       prompt = '> ',
-      debug = {
-        enabled = true,
-        show_scores = true,
-      },
       layout = {
-        height = 0.4,
+        height = 0.6,
         width = 1,
-        anchor = 'bottom'
+        anchor = 'bottom',
+        flex = false
       },
       keymaps = {
         move_up = '<Up>',
