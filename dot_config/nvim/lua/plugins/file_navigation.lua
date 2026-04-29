@@ -9,15 +9,14 @@ local function telescope_cmd(cmd)
 end
 
 local telescope_keymaps = {
-  build_keymap('<leader><space>', telescope_cmd('find_files'), 'Telescope find_files'),
-  build_keymap('<leader>f', telescope_cmd('live_grep'), 'Telescope live_grep'),
+  -- build_keymap('<leader><space>', telescope_cmd('find_files'), 'Telescope find_files'),
+  -- build_keymap('<leader>f', telescope_cmd('live_grep'), 'Telescope live_grep'),
   build_keymap('<leader>b', telescope_cmd('buffers'), 'Telescope buffers'),
   build_keymap('<leader>gco', telescope_cmd('git_branches'), 'Telescope git_branches'),
   build_keymap('<leader>gcc', telescope_cmd('git_commits'), 'Telescope git_commits'),
   build_keymap('<leader>sh', telescope_cmd('help_tags'), 'Search through vim help pages'),
   build_keymap('<leader>ss', telescope_cmd('persisted'), 'Search through sessions'),
   build_keymap('<leader>cs', telescope_cmd('colorscheme'), 'Telescope colorscheme'),
-  build_keymap('<leader>nf', telescope_cmd('notify'), 'Search notifications'),
   build_keymap('<leader>re', telescope_cmd('resume'), 'Resume last query'),
   -- build_keymap('gr', telescope_cmd('lsp_references'), 'LSP go to references'),
   -- build_keymap('gd', telescope_cmd('lsp_definitions'), 'LSP go to definition'),
@@ -49,6 +48,41 @@ local lazy_load_harpoon_keys = util.map(harpoon_keymaps, function(_, spec)
 end)
 
 return {
+  {
+    'dmtrKovalenko/fff.nvim',
+    build = function() require("fff.download").download_or_build_binary() end,
+    opts = {
+      prompt = '> ',
+      debug = {
+        enabled = true,
+        show_scores = true,
+      },
+      layout = {
+        height = 0.4,
+        width = 1,
+        anchor = 'bottom'
+      },
+      keymaps = {
+        move_up = '<Up>',
+        cycle_previous_query = '<C-p>',
+      }
+    },
+    lazy = false, -- the plugin lazy-initialises itself
+    keys = {
+      { "<leader><space>", function() require('fff').find_files() end, desc = 'FFFind files' },
+      { "<leader>ff",      function() require('fff').live_grep() end,  desc = 'LiFFFe grep' },
+      {
+        "<leader>fz",
+        function() require('fff').live_grep({ grep = { modes = { 'fuzzy', 'plain' } } }) end,
+        desc = 'Live fffuzy grep',
+      },
+      {
+        "<leader>fw",
+        function() require('fff').live_grep({ query = vim.fn.expand("<cword>") }) end,
+        desc = 'Search current word',
+      },
+    },
+  },
   {
     'nvim-telescope/telescope.nvim',
     keys = lazy_load_telescope_keys,
@@ -111,7 +145,6 @@ return {
 
       require('telescope').load_extension('fzf')
       require('telescope').load_extension('persisted')
-      require('telescope').load_extension('notify')
     end
   },
   {
