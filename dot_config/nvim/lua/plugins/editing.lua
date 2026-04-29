@@ -12,21 +12,19 @@ return {
   },
   'tpope/vim-repeat',
   {
-    'numToStr/Comment.nvim',
-    keys = {
-      { 'gc', mode = { 'n', 'v' } },
-      { 'gb', mode = { 'n', 'v' } }
-    },
+    'nvim-mini/mini.comment',
+    version = '*',
+    keys = { { 'gc', mode = { 'n', 'v' } } },
     config = true
   },
   { 'mg979/vim-visual-multi',        keys = { { '<C-n>', mode = 'v' }, '<C-down>' } },
   {
-    'echasnovski/mini.ai',
+    'nvim-mini/mini.ai',
     version = '*',
     config = true
   },
   {
-    'echasnovski/mini.cursorword',
+    'nvim-mini/mini.cursorword',
     version = '*',
     config = true
   },

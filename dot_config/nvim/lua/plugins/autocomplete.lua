@@ -5,7 +5,7 @@ return {
     dependencies = {
       { 'L3MON4D3/LuaSnip',      version = '2.*', build = 'make install_jsregexp' },
       'honza/vim-snippets',
-      { 'windwp/nvim-autopairs', config = true },
+      { 'nvim-mini/mini.pairs', version = '*', config = true },
     },
     opts = {
       snippets = { preset = 'luasnip' },

@@ -52,16 +52,31 @@ return {
     main = 'ibl',
     opts = {},
     init = function()
+      vim.api.nvim_set_hl(0, 'IblIndent', { fg = '#4A4B52', bold = false })
       vim.api.nvim_set_hl(0, 'IblScope', { fg = '#BABBC2', bold = false })
     end
   },
   {
-    'rcarriga/nvim-notify',
+    'nvim-mini/mini.notify',
+    version = '*',
     config = function()
-      vim.notify = require('notify')
-      vim.notify.setup({
-        background_colour = "#000000",
+      require('mini.notify').setup({
+        content = {
+          format = function(notif)
+            local level_names = {
+              [vim.log.levels.ERROR] = 'ERROR',
+              [vim.log.levels.WARN]  = 'WARN',
+              [vim.log.levels.INFO]  = 'INFO',
+              [vim.log.levels.DEBUG] = 'DEBUG',
+              [vim.log.levels.TRACE] = 'TRACE',
+            }
+            local level = level_names[notif.level] or 'INFO'
+            local time = os.date('%H:%M:%S', math.floor(notif.ts_add))
+            return ('%s  [%s]  %s\n%s'):format(time, level, notif.msg, string.rep('─', 40))
+          end,
+        },
       })
+      vim.notify = require('mini.notify').make_notify()
     end,
   },
   { 'nvim-tree/nvim-web-devicons', opts = { default = true } },

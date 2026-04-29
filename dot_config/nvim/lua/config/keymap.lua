@@ -92,7 +92,8 @@ nnoremap('Y', 'y$')
 vnoremap('<leader>p', '"_dP', { desc = 'Paste but keep register' })
 
 -- Copy current filepath
-nmap('<leader>yfp', ':let @+ = fnamemodify(expand("%"), ":.")<CR>', { desc = 'Copy current file path to system clipboard' })
+nmap('<leader>yfp', ':let @+ = fnamemodify(expand("%"), ":.")<CR>',
+  { desc = 'Copy current file path to system clipboard' })
 
 -- Clear search highlighting
 nnoremap('<leader>noh', vim.cmd.noh, { silent = true, desc = 'Clear search highlight' })
@@ -175,5 +176,13 @@ tnoremap('<Esc>', '<C-\\><C-n>')
 -- Open undotree
 nnoremap('<leader>u', vim.cmd.UndotreeToggle, { desc = 'Open undotree' })
 
+local mini_notify = require('mini.notify')
+
 -- Dismiss notifications
-nnoremap('<leader>nd', vim.notify.dismiss, { desc = 'Dismiss all notifications' })
+nnoremap('<leader>nd', mini_notify.clear, { desc = 'Dismiss all notifications' })
+
+-- Notification history
+vim.api.nvim_create_user_command('Notifications', function() util.open_in_float({ run = mini_notify.show_history }) end,
+  {})
+nnoremap('<leader>nf', function() util.open_in_float({ run = mini_notify.show_history }) end,
+  { desc = 'Show notification history' })
