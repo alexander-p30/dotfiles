@@ -55,8 +55,6 @@ return {
           vim.keymap.set('n', 'gd', require('helper.lsp').goto_definition, bufopts)
           vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
           vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, bufopts)
-          vim.keymap.set('n', '[e', vim.diagnostic.goto_prev, bufopts)
-          vim.keymap.set('n', ']e', vim.diagnostic.goto_next, bufopts)
 
           -- Workspace stuff
           vim.keymap.set('n', '<leader>lwa', vim.lsp.buf.add_workspace_folder, bufopts)

@@ -100,7 +100,10 @@ bindkey -s '^f' 'gt\n'
 export PATH="/opt/homebrew/opt/icu4c@77/bin:$PATH"
 export PATH="/opt/homebrew/opt/icu4c@77/sbin:$PATH"
 
+export PGDATA="/Users/estevanalexander/.local/share/mise/installs/postgres/17.7/data"
+
 # run arbitrary commands ```RUN='echo "it works"' zsh```
 TEMP_RUN=$RUN
 export RUN=
 eval "$TEMP_RUN"
+source ~/.safe-chain/scripts/init-posix.sh # Safe-chain Zsh initialization script

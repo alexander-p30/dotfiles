@@ -18,6 +18,7 @@ nnoremap <expr> j (v:count > 1 ? "m'" . v:count : '') . 'j'
 
 -- Terminal/test-related bindings {{{
 nnoremap('<leader>tt', vim.cmd.Ttoggle, { silent = true, desc = 'Toggle terminal' })
+nnoremap('<leader>ti', ':T ', { desc = 'Write to terminal' })
 nnoremap('<leader>tc', ':Tclose!<CR>', { desc = 'Close terminal' })
 
 nnoremap('<leader>alt', ':A<CR>', { desc = 'Alternate between implementation and test files' })

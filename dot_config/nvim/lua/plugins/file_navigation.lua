@@ -62,6 +62,9 @@ return {
       keymaps = {
         move_up = '<Up>',
         cycle_previous_query = '<C-p>',
+      },
+      preview = {
+        wrap_lines = true
       }
     },
     lazy = false, -- the plugin lazy-initialises itself
