@@ -17,7 +17,7 @@ local telescope_keymaps = {
   build_keymap('<leader>sh', telescope_cmd('help_tags'), 'Search through vim help pages'),
   build_keymap('<leader>ss', telescope_cmd('persisted'), 'Search through sessions'),
   build_keymap('<leader>cs', telescope_cmd('colorscheme'), 'Telescope colorscheme'),
-  build_keymap('<leader>re', telescope_cmd('resume'), 'Resume last query'),
+  -- build_keymap('<leader>re', telescope_cmd('resume'), 'Resume last query'),
   -- build_keymap('gr', telescope_cmd('lsp_references'), 'LSP go to references'),
   -- build_keymap('gd', telescope_cmd('lsp_definitions'), 'LSP go to definition'),
   -- build_keymap('gi', telescope_cmd('lsp_implementations'), 'LSP go to implementation')
@@ -74,13 +74,14 @@ return {
       {
         "<leader>fz",
         function() require('fff').live_grep({ grep = { modes = { 'fuzzy', 'plain' } } }) end,
-        desc = 'Live fffuzy grep',
+        desc = 'Live FFFuzy grep',
       },
       {
         "<leader>fw",
         function() require('fff').live_grep({ query = vim.fn.expand("<cword>") }) end,
         desc = 'Search current word',
       },
+      { "<leader>re", function() require('fff').resume() end, desc = 'Resume last FFF search' },
     },
   },
   {

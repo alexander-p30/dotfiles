@@ -103,7 +103,7 @@ export PATH="/opt/homebrew/opt/icu4c@77/sbin:$PATH"
 export PGDATA="/Users/estevanalexander/.local/share/mise/installs/postgres/17.7/data"
 
 [ -f "$HOME/.atuin/bin/env" ] && . "$HOME/.atuin/bin/env"
-command -v atuin &> /dev/null && eval "$(atuin init zsh)"
+command -v atuin &> /dev/null && eval "$(atuin init zsh --disable-up-arrow)"
 
 # run arbitrary commands ```RUN='echo "it works"' zsh```
 TEMP_RUN=$RUN
