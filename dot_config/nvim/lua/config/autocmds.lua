@@ -1,5 +1,5 @@
 local function add_lines_to_term()
-  local buf_ft = vim.api.nvim_buf_get_option(vim.api.nvim_get_current_buf(), 'filetype')
+  local buf_ft = vim.api.nvim_get_option_value('filetype', { buf = vim.api.nvim_get_current_buf() })
   if buf_ft == 'neoterm' then
     vim.api.nvim_command('set relativenumber')
     vim.api.nvim_command('set number')
@@ -16,7 +16,7 @@ vim.api.nvim_create_autocmd('BufEnter', {
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking text',
   group = vim.api.nvim_create_augroup('highligh-yank-group', { clear = true }),
-  callback = function() vim.hl.on_yank() end
+  callback = function() vim.hl.hl_op() end
 })
 
 vim.cmd([[
