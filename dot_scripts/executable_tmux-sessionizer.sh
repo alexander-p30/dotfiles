@@ -4,8 +4,15 @@ if [[ $# -eq 1 ]]; then
     selected=$1
 else
     selected=$(
-      { find ~/Projects/remote ~/Projects/personal -mindepth 1 -maxdepth 1 -type d && echo "$HOME/.local/share/chezmoi"; } | fzf 
+      {
+        find ~/Projects/remote ~/Projects/personal -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+        for dir in ~/Projects/remote/employ_workspace/*/; do
+          [[ -e "${dir}.git" ]] && echo "${dir%/}"
+        done
+        echo "$HOME/.local/share/chezmoi"
+      } | sed "s|^$HOME|~|" | fzf
     )
+    selected="${selected/#\~/$HOME}"
 fi
 
 if [[ -z $selected ]]; then
