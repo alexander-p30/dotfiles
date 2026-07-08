@@ -126,6 +126,9 @@ nnoremap('<leader>gp', ':Git pull<CR>')
 nnoremap('<leader>gcb', ':Git checkout -b ')
 nnoremap('<leader>gc-', ':Git checkout -', { desc = 'Checkout to last branch' })
 nnoremap('<leader>ghi', ':Git log -p -- <C-r>%<CR>', { desc = 'Open git history for file' })
+-- Copy the origin URL of the current file/line to the clipboard (no browser)
+nnoremap('<leader>gy', ':GBrowse!<CR>', { desc = 'Copy remote git link (current line) to clipboard' })
+vnoremap('<leader>gy', ':GBrowse!<CR>', { desc = 'Copy remote git link (selection) to clipboard' })
 
 -- Git flow mappings
 -- Feature

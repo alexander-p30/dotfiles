@@ -14,6 +14,11 @@ after-login-command = []
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
 after-startup-command = []
 
+# Move the mouse to the center of the newly focused monitor whenever focus
+# moves to a different monitor (e.g. switching to workspace 10 on 'secondary').
+# 'lazy' only moves the cursor if it isn't already on that monitor.
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
 # Start AeroSpace at login
 start-at-login = true
 
