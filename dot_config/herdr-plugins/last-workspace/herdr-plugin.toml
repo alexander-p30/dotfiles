@@ -1,0 +1,25 @@
+id = "last-workspace"
+name = "Last Workspace"
+version = "0.1.0"
+min_herdr_version = "0.7.0"
+description = "tmux last-window for herdr workspaces: bounce between the two most-recently-focused workspaces."
+platforms = ["linux", "macos"]
+
+# Fires on EVERY workspace switch — the fzf picker, prefix+w, the mouse, this
+# plugin's own toggle, anything. on-focus.sh records the two most-recently-
+# focused workspaces so the toggle action can alternate between them.
+[[events]]
+on = "workspace.focused"
+command = ["bash", "on-focus.sh"]
+
+# tmux `last-window` equivalent — jump to the previously-focused workspace.
+# Bind in ~/.config/herdr/config.toml:
+#   [[keys.command]]
+#   key = "prefix+shift+l"
+#   type = "plugin_action"
+#   command = "last-workspace.toggle"
+[[actions]]
+id = "toggle"
+title = "Toggle last workspace"
+contexts = ["global"]
+command = ["bash", "toggle.sh"]

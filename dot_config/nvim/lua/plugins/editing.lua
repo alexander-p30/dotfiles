@@ -40,7 +40,18 @@ return {
   { 'simeji/winresizer',             keys = '<C-e>' },
   { 'mbbill/undotree',               cmd = 'UndotreeToggle' },
   { 'folke/which-key.nvim',          config = true },
-  { 'christoomey/vim-tmux-navigator' },
+  {
+    'lmilojevicc/herdr-splits.nvim',
+    cond = vim.env.HERDR_ENV == '1',
+    event = 'VeryLazy',
+    config = function()
+      require('herdr-splits').setup({
+        default_amount = 0.03,
+        neovim_amount = 3,
+        at_edge = 'wrap',
+      })
+    end,
+  },
   {
     'johnfrankmorgan/whitespace.nvim',
     config = function()

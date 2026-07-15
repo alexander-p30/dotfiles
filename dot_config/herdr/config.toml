@@ -1,0 +1,112 @@
+# Print all defaults with: herdr --default-config
+# Docs: https://herdr.dev/docs/configuration/
+
+[theme]
+name = "terminal"
+
+[theme.custom]
+panel_bg = "#1a1a1a"
+surface0 = "#1a1a1a"   # inactive-tab fill — same as the bar, so inactive tabs blend into it uniformly
+
+[terminal]
+# New panes/tabs/workspaces inherit the current pane's directory.
+new_cwd = "follow"
+
+[ui]
+mouse_capture = true
+accent = "green"
+agent_panel_sort = "priority"
+# Always show the tab row, even when a workspace has only one tab.
+hide_tab_bar_when_single_tab = false
+
+[session]
+resume_agents_on_restore = true
+
+[experimental]
+# Replay each pane's recent scrollback across a full server restart (e.g. reboot),
+# so panes come back with their contents, not just a fresh shell.
+pane_history = true
+
+[keys]
+prefix = "ctrl+a"
+
+detach           = "prefix+d"
+split_horizontal = "prefix+s"
+split_vertical   = "prefix+v"
+new_tab          = "prefix+n"
+previous_tab     = "prefix+h"
+next_tab         = "prefix+l"
+last_pane        = ""
+close_pane       = "prefix+c"
+close_tab        = "prefix+shift+c"
+rename_tab       = "prefix+comma"
+
+settings         = "prefix+shift+s"
+
+# Pane focus is handled by ctrl+h/j/k/l (herdr-splits, below), so free ALL four
+# default prefix pane-focus binds — in particular prefix+j/k, which now drive
+# agent-sidebar navigation (next_agent / previous_agent below).
+focus_pane_left  = ""
+focus_pane_right = ""
+focus_pane_down  = ""
+focus_pane_up    = ""
+
+# Scrollback / copy: herdr has no vi copy-mode. Select with the mouse to copy,
+# or open the full scrollback buffer in $EDITOR (nvim) for real vim yanking.
+edit_scrollback  = "prefix+e"
+
+# Native workspace overlay (navigate-only, no search). The fzf switcher on
+# prefix+" below is the searchable one.
+workspace_picker = "prefix+w"
+
+next_workspace     = "prefix+shift+j"
+previous_workspace = "prefix+shift+k"
+
+next_agent       = "prefix+j"
+previous_agent   = "prefix+k"
+
+# Routed by the herdr-splits plugin: when the focused pane runs nvim the key is
+# forwarded to it; otherwise herdr moves pane focus. The nvim side lives in the
+# neovim config (herdr-splits.nvim).
+[[keys.command]]
+key = "ctrl+h"
+type = "plugin_action"
+command = "herdr-splits.nav-left"
+
+[[keys.command]]
+key = "ctrl+j"
+type = "plugin_action"
+command = "herdr-splits.nav-down"
+
+[[keys.command]]
+key = "ctrl+k"
+type = "plugin_action"
+command = "herdr-splits.nav-up"
+
+[[keys.command]]
+key = "ctrl+l"
+type = "plugin_action"
+command = "herdr-splits.nav-right"
+
+[[keys.command]]
+key = 'prefix+"'
+type = "pane"
+command = "herdr-workspace-switch"
+
+[[keys.command]]
+key = "prefix+shift+a"
+type = "pane"
+command = "herdr-agent-switch"
+
+[[keys.command]]
+key = "prefix+shift+l"
+type = "plugin_action"
+command = "last-workspace.toggle"
+
+# Jump to the topmost agent needing attention (blocked > done > working; idle
+# skipped). If already focused on it, advance to the next instead (no no-op).
+# For sidebar-exact stepping use next_agent / previous_agent (prefix+j/k above).
+[[keys.command]]
+key = "prefix+a"
+type = "shell"
+command = "herdr-goto-done"

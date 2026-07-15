@@ -1,0 +1,35 @@
+#! /bin/bash
+
+{{- if ne .chezmoi.os "darwin" }}
+exit 0
+{{- end}}
+
+# ~/.config/herdr/plugins is herdr-managed, so local plugin SOURCE lives in
+# ~/.config/herdr-plugins/<id> and is registered with `herdr plugin link`.
+# Link the "last-workspace" plugin (tmux last-window for workspaces) once, if
+# it isn't already linked.
+
+set -euo pipefail
+
+PLUGIN_DIR="$HOME/.config/herdr-plugins/last-workspace"
+
+echo "============================"
+echo ":: Linking local herdr plugins"
+
+if ! command -v herdr >/dev/null 2>&1; then
+  echo "🟡 herdr not found on PATH; skipping plugin link"
+  exit 0
+fi
+
+if [ ! -f "$PLUGIN_DIR/herdr-plugin.toml" ]; then
+  echo "🟡 $PLUGIN_DIR/herdr-plugin.toml missing; skipping"
+  exit 0
+fi
+
+if herdr plugin list --json 2>/dev/null | grep -q '"plugin_id":"last-workspace"'; then
+  echo "🟢 herdr plugin 'last-workspace' already linked"
+else
+  echo ":: linking herdr plugin 'last-workspace'"
+  herdr plugin link "$PLUGIN_DIR"
+  echo "🟢 linked 'last-workspace'"
+fi

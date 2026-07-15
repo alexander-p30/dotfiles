@@ -60,15 +60,28 @@ vnoremap('<C-p>', '"+p')
 -- 'Maximize' window
 nnoremap('<C-w>m', '<C-w>_ | <C-w>|')
 
--- Movement
-nnoremap('<C-h>', '<cmd> TmuxNavigateLeft<CR>')
-nnoremap('<C-j>', '<cmd> TmuxNavigateDown<CR>')
-nnoremap('<C-k>', '<cmd> TmuxNavigateUp<CR>')
-nnoremap('<C-l>', '<cmd> TmuxNavigateRight<CR>')
-tnoremap('<C-h>', '<C-\\><C-n><cmd>TmuxNavigateLeft<CR>')
-tnoremap('<C-j>', '<C-\\><C-n><cmd>TmuxNavigateDown<CR>')
-tnoremap('<C-k>', '<C-\\><C-n><cmd>TmuxNavigateUp<CR>')
-tnoremap('<C-l>', '<C-\\><C-n><cmd>TmuxNavigateRight<CR>')
+-- Movement — seamless between nvim splits and herdr panes (herdr-splits.nvim).
+-- Falls back to plain window nav when not running inside herdr.
+for _, m in ipairs({
+  { name = 'Left',  dir = 'left',  wc = 'h' },
+  { name = 'Down',  dir = 'down',  wc = 'j' },
+  { name = 'Up',    dir = 'up',    wc = 'k' },
+  { name = 'Right', dir = 'right', wc = 'l' },
+}) do
+  vim.api.nvim_create_user_command('HerdrNav' .. m.name, function()
+    local ok, hs = pcall(require, 'herdr-splits')
+    if ok then hs['move_cursor_' .. m.dir]() else vim.cmd.wincmd(m.wc) end
+  end, {})
+end
+
+nnoremap('<C-h>', '<cmd>HerdrNavLeft<CR>')
+nnoremap('<C-j>', '<cmd>HerdrNavDown<CR>')
+nnoremap('<C-k>', '<cmd>HerdrNavUp<CR>')
+nnoremap('<C-l>', '<cmd>HerdrNavRight<CR>')
+tnoremap('<C-h>', '<C-\\><C-n><cmd>HerdrNavLeft<CR>')
+tnoremap('<C-j>', '<C-\\><C-n><cmd>HerdrNavDown<CR>')
+tnoremap('<C-k>', '<C-\\><C-n><cmd>HerdrNavUp<CR>')
+tnoremap('<C-l>', '<C-\\><C-n><cmd>HerdrNavRight<CR>')
 -- }}}
 
 -- Writing and Closing {{{

@@ -55,19 +55,11 @@ alias mise='nocorrect mise'
 # Keep IEx history
 export ERL_AFLAGS="+MIscs 2048 -kernel shell_history enabled"
 
-# Save outer terminal before tmux overrides TERM_PROGRAM
-if [ -z "$TMUX" ]; then
-  export OUTER_TERM_PROGRAM="${TERM_PROGRAM}"
-fi
-
-# Avoid nested tmux
-if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-  tmux a -t default || tmux new -s default
-fi
-
-# Restore TERM_PROGRAM inside tmux to match outer terminal
-if [ -n "$TMUX" ] && [ -n "$OUTER_TERM_PROGRAM" ]; then
-  export TERM_PROGRAM="$OUTER_TERM_PROGRAM"
+# Launch/attach the persistent herdr session for interactive shells
+# (skip when already inside a herdr pane). Replaces the old tmux auto-attach;
+# herdr passes TERM_PROGRAM through, so the OUTER_TERM_PROGRAM dance is gone.
+if command -v herdr &> /dev/null && [ -n "$PS1" ] && [ -z "$HERDR_SESSION" ] && [ -z "$HERDR_ENV" ]; then
+  herdr --session default
 fi
 
 # Setup zoxide

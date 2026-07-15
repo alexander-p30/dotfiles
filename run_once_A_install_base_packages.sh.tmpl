@@ -96,7 +96,6 @@ yay --needed -S age \
     thunar \
     thunar-dropbox \
     timeshift \
-    tmux \
     tree \
     ttf-dejavu \
     ttf-droid \
@@ -116,3 +115,11 @@ yay --needed -S age \
     zsh
 
 echo "🟢 Finished installing base packages"
+
+echo ":: Installing herdr"
+if command -v herdr >/dev/null 2>&1; then
+  echo "⚠️  herdr already installed, skipping it..."
+else
+  curl -fsSL https://herdr.dev/install.sh | sh
+fi
+echo "🟢 Finished installing herdr"
