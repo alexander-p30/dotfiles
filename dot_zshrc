@@ -66,39 +66,12 @@ fi
 znap eval zoxide 'zoxide init zsh'
 
 
-gt() {
-  REMOTE_DIR="$HOME/Projects/remote"
-  WORKSPACE_DIR="$REMOTE_DIR/employ_workspace"
-  REPOS_YAML="$WORKSPACE_DIR/config/repos.yaml"
-
-  selected=$(
-    {
-      # The employ_workspace root itself
-      [[ -d "$WORKSPACE_DIR" ]] && echo "$WORKSPACE_DIR"
-      # Worktree dirs (e.g. neo-worktrees/) under remote/ and employ_workspace/
-      for base in "$REMOTE_DIR" "$WORKSPACE_DIR"; do
-        find "$base" -mindepth 1 -maxdepth 1 -type d -name '*worktrees*' \
-          -exec find {} -mindepth 1 -maxdepth 1 -type d \;
-      done
-      # Repo dirs registered in employ_workspace/config/repos.yaml (cloned only)
-      if [[ -f "$REPOS_YAML" ]]; then
-        sed -n 's/^[[:space:]]*-[[:space:]]*key:[[:space:]]*//p' "$REPOS_YAML" \
-          | while read -r key; do
-              [[ -d "$WORKSPACE_DIR/$key" ]] && echo "$WORKSPACE_DIR/$key"
-            done
-      fi
-    } | sed "s|^$REMOTE_DIR/||" | fzf | sed "s|^|$REMOTE_DIR/|"
-  )
-
-  [[ -n "$selected" ]] && cd "$selected"
-}
+source ~/.scripts/gt.zsh
+bindkey -s '^f' 'gt\n'
 
 how() {
   claude --model haiku -p "Answer concisely and briefly: how $*"
 }
-
-# Run gt on Ctrl-f
-bindkey -s '^f' 'gt\n'
 
 export PATH="/opt/homebrew/opt/icu4c@77/bin:$PATH"
 export PATH="/opt/homebrew/opt/icu4c@77/sbin:$PATH"
