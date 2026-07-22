@@ -40,7 +40,7 @@ table=$(printf '%s\n' "$rows" | awk -F'\t' '
   END { for (r=1;r<=n;r++)
           printf "%s\t[%d] %s %-*s  \033[2m%s\033[0m\n", tid[r], r-1, glyph(st[r]), w, name[r], ds[r] }')
 
-sel=$(fzf --ansi --delimiter='\t' --with-nth=2 --no-sort --reverse --prompt='agent> ' \
+sel=$(fzf -i --ansi --delimiter='\t' --with-nth=2 --no-sort --reverse --prompt='agent> ' \
         --bind '0:pos(1)+accept,1:pos(2)+accept,2:pos(3)+accept,3:pos(4)+accept,4:pos(5)+accept,5:pos(6)+accept,6:pos(7)+accept,7:pos(8)+accept,8:pos(9)+accept,9:pos(10)+accept' \
         --bind 'enter:accept-non-empty' \
         <<<"$table")

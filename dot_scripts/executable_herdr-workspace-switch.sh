@@ -40,7 +40,7 @@ rows=$(jq -rn --arg esc "$esc" --argjson ws "$ws" --argjson tabs "$tabs" '
     ] | .[]')
 [[ -z $rows ]] && exit 0
 
-sel=$(fzf --ansi --delimiter='\t' --with-nth=2 --no-sort --reverse --prompt='go> ' \
+sel=$(fzf -i --ansi --delimiter='\t' --with-nth=2 --no-sort --reverse --prompt='go> ' \
         --bind 'enter:accept-non-empty' <<<"$rows")
 [[ -z $sel ]] && exit 0
 
