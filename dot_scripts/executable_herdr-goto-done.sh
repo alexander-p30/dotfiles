@@ -13,13 +13,14 @@
 
 al=$(herdr agent list 2>/dev/null) || exit 0
 
-# Candidate terminal_ids in attention-priority order: all blocked, then done,
+# Candidate pane_ids in attention-priority order: all blocked, then done,
 # then working. Idle agents are excluded — nothing there needs you.
+# (herdr 0.7.5+: `agent focus` targets a pane_id, not a terminal_id.)
 cands=$(jq -r '
   (.result.agents // []) as $a
-  | ([ $a[] | select(.agent_status == "blocked") | .terminal_id ]
-   + [ $a[] | select(.agent_status == "done")    | .terminal_id ]
-   + [ $a[] | select(.agent_status == "working") | .terminal_id ])[]
+  | ([ $a[] | select(.agent_status == "blocked") | .pane_id ]
+   + [ $a[] | select(.agent_status == "done")    | .pane_id ]
+   + [ $a[] | select(.agent_status == "working") | .pane_id ])[]
 ' <<<"$al")
 [[ -z $cands ]] && exit 0
 
@@ -32,7 +33,7 @@ top_status=$(jq -r '
     elif any($a[]; .agent_status == "working") then "working"
     else "" end
 ' <<<"$al")
-cur=$(jq -r 'first(.result.agents[]? | select(.focused == true) | .terminal_id) // empty' <<<"$al")
+cur=$(jq -r 'first(.result.agents[]? | select(.focused == true) | .pane_id) // empty' <<<"$al")
 cur_status=$(jq -r 'first(.result.agents[]? | select(.focused == true) | .agent_status) // empty' <<<"$al")
 
 if [[ -n $cur_status && $cur_status == "$top_status" ]]; then
