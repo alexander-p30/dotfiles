@@ -14,5 +14,7 @@ alias c="chezmoi"
 alias hms="herdr-sessionizer"
 alias rr="caffeinate -i git pull --rebase && caffeinate -i mix do deps.get + ecto.migrate && dexter reindex"
 alias rrt="caffeinate -i git pull --rebase && caffeinate -i mix do deps.get + ecto.migrate && MIX_ENV=test caffeinate -i mix ecto.migrate && dexter reindex"
+# moka — caffeinate wrapper TUI
+alias moka="~/.scripts/moka.sh"
 alias mixt="direnv deny; MIX_ENV=test iex -S mix; stty sane && direnv allow"
 alias asdf="mise"
