@@ -31,6 +31,40 @@ moka_fmt_hms() {
   printf '%02d:%02d:%02d' $((s / 3600)) $(((s % 3600) / 60)) $((s % 60))
 }
 
+# Format a positive second count coarsely for a glanceable indicator:
+# >=1h -> "1h24m" (minutes omitted when zero, e.g. "1h"); >=1m -> "12m"; else "<1m".
+moka_fmt_coarse() {
+  local s=$1
+  ((s < 0)) && s=0
+  if ((s >= 3600)); then
+    local h=$((s / 3600)) m=$(((s % 3600) / 60))
+    if ((m > 0)); then printf '%dh%dm' "$h" "$m"; else printf '%dh' "$h"; fi
+  elif ((s >= 60)); then
+    printf '%dm' $((s / 60))
+  else
+    printf '<1m'
+  fi
+}
+
+# Build the herdr sidebar token (empty = idle). A managed session takes
+# precedence; otherwise an unmanaged caffeinate is flagged with ⚠.
+#   moka_status_token <managed_mode> <managed_remaining> <unmanaged_present> <unmanaged_remaining>
+moka_status_token() {
+  local mode=$1 rem=${2:-0} un=${3:-0} un_rem=${4:-}
+  case "$mode" in
+    timed) printf '☕ %s' "$(moka_fmt_coarse "$rem")"; return ;;
+    permanent) printf '☕ ∞'; return ;;
+  esac
+  if ((un)); then
+    if [[ -n "$un_rem" ]]; then
+      printf '☕⚠ %s' "$(moka_fmt_coarse "$un_rem")"
+    else
+      printf '☕⚠'
+    fi
+  fi
+  # idle: print nothing
+}
+
 # Adjust a duration buffer by delta seconds, clamped to [MIN, MAX].
 moka_buffer_adjust() {
   local new=$(($1 + $2))
@@ -108,7 +142,7 @@ moka_key_to_action() {
       case "$key" in
         p) echo start_permanent ;;
         t) echo goto_setup ;;
-        C) echo goto_manage ;;
+        x) echo goto_manage ;;
         o) echo toggle_oneline ;;
         q | Q) echo quit ;;
         *) echo none ;;
@@ -132,7 +166,7 @@ moka_key_to_action() {
       case "$key" in
         t) echo goto_setup ;;
         p) echo switch_permanent ;;
-        C) echo goto_manage ;;
+        x) echo goto_manage ;;
         o) echo toggle_oneline ;;
         s) echo stop ;;
         q) echo quit_keep ;;
@@ -143,7 +177,7 @@ moka_key_to_action() {
     permanent)
       case "$key" in
         t) echo goto_setup ;;
-        C) echo goto_manage ;;
+        x) echo goto_manage ;;
         o) echo toggle_oneline ;;
         s) echo stop ;;
         q) echo quit_keep ;;
@@ -156,9 +190,16 @@ moka_key_to_action() {
         j | __down__) echo move_down ;;
         k | __up__) echo move_up ;;
         o) echo toggle_oneline ;;
-        "" | $'\n' | $'\r') echo terminate ;;
+        x) echo ask_terminate ;;
         $'\e') echo back ;;
         *) echo none ;;
+      esac
+      ;;
+    manage_confirm)
+      # Destructive confirm: only an explicit yes kills; anything else cancels.
+      case "$key" in
+        y | Y) echo confirm_terminate ;;
+        *) echo cancel_terminate ;;
       esac
       ;;
     *) echo none ;;
@@ -224,7 +265,7 @@ moka_state_clear() {
 # Process management
 # ---------------------------------------------------------------------------
 
-moka_now() { date +%s; }
+moka_now() { printf '%s\n' "${MOKA_NOW:-$(date +%s)}"; }
 
 # True if pid is a live caffeinate process.
 moka_pid_is_caffeinate() {
@@ -329,10 +370,106 @@ moka_start_timed() { # seconds
   MOKA_END=$((now + secs))
 }
 
-moka_notify() { # subtitle message
-  command -v osascript >/dev/null 2>&1 || return 0
-  osascript -e "display notification \"$2\" with title \"moka\" subtitle \"$1\"" \
-    >/dev/null 2>&1 || true
+# ---------------------------------------------------------------------------
+# Non-interactive status (for the herdr sidebar reporter / scripting)
+# ---------------------------------------------------------------------------
+
+# Print a compact keep-awake indicator. `--format sidebar` emits the herdr
+# token (empty when idle); default emits a human line. Exit 0 if a keep-awake
+# is active, 1 if idle. Never enters the TUI and needs no tty.
+moka_status_cmd() {
+  local fmt="human"
+  while (($#)); do
+    case "$1" in
+      --format) fmt=${2:-human}; shift 2 ;;
+      --sidebar) fmt=sidebar; shift ;;
+      *) shift ;;
+    esac
+  done
+
+  if [[ "$fmt" == list ]]; then
+    moka_status_list
+    return
+  fi
+
+  local now mode="" rem=0 un_present=0 un_rem="" u
+  now=$(moka_now)
+
+  if moka_state_read && moka_pid_is_caffeinate "${MOKA_PID:-}"; then
+    if [[ "$MOKA_MODE" == timed ]]; then
+      rem=$(moka_remaining "${MOKA_END:-0}" "$now")
+      ((rem > 0)) && mode=timed
+    elif [[ "$MOKA_MODE" == permanent ]]; then
+      mode=permanent
+    fi
+  fi
+
+  u=$(moka_find_unmanaged)
+  if [[ -n "$u" ]]; then
+    un_present=1
+    local to
+    to=$(moka_extract_timeout "$(moka_proc_args "$u")")
+    [[ -n "$to" ]] && un_rem=$(moka_remaining "$to" "$(moka_etime_seconds "$u")")
+  fi
+
+  local token
+  token=$(moka_status_token "$mode" "$rem" "$un_present" "$un_rem")
+
+  if [[ "$fmt" == sidebar ]]; then
+    printf '%s' "$token"
+    [[ -n "$token" ]]
+    return
+  fi
+
+  if [[ "$mode" == timed ]]; then
+    printf 'timed · %s remaining · pid %s\n' "$(moka_fmt_coarse "$rem")" "${MOKA_PID:-?}"
+  elif [[ "$mode" == permanent ]]; then
+    printf 'permanent · pid %s\n' "${MOKA_PID:-?}"
+  elif ((un_present)); then
+    if [[ -n "$un_rem" ]]; then
+      printf 'unmanaged · %s remaining · pid %s\n' "$(moka_fmt_coarse "$un_rem")" "$u"
+    else
+      printf 'unmanaged · pid %s\n' "$u"
+    fi
+  else
+    printf 'idle\n'
+    return 1
+  fi
+  return 0
+}
+
+# Enumerate every active caffeinate as `<cwd>\t<token>` lines (one per process),
+# so a workspace-aware reporter can attribute each to a space by its directory.
+# The managed session (if any) is listed with its ☕ token; every other
+# caffeinate is listed as unmanaged (☕⚠). Processes whose cwd can't be resolved
+# are emitted with cwd "?" and left for the caller to skip.
+moka_status_list() {
+  local now; now=$(moka_now)
+
+  if moka_state_read && moka_pid_is_caffeinate "${MOKA_PID:-}"; then
+    local token=""
+    if [[ "$MOKA_MODE" == timed ]]; then
+      local rem; rem=$(moka_remaining "${MOKA_END:-0}" "$now")
+      ((rem > 0)) && token=$(moka_status_token timed "$rem" 0 "")
+    elif [[ "$MOKA_MODE" == permanent ]]; then
+      token=$(moka_status_token permanent 0 0 "")
+    fi
+    [[ -n "$token" ]] && printf '%s\t%s\n' "$(moka_proc_cwd "$MOKA_PID")" "$token"
+  fi
+
+  local p
+  while IFS= read -r p; do
+    [[ -n "$p" ]] || continue
+    local to rem token
+    to=$(moka_extract_timeout "$(moka_proc_args "$p")")
+    if [[ -n "$to" ]]; then
+      rem=$(moka_remaining "$to" "$(moka_etime_seconds "$p")")
+      token=$(moka_status_token "" 0 1 "$rem")
+    else
+      token=$(moka_status_token "" 0 1 "")
+    fi
+    printf '%s\t%s\n' "$(moka_proc_cwd "$p")" "$token"
+  done < <(moka_unmanaged_list)
 }
 
 # ---------------------------------------------------------------------------
@@ -500,12 +637,12 @@ moka_draw() { # now
   # Fall back to the compact one-line view when forced (o) or when the pane is
   # too small to fit the full box — otherwise the box overflows and corrupts.
   local need=12
-  [[ "$screen" == manage ]] && need=$((${#MOKA_MANAGE_PIDS[@]} + 6))
+  [[ "$screen" == manage || "$screen" == manage_confirm ]] && need=$((${#MOKA_MANAGE_PIDS[@]} + 6))
   if ((oneline)) || ((MOKA_LINES < need)) || ((MOKA_COLS < box_w)); then
     moka_draw_oneline "$now"
     return
   fi
-  if [[ "$screen" == manage ]]; then
+  if [[ "$screen" == manage || "$screen" == manage_confirm ]]; then
     moka_draw_manage "$now"
     return
   fi
@@ -523,7 +660,7 @@ moka_draw() { # now
       header="☕  m o k a"
       linea="no keep-awake running" ca=$mc
       lineb="your mac can sleep" cb=$C_DIM
-      hints=("[p] permanent   [t] timed   [C] manage   [o] mini   [q] quit")
+      hints=("[p] permanent   [t] timed   [x] manage   [o] mini   [q] quit")
       ;;
     setup)
       mc=$COL_TEAL
@@ -549,7 +686,7 @@ moka_draw() { # now
       linea=$(moka_space_out "$(moka_fmt_hms "$rem")") ca="$C_BOLD$mc"
       lineb="remaining · pid ${MOKA_PID:-?}" cb=$C_DIM
       hints=(
-        "[t] change   [p] permanent   [C] manage   [o] mini"
+        "[t] change   [p] permanent   [x] manage   [o] mini"
         "[s] stop   [q] quit · keep   [Q] quit · stop"
       )
       ;;
@@ -560,7 +697,7 @@ moka_draw() { # now
       ca="$C_BOLD$mc"
       lineb="elapsed · pid ${MOKA_PID:-?}" cb=$C_DIM
       hints=(
-        "[t] timed   [C] manage   [o] mini"
+        "[t] timed   [x] manage   [o] mini"
         "[s] stop   [q] quit · keep   [Q] quit · stop"
       )
       ;;
@@ -661,8 +798,12 @@ moka_draw_manage() { # now
   moka_app '%s╰%s╯%s' "$mc" "$dash" "$C_RESET"
   if ((n == 0)); then
     moka_hint $((row + 2)) "[esc] back"
+  elif [[ "$screen" == manage_confirm ]]; then
+    local cpid=${MOKA_MANAGE_PIDS[manage_sel]}
+    moka_banner $((row + 2)) "$C_BOLD$COL_RED" "terminate pid $cpid?"
+    moka_hint $((row + 3)) "[y] yes   [any other key] cancel"
   else
-    moka_hint $((row + 2)) "[j/k] move   [enter] terminate   [o] mini   [esc] back"
+    moka_hint $((row + 2)) "[j/k] move   [x] terminate   [o] mini   [esc] back"
   fi
   printf '%s' "$MOKA_OUT"
 }
@@ -680,7 +821,7 @@ moka_draw_oneline() { # now
     idle)
       mc=$COL_SLATE
       state="idle"
-      keys="[p]erm [t]imed [C]mng [o]full [q]uit"
+      keys="[p]erm [t]imed [x]mng [o]full [q]uit"
       ;;
     setup)
       mc=$COL_TEAL
@@ -700,16 +841,21 @@ moka_draw_oneline() { # now
       state="∞ $(moka_fmt_hms "$(moka_elapsed "${MOKA_START:-$now}" "$now")") #${MOKA_PID:-?}"
       keys="[t]imed [s]top [q]keep [Q]stop"
       ;;
-    manage)
+    manage | manage_confirm)
       mc=$COL_AMBER
       local n=${#MOKA_MANAGE_PIDS[@]}
       if ((n == 0)); then
         state="manage: none"
         keys="[o]full [esc]back"
+      elif [[ "$screen" == manage_confirm ]]; then
+        local sp=${MOKA_MANAGE_PIDS[manage_sel]}
+        mc=$COL_RED
+        state="kill #$sp?"
+        keys="[y]es [any]cancel"
       else
         local sp=${MOKA_MANAGE_PIDS[manage_sel]}
         state="manage $((manage_sel + 1))/$n #$sp $(moka_abbrev_home "$(moka_proc_cwd "$sp")")"
-        keys="[j/k] [↵]kill [esc]back"
+        keys="[j/k] [x]kill [esc]back"
       fi
       ;;
   esac
@@ -768,7 +914,6 @@ moka_sync_session() { # now
   else
     if ((expired)) && [[ "$screen" == timed ]]; then
       banner="⏰ timer expired" banner_until=$((now + 3))
-      moka_notify "keep-awake ended" "your mac can sleep again"
     fi
     moka_state_clear
     MOKA_MODE="" MOKA_PID="" MOKA_START="" MOKA_END=""
@@ -812,12 +957,18 @@ moka_dispatch() {
     goto_manage) manage_return=$screen; manage_sel=0; screen=manage ;;
     move_down) manage_sel=$((manage_sel + 1)) ;;
     move_up) manage_sel=$((manage_sel - 1)) ;;
-    terminate)
+    ask_terminate)
+      local mn=${#MOKA_MANAGE_PIDS[@]}
+      ((mn > 0)) && ((manage_sel < mn)) && screen=manage_confirm
+      ;;
+    confirm_terminate)
       local mn=${#MOKA_MANAGE_PIDS[@]}
       if ((mn > 0)) && ((manage_sel < mn)); then
         kill "${MOKA_MANAGE_PIDS[manage_sel]}" 2>/dev/null || true
       fi
+      screen=manage
       ;;
+    cancel_terminate) screen=manage ;;
     back) screen=$manage_return ;;
     toggle_oneline) oneline=$((1 - oneline)) ;;
   esac
@@ -887,6 +1038,11 @@ moka_loop() {
 }
 
 moka_main() {
+  if [[ "${1:-}" == status ]]; then
+    shift
+    moka_status_cmd "$@"
+    return $?
+  fi
   if ! command -v "$MOKA_CAFFEINATE" >/dev/null 2>&1; then
     printf 'moka: %s not found — this tool is macOS-only.\n' "$MOKA_CAFFEINATE" >&2
     return 1
