@@ -14,10 +14,11 @@ tabmap=$(herdr tab list 2>/dev/null | jq '[.result.tabs[]? | {(.tab_id): .label}
 [[ -z $wsmap ]] && wsmap='{}'
 [[ -z $tabmap ]] && tabmap='{}'
 
-# terminal_id \t status \t session \t tab \t app
+# pane_id \t status \t session \t tab \t app
+# (pane_id is the target `herdr agent focus` accepts; terminal_id is rejected.)
 rows=$(jq -r --argjson ws "$wsmap" --argjson tb "$tabmap" '
   .result.agents[]?
-  | [ .terminal_id,
+  | [ .pane_id,
       (.agent_status // "unknown"),
       ($ws[.workspace_id] // .workspace_id),
       ($tb[.tab_id]       // .tab_id),
