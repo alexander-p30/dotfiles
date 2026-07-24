@@ -124,6 +124,17 @@ command = "moka"
 width = "60%"
 height = "50%"
 
+# Prompt for a name, then have claude create a git worktree for it and open it in
+# a fresh tab (via the `worktree`/`gt -n` shell functions). Non-blocking: the
+# popup closes immediately and creation continues in the background. Runs in the
+# focused pane's cwd, so fire it from inside the repo you want the worktree for.
+[[keys.command]]
+key = "prefix+ctrl+w"
+type = "popup"
+command = "herdr-worktree-new"
+width = "60%"
+height = "50%"
+
 [[keys.command]]
 key = "prefix+shift+l"
 type = "plugin_action"

@@ -68,6 +68,7 @@ znap eval zoxide 'zoxide init zsh'
 
 source ~/.scripts/gt.zsh
 bindkey -s '^f' 'gt\n'
+bindkey -s '^n' 'gt -n\n'
 
 how() {
   claude --model haiku -p "Answer concisely and briefly: how $*"
