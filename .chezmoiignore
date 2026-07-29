@@ -1,3 +1,9 @@
+# repo-only files, never deployed to $HOME
+tests
+tests/**
+docs
+docs/**
+
 {{- if eq .chezmoi.os "darwin" }}
 #configs
 ./.config/autorandr/**
