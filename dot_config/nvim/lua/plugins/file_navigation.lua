@@ -67,6 +67,10 @@ return {
         wrap_lines = true
       }
     },
+    config = function(_, opts)
+      require('fff').setup(opts)
+      require('helper.fff_grep_count').setup() -- total result count in live grep prompt
+    end,
     lazy = false, -- the plugin lazy-initialises itself
     keys = {
       { "<leader><space>", function() require('fff').find_files() end, desc = 'FFFind files' },
