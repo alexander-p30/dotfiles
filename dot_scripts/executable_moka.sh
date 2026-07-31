@@ -159,6 +159,8 @@ moka_key_to_action() {
         o) echo toggle_oneline ;;
         "" | $'\n' | $'\r') echo commit ;;
         $'\e') echo cancel ;;
+        q) echo quit_keep ;;
+        Q) echo quit_stop ;;
         *) echo none ;;
       esac
       ;;
@@ -192,13 +194,17 @@ moka_key_to_action() {
         o) echo toggle_oneline ;;
         x) echo ask_terminate ;;
         $'\e') echo back ;;
+        q) echo quit_keep ;;
+        Q) echo quit_stop ;;
         *) echo none ;;
       esac
       ;;
     manage_confirm)
-      # Destructive confirm: only an explicit yes kills; anything else cancels.
+      # Destructive confirm: only an explicit yes kills; q leaves moka; anything
+      # else cancels.
       case "$key" in
         y | Y) echo confirm_terminate ;;
+        q) echo quit_keep ;;
         *) echo cancel_terminate ;;
       esac
       ;;
@@ -669,7 +675,7 @@ moka_draw() { # now
       lineb="pending" cb=$C_DIM
       hints=(
         "[h] +1h   [m] +30m   [i] +1m    ⇧ = subtract"
-        "[enter] start        [esc] cancel"
+        "[enter] start   [esc] cancel   [q] quit"
       )
       ;;
     timed)
@@ -797,13 +803,13 @@ moka_draw_manage() { # now
   moka_move "$row" "$left"
   moka_app '%s╰%s╯%s' "$mc" "$dash" "$C_RESET"
   if ((n == 0)); then
-    moka_hint $((row + 2)) "[esc] back"
+    moka_hint $((row + 2)) "[esc] back   [q] quit"
   elif [[ "$screen" == manage_confirm ]]; then
     local cpid=${MOKA_MANAGE_PIDS[manage_sel]}
     moka_banner $((row + 2)) "$C_BOLD$COL_RED" "terminate pid $cpid?"
-    moka_hint $((row + 3)) "[y] yes   [any other key] cancel"
+    moka_hint $((row + 3)) "[y] yes   [q] quit   [any other key] cancel"
   else
-    moka_hint $((row + 2)) "[j/k] move   [x] terminate   [o] mini   [esc] back"
+    moka_hint $((row + 2)) "[j/k] move   [x] terminate   [o] mini   [esc] back   [q] quit"
   fi
   printf '%s' "$MOKA_OUT"
 }
@@ -826,7 +832,7 @@ moka_draw_oneline() { # now
     setup)
       mc=$COL_TEAL
       state="set $(moka_fmt_hms "$buf")"
-      keys="[h/m/i]± [↵]start [esc]cancel"
+      keys="[h/m/i]± [↵]start [esc]cancel [q]uit"
       ;;
     timed)
       local rem
@@ -846,16 +852,16 @@ moka_draw_oneline() { # now
       local n=${#MOKA_MANAGE_PIDS[@]}
       if ((n == 0)); then
         state="manage: none"
-        keys="[o]full [esc]back"
+        keys="[o]full [esc]back [q]uit"
       elif [[ "$screen" == manage_confirm ]]; then
         local sp=${MOKA_MANAGE_PIDS[manage_sel]}
         mc=$COL_RED
         state="kill #$sp?"
-        keys="[y]es [any]cancel"
+        keys="[y]es [q]uit [any]cancel"
       else
         local sp=${MOKA_MANAGE_PIDS[manage_sel]}
         state="manage $((manage_sel + 1))/$n #$sp $(moka_abbrev_home "$(moka_proc_cwd "$sp")")"
-        keys="[j/k] [x]kill [esc]back"
+        keys="[j/k] [x]kill [esc]back [q]uit"
       fi
       ;;
   esac
