@@ -1,10 +1,65 @@
 #!/bin/sh
 
-{{- if eq .chezmoi.os "darwin" }}
-exit 0
-{{- end}}
-
 echo "============================"
+
+{{- if eq .chezmoi.os "darwin" }}
+
+echo ":: Installing homebrew"
+if command -v brew >/dev/null 2>&1; then
+  echo "⚠️  homebrew already installed, skipping it..."
+else
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+echo "🟢 Finished installing homebrew"
+
+echo ":: Installing base packages"
+# The CLI tools these dotfiles' own scripts and configs call. Deliberately not a
+# port of the Arch list below: its X11/desktop half has no macOS counterpart, and
+# neovim/mise are installed by mise rather than brew. Tap-qualified names install
+# their tap on the fly, so no separate `brew tap` step is needed.
+brew install chezmoi \
+    colima \
+    coreutils \
+    curl \
+    direnv \
+    docker \
+    docker-compose \
+    duti \
+    eza \
+    fd \
+    fzf \
+    git-lfs \
+    glab \
+    gnu-time \
+    gum \
+    jq \
+    just \
+    lazygit \
+    qemu \
+    redis \
+    rename \
+    ripgrep \
+    rtk \
+    starship \
+    tree \
+    watch \
+    yq \
+    yqrashawn/goku/goku \
+    zoxide
+echo "🟢 Finished installing base packages"
+
+echo ":: Installing casks"
+# GUI apps and fonts. aerospace and goku (above) are what read the
+# dot_aerospace.toml and karabiner.edn this repo already ships.
+brew install --cask 1password-cli \
+    dropbox \
+    font-fira-code \
+    font-hack-nerd-font \
+    font-inter \
+    nikitabobko/tap/aerospace
+echo "🟢 Finished installing casks"
+
+{{- else }}
 
 echo ":: Installing yay"
 if command -v yay; then
@@ -15,7 +70,8 @@ fi
 echo "🟢 Finished installing yay"
 
 echo ":: Installing base packages"
-yay --needed -S age \
+yay --needed -S 1password-cli \
+    age \
     alacritty \
     alsa-firmware \
     alsa-plugins \
@@ -40,8 +96,11 @@ yay --needed -S age \
     colordiff \
     coreutils \
     cpupower \
+    curl \
     diffutils \
+    direnv \
     docker \
+    docker-compose \
     dropbox \
     dropbox-cli \
     dunst \
@@ -49,23 +108,30 @@ yay --needed -S age \
     entr \
     epdfview \
     exa \
+    eza \
     fd \
     flameshot \
+    fzf \
     galendae-git \
     git \
+    git-lfs \
     gitflow-avh \
+    glab \
     google-chrome \
     gparted \
     gruvbox-material-gtk-theme-git \
     gruvbox-material-icon-theme-git \
     gucharmap \
+    gum \
     htop \
     i3-gaps \
     i3blocks \
     i3status \
     inotify-tools \
     insomnia-bin \
+    inter-font \
     jq \
+    just \
     kitty \
     kmonad-bin \
     lazygit \
@@ -88,19 +154,23 @@ yay --needed -S age \
     powerline-fonts \
     pulseaudio-ctl \
     rar \
+    redis \
     ripgrep \
     rofi \
     speedcrunch \
     spotify \
+    starship \
     terminus-font \
     thunar \
     thunar-dropbox \
+    time \
     timeshift \
     tree \
     ttf-dejavu \
     ttf-droid \
     ttf-fira-code \
     ttf-font-awesome \
+    ttf-hack-nerd \
     ttf-inconsolata \
     ttf-indic-otf \
     ttf-liberation \
@@ -112,9 +182,12 @@ yay --needed -S age \
     xmonad \
     xmonad-contrib \
     xsel \
+    zoxide \
     zsh
 
 echo "🟢 Finished installing base packages"
+
+{{- end }}
 
 echo ":: Installing herdr"
 if command -v herdr >/dev/null 2>&1; then
