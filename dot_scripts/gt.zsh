@@ -225,14 +225,16 @@ _wt_projects() {
 #   my-feature                         -> my-feature
 _wt_label() { print -r -- "$1" | sed -E 's/^[[:alpha:]]+-[[:digit:]]+-//'; }
 
-# _wt_here <pane_id> <branch> — runs INSIDE the pane's own interactive shell (so
-# `cd` sticks and `claude` lands here), started in the repo. Shows progress while
-# the worktree is built, then turns THIS pane into the claude session with a
-# right-hand shell. This is what the prefix+ctrl+w popup dispatches: the tab is
-# the live progress view — switch to it to watch, switch away to "minimise". No
-# background/detach needed; herdr keeps the pane alive on its own.
+# _wt_here <pane_id> <branch> [prompt] — runs INSIDE the pane's own interactive
+# shell (so `cd` sticks and `claude` lands here), started in the repo. Shows
+# progress while the worktree is built, then turns THIS pane into the claude
+# session with a right-hand shell. This is what the prefix+ctrl+w popup
+# dispatches: the tab is the live progress view — switch to it to watch, switch
+# away to "minimise". No background/detach needed; herdr keeps the pane alive on
+# its own. <prompt> is submitted to claude once its UI is up; empty falls back to
+# the Linear default below.
 _wt_here() {
-  local pane=$1 branch=$2 loc rpane setup
+  local pane=$1 branch=$2 cprompt=$3 loc rpane setup
   print -P "%F{yellow}⏳ creating worktree '$branch' in ${PWD:t}…%f"
   git rev-parse --is-inside-work-tree >/dev/null 2>&1 || {
     print -P "%F{red}✗ not inside a git repository%f"; return 1
@@ -250,12 +252,19 @@ _wt_here() {
             | jq -r '.result.pane.pane_id // empty')
   [[ -n $rpane ]] && herdr pane run "$rpane" "$setup" >/dev/null 2>&1
   _wt_notify "Worktree ready: $branch" "$loc"
-  # If the branch carries a Linear code, pre-fill (but don't send) a prompt in
-  # claude's input box once its UI is ready. Sent from a backgrounded job because
-  # `claude` below runs in the foreground; send-text types without pressing Enter.
-  if [[ $(_wt_label "$branch") != "$branch" ]]; then
+  # No explicit prompt? Fall back to the Linear default, but only when the branch
+  # actually carries a Linear code — otherwise claude opens with an empty box.
+  if [[ -z $cprompt && $(_wt_label "$branch") != "$branch" ]]; then
+    cprompt="See the linear issue associated with this branch and implement it"
+  fi
+  # Type the prompt into claude's input box once its UI is ready and submit it.
+  # Backgrounded because `claude` below runs in the foreground; send-text alone
+  # only types, so a separate enter keypress is what actually runs the prompt.
+  if [[ -n $cprompt ]]; then
     ( herdr pane wait-output "$pane" --match "shift+tab" --timeout 15000 >/dev/null 2>&1
-      herdr pane send-text "$pane" "See the linear issue associated with this branch and implement it" ) &!
+      herdr pane send-text "$pane" "$cprompt"
+      sleep 0.3
+      herdr pane send-keys "$pane" enter ) &!
   fi
   claude
 }

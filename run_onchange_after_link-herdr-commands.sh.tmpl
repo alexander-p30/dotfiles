@@ -1,0 +1,21 @@
+#! /bin/bash
+# herdr resolves a keybinding's `command = "herdr-foo"` by name on PATH, but
+# ~/.scripts isn't on PATH and the names carry a .sh the config doesn't use. The
+# five existing herdr-* helpers were linked into ~/.local/bin by hand; do it for
+# every one of them instead, so a new helper works on a fresh machine too.
+
+set -euo pipefail
+
+echo "============================"
+echo ":: Linking herdr command scripts into ~/.local/bin"
+
+mkdir -p "$HOME/.local/bin"
+
+for src in "$HOME"/.scripts/herdr-*.sh; do
+  [ -e "$src" ] || continue
+  name=$(basename "$src" .sh)
+  ln -sfn "../../.scripts/$name.sh" "$HOME/.local/bin/$name"
+  echo "  ↳ $name"
+done
+
+echo "🟢 Finished linking herdr command scripts"

@@ -20,9 +20,25 @@ name="${name#"${name%%[![:space:]]*}"}"   # ltrim
 name="${name%"${name##*[![:space:]]}"}"   # rtrim
 [[ -z $name ]] && { print "worktree: cancelled."; exit 0 }
 
+# Last step: the prompt claude opens with. A gum textarea rather than `read` so
+# the prompt can be written over several lines and freely edited before sending
+# (claude takes multi-line input fine — send-text inserts soft breaks, and the
+# single enter that follows submits the whole block as one message). Falls back
+# to `read` where gum isn't installed. Empty accepts _wt_here's default.
+if command -v gum >/dev/null 2>&1; then
+  cprompt=$(gum write --height 8 --show-line-numbers \
+              --header "Prompt for claude in ${proj} — enter sends · esc cancels · empty = default" \
+              --placeholder 'Write the prompt claude should start with…') \
+    || { print "worktree: cancelled."; exit 0 }
+else
+  read -r "cprompt?Prompt for claude (empty = default): "
+fi
+cprompt="${cprompt#"${cprompt%%[![:space:]]*}"}"   # ltrim
+cprompt="${cprompt%"${cprompt##*[![:space:]]}"}"   # rtrim
+
 # Open (and focus) the tab on the project's workspace, then run the builder in
 # its pane. Passing the pane id lets the builder split its own right-hand shell.
 pane=$(herdr tab create --workspace "$wsid" --cwd "$repo" --label "$(_wt_label "$name")" --focus 2>/dev/null \
          | jq -r '.result.root_pane.pane_id // empty')
 [[ -z $pane ]] && { print "worktree: couldn't open a tab on ${proj}."; exit 1 }
-herdr pane run "$pane" "source ${HOME}/.scripts/gt.zsh && _wt_here ${(q)pane} ${(q)name}" >/dev/null 2>&1
+herdr pane run "$pane" "source ${HOME}/.scripts/gt.zsh && _wt_here ${(q)pane} ${(q)name} ${(q)cprompt}" >/dev/null 2>&1
