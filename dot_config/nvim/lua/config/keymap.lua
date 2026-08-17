@@ -139,9 +139,38 @@ nnoremap('<leader>gp', ':Git pull<CR>')
 nnoremap('<leader>gcb', ':Git checkout -b ')
 nnoremap('<leader>gc-', ':Git checkout -', { desc = 'Checkout to last branch' })
 nnoremap('<leader>ghi', ':Git log -p -- <C-r>%<CR>', { desc = 'Open git history for file' })
--- Copy the origin URL of the current file/line to the clipboard (no browser)
-nnoremap('<leader>gy', ':GBrowse!<CR>', { desc = 'Copy remote git link (current line) to clipboard' })
-vnoremap('<leader>gy', ':GBrowse!<CR>', { desc = 'Copy remote git link (selection) to clipboard' })
+-- Copy the origin URL of the current file/line as a hyperlink labeled
+-- "<file>:<line>", pasteable as a clickable link in Slack and similar apps
+local function copy_git_link_as_hyperlink(is_visual)
+  -- Force-leave Visual mode so '< and '> reflect the just-made selection;
+  -- a Lua-function visual mapping doesn't stamp them the way an Ex-command
+  -- mapping (":'<,'>...") does.
+  if is_visual then vim.cmd('normal! \27') end
+
+  local range = is_visual and "'<,'>" or '.'
+  local url = vim.trim(vim.fn.execute(range .. 'GBrowse!'))
+  -- GBrowse! itself copies the plain URL to the system clipboard via an
+  -- async job; give it time to land before we overwrite with the rich link,
+  -- otherwise it can finish later and clobber our HTML clipboard flavor.
+  vim.wait(100)
+  if url == '' then return end
+
+  local relpath = vim.fn.fnamemodify(vim.fn.expand('%'), ':.')
+  local text
+  if is_visual then
+    local first, last = vim.fn.line("'<"), vim.fn.line("'>")
+    text = relpath .. ':' .. (first == last and tostring(first) or (first .. '-' .. last))
+  else
+    text = relpath .. ':' .. vim.fn.line('.')
+  end
+
+  util.copy_as_rich_hyperlink(url, text)
+end
+
+nnoremap('<leader>gy', function() copy_git_link_as_hyperlink(false) end,
+  { desc = 'Copy remote git link (current line) as a hyperlink' })
+vnoremap('<leader>gy', function() copy_git_link_as_hyperlink(true) end,
+  { desc = 'Copy remote git link (selection) as a hyperlink' })
 
 -- Git flow mappings
 -- Feature

@@ -1,3 +1,4 @@
+onboarding = false
 # Print all defaults with: herdr --default-config
 # Docs: https://herdr.dev/docs/configuration/
 

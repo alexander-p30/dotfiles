@@ -82,6 +82,9 @@ export PGDATA="/Users/estevanalexander/.local/share/mise/installs/postgres/17.7/
 [ -f "$HOME/.atuin/bin/env" ] && . "$HOME/.atuin/bin/env"
 command -v atuin &> /dev/null && eval "$(atuin init zsh --disable-up-arrow)"
 
+# opencode
+export PATH=/Users/estevanalexander/.opencode/bin:$PATH
+
 # run arbitrary commands ```RUN='echo "it works"' zsh```
 TEMP_RUN=$RUN
 export RUN=

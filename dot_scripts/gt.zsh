@@ -225,16 +225,21 @@ _wt_projects() {
 #   my-feature                         -> my-feature
 _wt_label() { print -r -- "$1" | sed -E 's/^[[:alpha:]]+-[[:digit:]]+-//'; }
 
-# _wt_here <pane_id> <branch> [prompt] — runs INSIDE the pane's own interactive
+# _wt_here <pane_id> <branch> [promptfile|prompt] — runs INSIDE the pane's own interactive
 # shell (so `cd` sticks and `claude` lands here), started in the repo. Shows
 # progress while the worktree is built, then turns THIS pane into the claude
 # session with a right-hand shell. This is what the prefix+ctrl+w popup
 # dispatches: the tab is the live progress view — switch to it to watch, switch
 # away to "minimise". No background/detach needed; herdr keeps the pane alive on
-# its own. <prompt> is submitted to claude once its UI is up; empty falls back to
-# the Linear default below.
+# its own. The prompt claude opens with arrives as a FILE (see
+# herdr-worktree-new.sh — inlining it would blow the tty's 1024-byte
+# canonical-mode line limit); a literal string still works for hand calls. Empty
+# falls back to the Linear default below.
 _wt_here() {
-  local pane=$1 branch=$2 cprompt=$3 loc rpane setup
+  local pane=$1 branch=$2 cprompt=$3 loc rpane setup pfile
+  if [[ -n $cprompt && -f $cprompt ]]; then
+    pfile=$cprompt; cprompt=$(<"$pfile"); rm -f "$pfile"
+  fi
   print -P "%F{yellow}⏳ creating worktree '$branch' in ${PWD:t}…%f"
   git rev-parse --is-inside-work-tree >/dev/null 2>&1 || {
     print -P "%F{red}✗ not inside a git repository%f"; return 1
@@ -257,14 +262,15 @@ _wt_here() {
   if [[ -z $cprompt && $(_wt_label "$branch") != "$branch" ]]; then
     cprompt="See the linear issue associated with this branch and implement it"
   fi
-  # Type the prompt into claude's input box once its UI is ready and submit it.
-  # Backgrounded because `claude` below runs in the foreground; send-text alone
-  # only types, so a separate enter keypress is what actually runs the prompt.
+  # Hand the prompt to claude as its argument instead of typing it into the TUI.
+  # Injecting with send-text meant racing claude's startup and feeding the input
+  # box raw keystrokes — and with editorMode=vim that box opens in NORMAL mode,
+  # so the prompt's leading characters were eaten as vim commands ("Outcome"
+  # arrived as "utcome": O opens a line and enters insert). An argument has no
+  # such failure mode, and needs no wait-output/sleep/enter dance.
   if [[ -n $cprompt ]]; then
-    ( herdr pane wait-output "$pane" --match "shift+tab" --timeout 15000 >/dev/null 2>&1
-      herdr pane send-text "$pane" "$cprompt"
-      sleep 0.3
-      herdr pane send-keys "$pane" enter ) &!
+    claude "$cprompt"
+  else
+    claude
   fi
-  claude
 }

@@ -41,4 +41,16 @@ cprompt="${cprompt%"${cprompt##*[![:space:]]}"}"   # rtrim
 pane=$(herdr tab create --workspace "$wsid" --cwd "$repo" --label "$(_wt_label "$name")" --focus 2>/dev/null \
          | jq -r '.result.root_pane.pane_id // empty')
 [[ -z $pane ]] && { print "worktree: couldn't open a tab on ${proj}."; exit 1 }
-herdr pane run "$pane" "source ${HOME}/.scripts/gt.zsh && _wt_here ${(q)pane} ${(q)name} ${(q)cprompt}" >/dev/null 2>&1
+
+# The prompt travels in a temp FILE, never on the command line. `pane run` types
+# the command into a shell that is usually still sourcing .zshrc, so its tty is
+# still in canonical mode — where macOS silently discards everything past
+# MAX_CANON (1024 bytes) on a single line, the terminating newline included.
+# ${(q)} makes that easy to reach: every line break costs 5 bytes ($'\n') and
+# every space 2 (\ ), so a ~700-char prompt already builds a ~990-byte command.
+# Once over, the prompt lost its tail *and* the command never ran, because the
+# dropped bytes included the enter. A file keeps the command ~150 bytes flat, no
+# matter how long the prompt is.
+pfile=$(mktemp -t herdr-wt-prompt) || { print "worktree: couldn't create a temp file."; exit 1 }
+print -r -- "$cprompt" > "$pfile"
+herdr pane run "$pane" "source ${HOME}/.scripts/gt.zsh && _wt_here ${(q)pane} ${(q)name} ${(q)pfile}" >/dev/null 2>&1

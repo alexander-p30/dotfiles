@@ -66,6 +66,42 @@ M.merge_tables = function(table_a, table_b)
   return table_a
 end
 
+local function html_escape(str)
+  return (str:gsub('&', '&amp;'):gsub('<', '&lt;'):gsub('>', '&gt;'):gsub('"', '&quot;'))
+end
+
+local function to_hex(str)
+  return (str:gsub('.', function(c) return string.format('%02X', c:byte()) end))
+end
+
+local function applescript_string_escape(str)
+  return (str:gsub('\\', '\\\\'):gsub('"', '\\"'))
+end
+
+-- Puts a clickable hyperlink on the system clipboard (HTML flavor, so apps
+-- like Slack render `text` as the link label) with `url` as a plain-text
+-- fallback for apps that only read plain text.
+M.copy_as_rich_hyperlink = function(url, text)
+  if vim.fn.executable('osascript') == 0 then
+    vim.fn.setreg('+', url)
+    vim.notify('osascript not found; copied plain URL instead', vim.log.levels.WARN)
+    return
+  end
+
+  local html = string.format('<a href="%s">%s</a>', html_escape(url), html_escape(text))
+  local script = string.format(
+    'set the clipboard to {«class HTML»:«data HTML%s», string:"%s"}',
+    to_hex(html),
+    applescript_string_escape(url)
+  )
+
+  local proc = io.popen('osascript', 'w')
+  if proc then
+    proc:write(script)
+    proc:close()
+  end
+end
+
 M.open_in_float = function(opts)
   -- Create scratch buffer
   local buf = vim.api.nvim_create_buf(false, true)
