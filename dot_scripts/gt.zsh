@@ -1,7 +1,7 @@
 # vim:syntax=bash
 # gt — fuzzy-jump to a repo/worktree (bound to Ctrl-f in .zshrc). Worktrees nest
 # under their <repo>-worktrees dir; green ● = open workspace/agent: selecting one
-# confirms before focusing it in herdr (No re-opens the picker), else it cd's.
+# confirms before focusing it in herdr (No cd's there instead), else it cd's.
 #
 # gt -n / --new (bound to Ctrl-n): same picker, but an unopened dir is opened in
 # a fresh herdr tab (labelled its leaf) with claude running left + a shell right,
@@ -10,8 +10,8 @@
 # gt [-n] <dir>: skip the picker and act on <dir> directly (used by `worktree`).
 
 # _gt_go <target> — act on one chosen dir. Reads $new/$snap/$agents from the
-# calling gt() via zsh dynamic scope. Returns 2 when the user declines focusing
-# an already-open dir (so the picker can re-prompt); 0 otherwise.
+# calling gt() via zsh dynamic scope. When the user declines focusing an
+# already-open dir, cd's there instead. Always returns 0.
 _gt_go() {
   local target=$1 tid wsid name fp pane rpane setup ok
   tid=$(jq -r --arg d "$target" 'first(.result.agents[]? | select(.cwd == $d or .foreground_cwd == $d) | .terminal_id) // empty' <<<"$agents")
@@ -35,7 +35,7 @@ _gt_go() {
       return 0
     fi
     echo
-    return 2   # declined -> caller may re-pick
+    cd "$target"; return 0   # declined focus -> cd there instead
   elif (( new )); then
     # Not open + -n: fresh tab (leaf label, cwd=target), claude left, shell right.
     # --focus unless told otherwise; --workspace pins the tab to a herdr workspace.
@@ -71,7 +71,7 @@ gt() {
       *) break ;;
     esac
   done
-  local remote="$HOME/Projects/remote" ws repos_yaml snap agents labels acwds paths rows query="" out sel target
+  local remote="$HOME/Projects/remote" ws repos_yaml snap agents labels acwds paths rows out target
   ws="$remote/employ_workspace"; repos_yaml="$ws/config/repos.yaml"
   snap=$(herdr api snapshot 2>/dev/null)
   agents=$(herdr agent list 2>/dev/null)
@@ -119,18 +119,10 @@ gt() {
       }' | sort | cut -f2-
   )
 
-  while true; do
-    out=$(printf '%s\n' "$rows" | fzf --ansi --delimiter='\t' --with-nth=2 --no-sort --reverse \
-            --query="$query" --print-query)
-    query=${out%%$'\n'*}
-    sel=${out#*$'\n'}
-    [[ $sel == "$out" || -z $sel ]] && return   # Esc / no match
-    target=${sel%%$'\t'*}
-
-    _gt_go "$target"
-    (( $? == 2 )) && continue   # declined focus -> loop back to fzf, same query
-    return
-  done
+  out=$(printf '%s\n' "$rows" | fzf --ansi --delimiter='\t' --with-nth=2 --no-sort --reverse)
+  [[ -z $out ]] && return   # Esc / no match
+  target=${out%%$'\t'*}
+  _gt_go "$target"
 }
 
 # _wt_make <branch> — create a worktree for <branch> using THIS repo's own
