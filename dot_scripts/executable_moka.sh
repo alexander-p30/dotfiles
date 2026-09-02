@@ -18,6 +18,15 @@ MOKA_DEFAULT_BUFFER=1800  # 30 minutes default when composing a timed session
 MOKA_INNER=43             # inner width of the box (between the borders)
 : "${MOKA_STATE_FILE:=${XDG_CACHE_HOME:-$HOME/.cache}/moka/state}"
 : "${MOKA_CAFFEINATE:=caffeinate}"  # overridable for testing
+: "${MOKA_ESC_TIMEOUT:=0.2}"        # per-byte wait when assembling an ESC sequence;
+                                    # raise if a slow link/multiplexer splits keys
+# Tracing: MOKA_DEBUG=/path logs per-event. If unset, a sentinel file turns it
+# on automatically, so a herdr-launched popup can be traced without changing how
+# it starts — `touch ~/.cache/moka/debug-on`, reproduce, then remove it.
+: "${MOKA_DEBUG:=}"
+if [[ -z "$MOKA_DEBUG" && -f "${XDG_CACHE_HOME:-$HOME/.cache}/moka/debug-on" ]]; then
+  MOKA_DEBUG="${XDG_CACHE_HOME:-$HOME/.cache}/moka/debug.log"
+fi
 declare -gA MOKA_CWD_CACHE          # pid -> cwd (a process's cwd is stable)
 
 # ---------------------------------------------------------------------------
@@ -271,6 +280,13 @@ moka_state_clear() {
 # Process management
 # ---------------------------------------------------------------------------
 
+# Opt-in tracing: set MOKA_DEBUG=/path to append a per-event log (pid-stamped so
+# concurrent moka instances are distinguishable). No-op and fork-free otherwise.
+moka_dbg() {
+  [[ -n "${MOKA_DEBUG:-}" ]] || return 0
+  printf '%s pid=%-6s %s\n' "${EPOCHREALTIME:-?}" "$$" "$*" >>"$MOKA_DEBUG" 2>/dev/null || true
+}
+
 moka_now() { printf '%s\n' "${MOKA_NOW:-$(date +%s)}"; }
 
 # True if pid is a live caffeinate process.
@@ -281,6 +297,24 @@ moka_pid_is_caffeinate() {
   local comm
   comm=$(ps -o comm= -p "$pid" 2>/dev/null) || return 1
   [[ "$comm" == *caffeinate* ]]
+}
+
+# Block briefly until a just-spawned pid reads as caffeinate. A fresh caffeinate's
+# first (cold) exec — dyld + code-sign verification — can still show as its nohup
+# wrapper for tens of ms, longer than the gap before the next sync tick. Without
+# this wait, that tick sees a not-yet-"caffeinate" process, judges the session
+# dead, and tears it down: the window bounces back to the menu and the caffeinate
+# is orphaned. Returns as soon as it settles; gives up if the process dies or
+# after a bounded wait (the following sync then handles a genuine failure).
+moka_await_caffeinate() { # pid
+  local pid=${1:-} i
+  [[ -n "$pid" ]] || return 1
+  for ((i = 0; i < 40; i++)); do
+    moka_pid_is_caffeinate "$pid" && return 0
+    kill -0 "$pid" 2>/dev/null || return 1   # died outright -> stop waiting
+    sleep 0.02
+  done
+  return 1
 }
 
 # List all caffeinate pids we did NOT start (one per line).
@@ -352,6 +386,7 @@ moka_start_permanent() {
   nohup "$MOKA_CAFFEINATE" -sumi >/dev/null 2>&1 &
   local pid=$!
   disown 2>/dev/null || true
+  moka_await_caffeinate "$pid"   # settle before the next sync tick can misjudge it
   local now
   now=$(moka_now)
   moka_state_write permanent "$pid" "$now"
@@ -359,6 +394,10 @@ moka_start_permanent() {
   MOKA_PID=$pid
   MOKA_START=$now
   MOKA_END=""
+  if [[ -n "${MOKA_DEBUG:-}" ]]; then
+    local ok=0; moka_pid_is_caffeinate "$pid" && ok=1
+    moka_dbg "start_permanent pid=$pid is_caff_now=$ok comm=[$(ps -o comm= -p "$pid" 2>/dev/null)]"
+  fi
 }
 
 moka_start_timed() { # seconds
@@ -367,6 +406,7 @@ moka_start_timed() { # seconds
   nohup "$MOKA_CAFFEINATE" -sumit "$secs" >/dev/null 2>&1 &
   local pid=$!
   disown 2>/dev/null || true
+  moka_await_caffeinate "$pid"   # settle before the next sync tick can misjudge it
   local now
   now=$(moka_now)
   moka_state_write timed "$pid" "$now" "$((now + secs))"
@@ -374,6 +414,10 @@ moka_start_timed() { # seconds
   MOKA_PID=$pid
   MOKA_START=$now
   MOKA_END=$((now + secs))
+  if [[ -n "${MOKA_DEBUG:-}" ]]; then
+    local ok=0; moka_pid_is_caffeinate "$pid" && ok=1
+    moka_dbg "start_timed pid=$pid secs=$secs is_caff_now=$ok comm=[$(ps -o comm= -p "$pid" 2>/dev/null)]"
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -889,26 +933,59 @@ moka_draw_oneline() { # now
 # Input & main loop
 # ---------------------------------------------------------------------------
 
-# If the last key was ESC, drain any follow-on bytes so arrow keys and other
-# escape sequences don't read as a bare ESC (cancel).
+# Map the bytes that follow an ESC to a normalized key token. Arrow sequences
+# become __up__/__down__. Enter with any modifier (Shift/Ctrl/Alt) — in either
+# the CSI-u (kitty) or modifyOtherKeys (xterm) encoding — collapses to a plain
+# carriage return so moka never treats e.g. Shift+Enter differently from Enter.
+# Anything else is an opaque __seq__ we ignore.
+moka_esc_seq_to_key() { # rest
+  case "$1" in
+    '[A' | 'OA') printf '__up__' ;;
+    '[B' | 'OB') printf '__down__' ;;
+    '[13u' | '[13;'*'u' | '[27;'*';13~') printf '\r' ;;
+    *) printf '__seq__' ;;
+  esac
+}
+
+# After a bare ESC, decide whether it opens an escape sequence and, if so,
+# assemble that sequence to its terminator before mapping it (arrow keys,
+# modifier+Enter, etc.). A terminal or multiplexer may deliver a sequence in
+# split writes — ESC now, the rest a few ms later — so we read byte by byte
+# with a per-byte timeout rather than gambling on one fixed window; a single
+# fixed slurp misread split sequences as a lone ESC, which in the setup screen
+# cancels (why starting a timer sometimes dropped back to the menu when Enter
+# arrives as a CSI-u / modifyOtherKeys sequence). Reading stops exactly at the
+# final byte, so it never swallows the next keypress. A genuine lone ESC
+# (nothing follows within the window) is left as $'\e' so it still cancels.
 moka_maybe_drain_esc() {
   [[ "$key" == $'\e' ]] || return 0
   ((BASH_VERSINFO[0] >= 4)) || return 0
-  local rest
-  if IFS= read -rsn8 -t 0.01 rest 2>/dev/null && [[ -n "$rest" ]]; then
-    case "$rest" in
-      '[A' | 'OA') key="__up__" ;;
-      '[B' | 'OB') key="__down__" ;;
-      *) key="__seq__" ;;
-    esac
-  fi
+  local c seq="" i=0
+  IFS= read -rsn1 -t "$MOKA_ESC_TIMEOUT" c 2>/dev/null || true
+  [[ -n "$c" ]] || return 0            # lone ESC -> stays $'\e'
+  case "$c" in
+    '[' | 'O')                         # CSI / SS3 introducer: gather to a final byte
+      seq=$c
+      while ((i++ < 16)) &&
+        IFS= read -rsn1 -t "$MOKA_ESC_TIMEOUT" c 2>/dev/null && [[ -n "$c" ]]; do
+        seq+=$c
+        [[ "$c" == [A-Za-z~] ]] && break   # CSI/SS3 sequences end on a final byte
+      done
+      key=$(moka_esc_seq_to_key "$seq")
+      ;;
+    *) key="__seq__" ;;                # some other ESC-prefixed input; ignore it
+  esac
 }
 
 # Re-sync from the shared state file so every moka window reflects the single
 # global session, adopts it, and excludes its pid from "unmanaged".
 moka_sync_session() { # now
-  local now=$1 alive=0 mode="" expired=0
-  if moka_state_read && moka_pid_is_caffeinate "${MOKA_PID:-}"; then
+  local now=$1 alive=0 mode="" expired=0 screen_in=$screen
+  local sread=0 iscaff=0 pid_seen="" mode_seen="" end_seen=""
+  if moka_state_read; then sread=1; fi
+  pid_seen=${MOKA_PID:-} mode_seen=${MOKA_MODE:-} end_seen=${MOKA_END:-}
+  if ((sread)) && moka_pid_is_caffeinate "${MOKA_PID:-}"; then
+    iscaff=1
     if [[ "$MOKA_MODE" == timed ]] && (($(moka_remaining "${MOKA_END:-0}" "$now") <= 0)); then
       expired=1
     else
@@ -925,6 +1002,7 @@ moka_sync_session() { # now
     MOKA_MODE="" MOKA_PID="" MOKA_START="" MOKA_END=""
     screen=$(moka_reconcile_screen 0 "" "$screen")
   fi
+  moka_dbg "sync in=$screen_in state_read=$sread pid=$pid_seen is_caff=$iscaff mode=$mode_seen end=$end_seen now=$now alive=$alive expired=$expired -> out=$screen"
 }
 
 # Handle an action. Returns 1 to exit the loop.
@@ -1039,7 +1117,9 @@ moka_loop() {
     fi
     ((had_key)) || continue
     action=$(moka_key_to_action "$screen" "$key")
+    moka_dbg "$(printf 'key=%q screen=%s action=%s' "$key" "$screen" "$action")"
     moka_dispatch "$action" || break
+    moka_dbg "dispatched action=$action -> screen=$screen"
   done
 }
 
