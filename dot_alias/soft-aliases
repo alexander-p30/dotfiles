@@ -16,5 +16,7 @@ alias rr="(export AUTO_RUN_DATA_MIGRATIONS=true; caffeinate -i git pull --rebase
 alias rrt="(export AUTO_RUN_DATA_MIGRATIONS=true; caffeinate -i git pull --rebase && caffeinate -i mix do deps.get + ecto.migrate && MIX_ENV=test caffeinate -i mix ecto.migrate && dexter reindex)"
 # moka — caffeinate wrapper TUI
 alias moka="~/.scripts/moka.sh"
+# wtrm — TUI to prune old git worktrees across every repo gt knows
+alias wtrm="~/.scripts/wtrm.sh"
 alias mixt="direnv deny; MIX_ENV=test iex -S mix; stty sane && direnv allow"
 alias asdf="mise"

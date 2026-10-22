@@ -6,12 +6,12 @@ exit 0
 
 # ~/.config/herdr/plugins is herdr-managed, so local plugin SOURCE lives in
 # ~/.config/herdr-plugins/<id> and is registered with `herdr plugin link`.
-# Link the "last-workspace" plugin (tmux last-window for workspaces) once, if
-# it isn't already linked.
+# Link each local plugin once, if it isn't already linked:
+#   - last-workspace : tmux last-window for workspaces
 
 set -euo pipefail
 
-PLUGIN_DIR="$HOME/.config/herdr-plugins/last-workspace"
+PLUGINS=(last-workspace)
 
 echo "============================"
 echo ":: Linking local herdr plugins"
@@ -21,15 +21,19 @@ if ! command -v herdr >/dev/null 2>&1; then
   exit 0
 fi
 
-if [ ! -f "$PLUGIN_DIR/herdr-plugin.toml" ]; then
-  echo "🟡 $PLUGIN_DIR/herdr-plugin.toml missing; skipping"
-  exit 0
-fi
+for id in "${PLUGINS[@]}"; do
+  plugin_dir="$HOME/.config/herdr-plugins/$id"
 
-if herdr plugin list --json 2>/dev/null | grep -q '"plugin_id":"last-workspace"'; then
-  echo "🟢 herdr plugin 'last-workspace' already linked"
-else
-  echo ":: linking herdr plugin 'last-workspace'"
-  herdr plugin link "$PLUGIN_DIR"
-  echo "🟢 linked 'last-workspace'"
-fi
+  if [ ! -f "$plugin_dir/herdr-plugin.toml" ]; then
+    echo "🟡 $plugin_dir/herdr-plugin.toml missing; skipping"
+    continue
+  fi
+
+  if herdr plugin list --json 2>/dev/null | grep -q "\"plugin_id\":\"$id\""; then
+    echo "🟢 herdr plugin '$id' already linked"
+  else
+    echo ":: linking herdr plugin '$id'"
+    herdr plugin link "$plugin_dir"
+    echo "🟢 linked '$id'"
+  fi
+done

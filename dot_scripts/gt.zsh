@@ -137,7 +137,8 @@ gt() {
 # regardless. Progress goes to stderr (visible); the new path prints on stdout
 # (found by diffing `git worktree list`, so wherever the script actually puts it).
 _wt_make() {
-  local branch=$1 before after root tooldir d
+  local branch=$1 use_existing=0 before after root tooldir d
+  [[ $2 == --use-existing ]] && use_existing=1   # add a worktree on an already-existing branch (no -b)
   local caf=()
   (( $+commands[caffeinate] )) && caf=(caffeinate -sumi)   # keep the Mac awake for the (slow) build; the assertion is released the moment the build exits
   before=$(git worktree list --porcelain 2>/dev/null | awk '/^worktree /{print $2}' | sort)
@@ -145,16 +146,22 @@ _wt_make() {
   for d in . apps/*(N/); do
     [[ -f $d/devtools/cow_worktree.exs || -f $d/devtools/make_worktree.sh ]] && { tooldir=$d; break }
   done
+  root=$(git rev-parse --show-toplevel)   # main checkout — worktrees land at ../<repo>-worktrees/
   (   # subshell so the cd doesn't leak back to the caller
     if [[ -n $tooldir ]]; then
       cd "$tooldir"
       if [[ -f devtools/cow_worktree.exs ]]; then
-        $caf elixir devtools/cow_worktree.exs "$branch"
+        $caf elixir devtools/cow_worktree.exs "$branch"      # cow handles a new OR existing branch itself
+      elif (( use_existing )); then
+        # make_worktree.sh only ever creates (-b); to reuse an existing branch we
+        # add the worktree ourselves, in the same ../<repo>-worktrees/ spot.
+        $caf git worktree add "${root:h}/${root:t}-worktrees/$branch" "$branch"
       else
         $caf bash devtools/make_worktree.sh "$branch"
       fi
+    elif (( use_existing )); then
+      $caf git worktree add "${root:h}/${root:t}-worktrees/$branch" "$branch"
     else
-      root=$(git rev-parse --show-toplevel)
       $caf git worktree add "${root:h}/${root:t}-worktrees/$branch" -b "$branch"
     fi
   ) >&2
@@ -178,9 +185,19 @@ worktree() {
   git rev-parse --is-inside-work-tree >/dev/null 2>&1 \
     || { echo "worktree: run this from inside a git repository" >&2; return 1; }
 
-  echo "worktree: creating '$branch'…"
-  loc=$(_wt_make "$branch")
-  [[ -n $loc && -d $loc ]] || { echo "worktree: couldn't create the worktree" >&2; return 1; }
+  local res action mkargs
+  res=$(_wt_resolve_branch "$branch"); action=${res%%$'\t'*}
+  if [[ $action == abort ]]; then
+    echo "worktree: cancelled." >&2; return 0
+  elif [[ $action == open ]]; then
+    loc=${res#*$'\t'}
+    echo "worktree: '$branch' already checked out — opening $loc"
+  else
+    echo "worktree: creating '$branch'…"
+    mkargs=("$branch"); [[ $action == use ]] && mkargs+=(--use-existing)
+    loc=$(_wt_make "${mkargs[@]}")
+    [[ -n $loc && -d $loc ]] || { echo "worktree: couldn't create the worktree" >&2; return 1; }
+  fi
   echo "worktree: opening $loc"
   wsargs=(); [[ -n $wsid ]] && wsargs=(--workspace "$wsid")
   gt -n --no-focus "${wsargs[@]}" "$loc"   # no focus grab; pin to the project workspace
@@ -217,6 +234,73 @@ _wt_projects() {
 #   my-feature                         -> my-feature
 _wt_label() { print -r -- "$1" | sed -E 's/^[[:alpha:]]+-[[:digit:]]+-//'; }
 
+# _wt_choose <header> <option>… — pick one option on the tty. Uses gum where it's
+# installed (its menu renders on the terminal, the choice prints to stdout) and a
+# numbered `read` otherwise. Echoes the chosen option's text; empty on cancel.
+_wt_choose() {
+  local header=$1; shift
+  if (( $+commands[gum] )); then
+    gum choose --header "$header" "$@" < /dev/tty
+  else
+    { print -r -- "$header"
+      local i=1 o; for o in "$@"; do print -r -- "  $i) $o"; (( i++ )); done
+    } > /dev/tty
+    local n; read -r "n?choice: " < /dev/tty
+    [[ $n == <-> ]] && (( n >= 1 && n <= $# )) && print -r -- "${@[n]}"
+  fi
+}
+
+# _wt_resolve_branch <branch> — decide how to satisfy a worktree request when the
+# branch (and maybe a worktree for it) already exists. Prompts on the tty and
+# echoes ONE resolved action on stdout, so `r=$(_wt_resolve_branch …)` stays clean
+# while the menu + git output stay visible in the pane:
+#   new           branch is free — build it fresh (the normal path)
+#   use           branch exists, no worktree — build a worktree on it
+#   open\t<dir>    branch is already checked out at <dir> — open that instead
+#   abort         cancelled (or a recreate deletion failed)
+# "Recreate" is handled here — it removes the worktree (if any) and deletes the
+# branch, then resolves to `new` — so callers only ever see new/use/open/abort.
+_wt_resolve_branch() {
+  local branch=$1 wt choice
+  git show-ref --verify --quiet "refs/heads/$branch" || { print -r -- new; return 0 }
+  # Branch exists. Is it already checked out in a worktree? If so, grab its path.
+  wt=$(git worktree list --porcelain 2>/dev/null | awk -v b="branch refs/heads/$branch" '
+         /^worktree /{ p = substr($0, 10) } $0 == b { print p; exit }')
+  if [[ -n $wt ]]; then
+    choice=$(_wt_choose "Branch '$branch' is already checked out at ${wt/#$HOME/~}" \
+               "Open the existing worktree" \
+               "Recreate (remove the worktree, delete the branch, rebuild)" \
+               "Abort")
+    case $choice in
+      Open*)     print -r -- "open"$'\t'"$wt" ;;
+      Recreate*) if git worktree remove --force "$wt" 1>&2 && git branch -D "$branch" 1>&2
+                 then print -r -- new
+                 else print -u2 -- "worktree: couldn't remove '$wt' or delete '$branch'."; print -r -- abort
+                 fi ;;
+      *)         print -r -- abort ;;
+    esac
+  else
+    choice=$(_wt_choose "Branch '$branch' already exists" \
+               "Use the existing branch" \
+               "Recreate (delete the branch, rebuild)" \
+               "Abort")
+    case $choice in
+      Use*)      print -r -- use ;;
+      Recreate*) if git branch -D "$branch" 1>&2; then print -r -- new
+                 else print -u2 -- "worktree: couldn't delete '$branch'."; print -r -- abort
+                 fi ;;
+      *)         print -r -- abort ;;
+    esac
+  fi
+}
+
+# _wt_default_prompt — the stock "go read the Linear issue" prompt. Two callers:
+# the prefix+ctrl+w popup offers it as a menu choice, and _wt_here falls back to
+# it for hand calls on a branch that carries a Linear code. One copy of the text.
+_wt_default_prompt() {
+  print -r -- $'See the linear issue associated with this branch and implement it\n\nIf it\'s code, create an MR when you\'re done and /babysit-mr. Don\'t forget to use worktrees in each of the repositories you make changes to'
+}
+
 # _wt_here <pane_id> <branch> [promptfile|prompt] — runs INSIDE the pane's own interactive
 # shell (so `cd` sticks and `claude` lands here), started in the repo. Shows
 # progress while the worktree is built, then turns THIS pane into the claude
@@ -229,19 +313,35 @@ _wt_label() { print -r -- "$1" | sed -E 's/^[[:alpha:]]+-[[:digit:]]+-//'; }
 # falls back to the Linear default below.
 _wt_here() {
   local pane=$1 branch=$2 cprompt=$3 loc rpane setup pfile
+  # Was a prompt argument passed at all? An argument is authoritative, empty
+  # included: the popup asks which prompt to use and an empty answer there means
+  # "open claude with nothing". Only a call that passes no third argument gets
+  # the Linear fallback below.
+  local -i given=$(( $# >= 3 ))
   if [[ -n $cprompt && -f $cprompt ]]; then
     pfile=$cprompt; cprompt=$(<"$pfile"); rm -f "$pfile"
   fi
-  print -P "%F{yellow}⏳ creating worktree '$branch' in ${PWD:t}…%f"
   git rev-parse --is-inside-work-tree >/dev/null 2>&1 || {
     print -P "%F{red}✗ not inside a git repository%f"; return 1
   }
-  # Runs the repo's own worktree tooling; its output streams to this pane.
-  loc=$(_wt_make "$branch")
-  if [[ -z $loc || ! -d $loc ]]; then
-    print -P "%F{red}✗ worktree not created — see the output above%f"; return 1
+  # Resolve any clash with an existing branch/worktree first (prompts in-pane).
+  local res action mkargs
+  res=$(_wt_resolve_branch "$branch"); action=${res%%$'\t'*}
+  if [[ $action == abort ]]; then
+    print -P "%F{yellow}worktree: cancelled.%f"; return 0
+  elif [[ $action == open ]]; then
+    loc=${res#*$'\t'}
+    print -P "%F{green}✓ '$branch' already checked out — opening ${loc:t}%f"
+  else
+    print -P "%F{yellow}⏳ creating worktree '$branch' in ${PWD:t}…%f"
+    mkargs=("$branch"); [[ $action == use ]] && mkargs+=(--use-existing)
+    # Runs the repo's own worktree tooling; its output streams to this pane.
+    loc=$(_wt_make "${mkargs[@]}")
+    if [[ -z $loc || ! -d $loc ]]; then
+      print -P "%F{red}✗ worktree not created — see the output above%f"; return 1
+    fi
+    print -P "%F{green}✓ created at $loc%f"
   fi
-  print -P "%F{green}✓ created at $loc%f"
   cd "$loc"
   setup='direnv allow && mise trust'
   [[ -d $loc/apps/tiger ]] && setup="cd apps/tiger && $setup"
@@ -249,10 +349,10 @@ _wt_here() {
             | jq -r '.result.pane.pane_id // empty')
   [[ -n $rpane ]] && herdr pane run "$rpane" "$setup" >/dev/null 2>&1
   _wt_notify "Worktree ready: $branch" "$loc"
-  # No explicit prompt? Fall back to the Linear default, but only when the branch
-  # actually carries a Linear code — otherwise claude opens with an empty box.
-  if [[ -z $cprompt && $(_wt_label "$branch") != "$branch" ]]; then
-    cprompt="See the linear issue associated with this branch and implement it"
+  # No prompt argument at all? Fall back to the Linear default, but only when the
+  # branch actually carries a Linear code — otherwise claude opens with an empty box.
+  if (( ! given )) && [[ -z $cprompt && $(_wt_label "$branch") != "$branch" ]]; then
+    cprompt=$(_wt_default_prompt)
   fi
   # Hand the prompt to claude as its argument instead of typing it into the TUI.
   # Injecting with send-text meant racing claude's startup and feeding the input
